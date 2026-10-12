@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type React from 'react'
 import logo from './assets/logo-megusta.webp'
 import heroImage from './assets/hero.webp'
 
@@ -162,6 +163,53 @@ const TRAINERS = [
   },
 ]
 
+const CONTACT = {
+  email: 'labas@megusta.lt',
+  phone: '+370 606 44888',
+  phoneHref: 'tel:+37060644888',
+}
+
+// Social links will be provided later; '#' until then.
+const SOCIALS = [
+  { name: 'Facebook', href: '#', icon: 'facebook' },
+  { name: 'TikTok', href: '#', icon: 'tiktok' },
+  { name: 'Instagram', href: '#', icon: 'instagram' },
+  { name: 'YouTube', href: '#', icon: 'youtube' },
+] as const
+
+type IconName = 'mail' | 'phone' | (typeof SOCIALS)[number]['icon']
+
+function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
+  const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" style={{ display: 'block', flexShrink: 0 }}>
+      {name === 'mail' && (
+        <g {...stroke}><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></g>
+      )}
+      {name === 'phone' && (
+        <path {...stroke} d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+      )}
+      {name === 'facebook' && (
+        <path {...stroke} d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      )}
+      {name === 'instagram' && (
+        <g {...stroke}><rect x="2" y="2" width="20" height="20" rx="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><path d="M17.5 6.5h.01" /></g>
+      )}
+      {name === 'youtube' && (
+        <g {...stroke}><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" /><path d="m10 15 5-3-5-3z" /></g>
+      )}
+      {name === 'tiktok' && (
+        <path fill="currentColor" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+      )}
+    </svg>
+  )
+}
+
+const hoverPink = {
+  onMouseEnter: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#FFB3C6' },
+  onMouseLeave: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#ccc' },
+}
+
 export default function App() {
   const [activeStyle, setActiveStyle] = useState(0)
   const [activeDay, setActiveDay] = useState(0)
@@ -179,10 +227,30 @@ export default function App() {
         backdropFilter: 'blur(16px)',
         backgroundColor: 'rgba(8,8,8,0.88)',
       }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 76 }}>
-          <a href="#hero" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
-            <img src={logo} alt="Me Gusta" width={75} height={48} style={{ height: 48, width: 'auto', display: 'block' }} />
-          </a>
+        <div className="wide-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 88, gap: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+            <a href="#hero" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
+              <img src={logo} alt="Me Gusta" width={81} height={52} style={{ height: 52, width: 'auto', display: 'block' }} />
+            </a>
+            <div className="nav-contacts" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <a href={`mailto:${CONTACT.email}`} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
+                <span style={{ color: '#FFB3C6' }}><Icon name="mail" size={14} /></span>
+                {CONTACT.email}
+              </a>
+              <a href={CONTACT.phoneHref} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
+                <span style={{ color: '#FFB3C6' }}><Icon name="phone" size={14} /></span>
+                {CONTACT.phone}
+              </a>
+            </div>
+            <span className="nav-socials" aria-hidden="true" style={{ width: 1, height: 40, backgroundColor: '#2a2a2a' }} />
+            <div className="nav-socials" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 16px)', gap: 10 }}>
+              {SOCIALS.map(s => (
+                <a key={s.name} href={s.href} aria-label={s.name} title={s.name} style={{ color: '#ccc', display: 'flex', transition: 'color 0.2s' }} {...hoverPink}>
+                  <Icon name={s.icon} size={16} />
+                </a>
+              ))}
+            </div>
+          </div>
           <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links">
             {['Stiliai', 'Tvarkaraštis', 'Kainos', 'Treneriai'].map((item) => (
               <a
@@ -227,7 +295,7 @@ export default function App() {
         {/* accent line */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: 6, height: '100%', backgroundColor: '#FFB3C6' }} aria-hidden="true" />
 
-        <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '120px 24px 80px', width: '100%' }}>
+        <div className="wide-container" style={{ position: 'relative', paddingTop: 144, paddingBottom: 80, width: '100%' }}>
           <div style={{ maxWidth: 720 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: '#FFB3C6', marginBottom: 24, textTransform: 'uppercase' }}>
               ◆&nbsp;&nbsp;Kaunas · Nuo 2006
@@ -239,7 +307,7 @@ export default function App() {
               color: '#f0f0f0', margin: '0 0 16px',
               letterSpacing: '-0.01em',
             }}>
-              TAVO<br /><br />
+              TAVO<br />
               <span style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}>JUDESIO</span><br />
               NAMAI
             </h1>
@@ -524,7 +592,7 @@ export default function App() {
           </div>
 
           <p style={{ marginTop: 20, fontSize: 13, color: '#444', fontWeight: 400 }}>
-            * Treniruotės vyksta MoveStudio salėje — Gedimino pr. 45, Vilnius. Pilną tvarkaraštį rasite registracijos formoje.
+            * Treniruotės vyksta Me Gusta salėje — Gedimino pr. 45, Vilnius. Pilną tvarkaraštį rasite registracijos formoje.
           </p>
         </div>
       </section>
@@ -706,7 +774,7 @@ export default function App() {
           Pradėk šokti<br />šiandien
         </h2>
         <a
-          href="mailto:info@movestudio.lt"
+          href={`mailto:${CONTACT.email}`}
           style={{
             display: 'inline-block',
             backgroundColor: '#080808', color: '#FFB3C6',
@@ -726,9 +794,7 @@ export default function App() {
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 48 }}>
             <div>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 28, letterSpacing: 3, color: '#FFB3C6', textTransform: 'uppercase', display: 'block', marginBottom: 16 }}>
-                MOVE<span style={{ color: '#f0f0f0' }}>STUDIO</span>
-              </span>
+              <img src={logo} alt="Me Gusta" width={87} height={56} style={{ height: 56, width: 'auto', display: 'block', marginBottom: 20 }} />
               <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, maxWidth: 260 }}>
                 Profesionali hip hop šokių studija Kaune. 20 metų patirtis, 500+ laimėjimų, 4 šokių stiliai.
               </p>
@@ -748,8 +814,8 @@ export default function App() {
             <div>
               <p style={{ fontSize: 10, letterSpacing: 3, color: '#333', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Kontaktai</p>
               <p style={{ fontSize: 14, color: '#555', marginBottom: 8 }}>Laisvės al. 50, Kaunas</p>
-              <p style={{ fontSize: 14, color: '#555', marginBottom: 8 }}>+370 600 00001</p>
-              <p style={{ fontSize: 14, color: '#555', marginBottom: 16 }}>info@movestudio.lt</p>
+              <p style={{ fontSize: 14, marginBottom: 8 }}><a href={CONTACT.phoneHref} style={{ color: '#555', textDecoration: 'none' }}>{CONTACT.phone}</a></p>
+              <p style={{ fontSize: 14, marginBottom: 16 }}><a href={`mailto:${CONTACT.email}`} style={{ color: '#555', textDecoration: 'none' }}>{CONTACT.email}</a></p>
               <div style={{ display: 'flex', gap: 12 }}>
                 {['IG', 'FB', 'YT'].map(s => (
                   <span key={s} style={{ width: 36, height: 36, border: '1px solid #1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#444', letterSpacing: 0.5, cursor: 'pointer' }}>{s}</span>
@@ -758,13 +824,22 @@ export default function App() {
             </div>
           </div>
           <div style={{ borderTop: '1px solid #111', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-            <span style={{ fontSize: 12, color: '#333' }}>© 2024 MoveStudio. Visos teisės saugomos.</span>
+            <span style={{ fontSize: 12, color: '#333' }}>© {new Date().getFullYear()} Me Gusta. Visos teisės saugomos.</span>
             <span style={{ fontSize: 12, color: '#333' }}>Designed with passion for movement.</span>
           </div>
         </div>
       </footer>
 
       <style>{`
+        /* Header + hero edge: one column of a 12-column grid (1/12 of the width),
+           never further right than the 1280px content container, min 24px. */
+        .wide-container {
+          padding-left: max(24px, min(calc((100% - 1280px) / 2 + 24px), 8.3333%));
+          padding-right: max(24px, min(calc((100% - 1280px) / 2 + 24px), 8.3333%));
+        }
+        @media (max-width: 640px) {
+          .nav-socials { display: none !important; }
+        }
         @keyframes scrollLine {
           0% { top: -40%; }
           100% { top: 140%; }
