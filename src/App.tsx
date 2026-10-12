@@ -8,6 +8,7 @@ import Odometer from './Odometer'
 import { CONTACT, DANCE_STYLES, SCHEDULE_DAYS } from './data'
 import Registration from './Registration'
 import Pricing from './Pricing'
+import ThemeSwitch from './ThemeSwitch'
 
 const TRAINERS = [
   {
@@ -174,6 +175,7 @@ export default function App() {
               ))}
             </div>
           </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links" data-edit="Meniu">
             {['Stiliai', 'Tvarkaraštis', 'Kainos', 'Treneriai'].map((item) => (
               <a
@@ -198,6 +200,8 @@ export default function App() {
             >
               Registruotis
             </a>
+          </div>
+          <ThemeSwitch />
           </div>
         </div>
       </nav>
@@ -706,6 +710,7 @@ export default function App() {
         }
         @media (max-width: 640px) {
           .nav-socials { display: none !important; }
+          nav .wide-container > div:first-child { gap: 16px !important; }
         }
         /* Hero load-in: photo settles, then text rises in reading order.
            Ease-out only, transform + opacity only; off for reduced motion. */
