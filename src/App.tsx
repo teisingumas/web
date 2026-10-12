@@ -480,7 +480,7 @@ export default function App() {
               <a
                 href="#kainos"
                 style={{
-                  display: 'inline-block', padding: '16px 72px',
+                  display: 'inline-block', padding: '16px 36px',
                   backgroundColor: current.color, color: '#080808',
                   fontWeight: 800, fontSize: 13, letterSpacing: 2,
                   textTransform: 'uppercase', textDecoration: 'none',
@@ -489,7 +489,7 @@ export default function App() {
                 onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                 onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
-                Registruotis →
+                Plačiau →
               </a>
             </div>
           </div>
@@ -556,7 +556,7 @@ export default function App() {
                 }}
               >
                 <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: 22, color: '#FFB3C6', letterSpacing: 1 }}>
-                  {cls.time}
+                  {cls.time.split(':')[0]}<span className="time-colon">:</span>{cls.time.split(':')[1]}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: cls.color, flexShrink: 0, display: 'inline-block' }} />
@@ -904,8 +904,15 @@ export default function App() {
         .day-tab > span { position: relative; }
         .day-tab:hover, .day-tab:focus-visible, .day-tab[aria-selected="true"] { color: #080808; border-color: #FFB3C6; }
         .day-tab:hover::before, .day-tab:focus-visible::before, .day-tab[aria-selected="true"]::before { transform: scaleX(1); }
+        /* Timetable clock colon blinks once a second. */
+        @keyframes colonBlink {
+          0%, 49% { opacity: 1; }
+          50%, 100% { opacity: 0.15; }
+        }
+        .time-colon { animation: colonBlink 1s steps(1, end) infinite; }
         @media (prefers-reduced-motion: reduce) {
           .day-tab::before { transition: none; }
+          .time-colon { animation: none; }
         }
         @media (prefers-reduced-motion: reduce) {
           .hero-photo-in, .hero-in, .hero-fade-in, .hero-shake { animation: none; }
