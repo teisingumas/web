@@ -117,7 +117,8 @@ export default function App() {
   useEffect(() => {
     document.title = PAGE_TITLES[page]
     if (page !== 'home') {
-      window.scrollTo(0, 0)
+      // a new page opens at its top straight away, not via the smooth scroll from index.css
+      window.scrollTo({ top: 0, behavior: 'instant' })
       return
     }
     const target = window.location.hash && document.getElementById(window.location.hash.slice(1))
@@ -192,10 +193,15 @@ export default function App() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links" data-edit="Meniu">
-            {['Stiliai', 'Tvarkaraštis', 'Kainos', 'Treneriai'].map((item) => (
+            {[
+              { label: 'Stiliai', href: '#stiliai' },
+              { label: 'Tvarkaraštis', href: '#tvarkarastis-pilnas' },
+              { label: 'Kainos', href: '#kainos' },
+              { label: 'Treneriai', href: '#treneriai' },
+            ].map(({ label: item, href }) => (
               <a
                 key={item}
-                href={`#${item.toLowerCase()}`}
+                href={href}
                 style={{ color: '#888', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', transition: 'color 0.2s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#FFB3C6')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#888')}
