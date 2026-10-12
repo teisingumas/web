@@ -1,7 +1,7 @@
 // Hero background photo framing. Shared by the page and the layout editor.
 // zoom: image height as % of the hero (100 ≈ cover at 2:1 screens, 95 = 5% zoom-out)
 // x / y: CSS background-position percentages.
-export const HERO_PHOTO = { zoom: 95, x: 36.9, y: 13 }
+export const HERO_PHOTO = { zoom: 95, x: 57.8, y: 35.9 }
 
 // hero.webp is 1983 × 793
 export const HERO_PHOTO_RATIO = 1983 / 793
