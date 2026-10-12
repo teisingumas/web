@@ -111,7 +111,8 @@ export default function Timetable() {
                     <Clock time={slot.start} />&nbsp;–&nbsp;<Clock time={slot.end} />
                   </span>
                   <span style={{ fontWeight: 600, fontSize: 15, color: 'var(--text)', lineHeight: 1.35 }}>{slot.group}</span>
-                  {slot.trainer && <span style={{ fontSize: 13, color: 'var(--text-2)' }}>{slot.trainer}</span>}
+                  {/* an empty trainer line keeps every slot the same height, so the day columns line up */}
+                  <span style={{ fontSize: 13, color: 'var(--text-2)' }} aria-hidden={!slot.trainer || undefined}>{slot.trainer ?? '\u00a0'}</span>
                 </div>
               ))}
             </div>
