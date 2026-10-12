@@ -204,6 +204,25 @@ export default function App() {
   const [activeStyle, setActiveStyle] = useState(0)
   const [activeDay, setActiveDay] = useState(0)
 
+  // Sections marked data-reveal play their intro once they scroll into view.
+  useEffect(() => {
+    const sections = document.querySelectorAll('[data-reveal]')
+    if (!('IntersectionObserver' in window)) {
+      sections.forEach(el => el.classList.add('in-view'))
+      return
+    }
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view')
+          io.unobserve(e.target)
+        }
+      })
+    }, { threshold: 0.35 })
+    sections.forEach(el => io.observe(el))
+    return () => io.disconnect()
+  }, [])
+
   // Rows mounted on a day switch would start their own blink cycle; pin every
   // colon animation to the same start so all times blink together.
   useEffect(() => {
@@ -597,7 +616,7 @@ export default function App() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
-              ◆&nbsp;&nbsp;Investicija
+              ◆&nbsp;&nbsp;Prisijunk prie mūsų
             </p>
             <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
               Kainos
@@ -672,7 +691,7 @@ export default function App() {
             ))}
           </div>
 
-          <p style={{ textAlign: 'center', maxWidth: 800, marginTop: 32, fontSize: 15, fontWeight: 700, color: '#f0f0f0', letterSpacing: 0.3 }}>
+          <p style={{ textAlign: 'center', maxWidth: 800, marginTop: 32, fontSize: 15, fontWeight: 700, color: '#cfcfcf', letterSpacing: 0.3 }}>
             Pirmoji treniruotė nemokama.
           </p>
         </div>
@@ -761,13 +780,15 @@ export default function App() {
       </section>
 
       {/* CTA BANNER */}
-      <section style={{ backgroundColor: '#FFB3C6', padding: '80px 24px', textAlign: 'center' }}>
-        <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#333', textTransform: 'uppercase', marginBottom: 16 }}>
-          ◆&nbsp;&nbsp;Pirmoji treniruotė nemokama
+      <section data-reveal style={{ backgroundColor: '#FFB3C6', padding: '80px 24px', textAlign: 'center' }}>
+        <p className="reveal reveal-1" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#333', textTransform: 'uppercase', marginBottom: 16 }}>
+          <span className="cta-shake">◆&nbsp;&nbsp;Pirmoji treniruotė nemokama</span>
         </p>
         <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 7vw, 100px)', textTransform: 'uppercase', color: '#080808', lineHeight: 0.95, margin: '0 0 40px', letterSpacing: '-0.01em' }}>
-          Pradėk šokti<br />šiandien
+          <span className="reveal reveal-2" style={{ display: 'inline-block' }}>Pradėk šokti</span><br />
+          <span className="reveal reveal-3" style={{ display: 'inline-block' }}>šiandien</span>
         </h2>
+        <div className="reveal reveal-4">
         <a
           href={`mailto:${CONTACT.email}`}
           style={{
@@ -782,45 +803,46 @@ export default function App() {
         >
           Registruotis dabar →
         </a>
+        </div>
       </section>
 
       {/* FOOTER */}
-      <footer id="kontaktai" style={{ backgroundColor: '#050505', borderTop: '1px solid #111', padding: '60px 24px 40px' }}>
+      <footer id="kontaktai" style={{ backgroundColor: '#050505', borderTop: '1px solid #1c1c1c', padding: '60px 24px 40px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 48 }}>
             <div>
               <img src={logo} alt="Me Gusta" width={87} height={56} style={{ height: 56, width: 'auto', display: 'block', marginBottom: 20 }} />
-              <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, maxWidth: 260 }}>
+              <p style={{ fontSize: 14, color: '#8c8c8c', lineHeight: 1.7, maxWidth: 260 }}>
                 Profesionali hip hop šokių studija Kaune. 20 metų patirtis, 650+ laimėjimų, 4 šokių stiliai.
               </p>
             </div>
             <div>
-              <p style={{ fontSize: 10, letterSpacing: 3, color: '#333', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Stiliai</p>
+              <p style={{ fontSize: 10, letterSpacing: 3, color: '#6e6e6e', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Stiliai</p>
               {['Gatvės šokiai', 'Pop Dance', 'Lady Class', 'Breikas'].map(s => (
-                <p key={s} style={{ fontSize: 14, color: '#555', marginBottom: 8 }}>{s}</p>
+                <p key={s} style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>{s}</p>
               ))}
             </div>
             <div>
-              <p style={{ fontSize: 10, letterSpacing: 3, color: '#333', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Studija</p>
+              <p style={{ fontSize: 10, letterSpacing: 3, color: '#6e6e6e', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Studija</p>
               {['Apie mus', 'Treneriai', 'Tvarkaraštis', 'Kainos'].map(s => (
-                <p key={s} style={{ fontSize: 14, color: '#555', marginBottom: 8 }}>{s}</p>
+                <p key={s} style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>{s}</p>
               ))}
             </div>
             <div>
-              <p style={{ fontSize: 10, letterSpacing: 3, color: '#333', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Kontaktai</p>
-              <p style={{ fontSize: 14, color: '#555', marginBottom: 8 }}>Savanorių pr. 271, Kaunas</p>
-              <p style={{ fontSize: 14, marginBottom: 8 }}><a href={CONTACT.phoneHref} style={{ color: '#555', textDecoration: 'none' }}>{CONTACT.phone}</a></p>
-              <p style={{ fontSize: 14, marginBottom: 16 }}><a href={`mailto:${CONTACT.email}`} style={{ color: '#555', textDecoration: 'none' }}>{CONTACT.email}</a></p>
+              <p style={{ fontSize: 10, letterSpacing: 3, color: '#6e6e6e', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Kontaktai</p>
+              <p style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>Savanorių pr. 271, Kaunas</p>
+              <p style={{ fontSize: 14, marginBottom: 8 }}><a href={CONTACT.phoneHref} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{CONTACT.phone}</a></p>
+              <p style={{ fontSize: 14, marginBottom: 16 }}><a href={`mailto:${CONTACT.email}`} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{CONTACT.email}</a></p>
               <div style={{ display: 'flex', gap: 12 }}>
-                {['IG', 'FB', 'YT'].map(s => (
-                  <span key={s} style={{ width: 36, height: 36, border: '1px solid #1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#444', letterSpacing: 0.5, cursor: 'pointer' }}>{s}</span>
+                {['IG', 'FB', 'TT', 'YT'].map(s => (
+                  <span key={s} style={{ width: 36, height: 36, border: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#8c8c8c', letterSpacing: 0.5, cursor: 'pointer' }}>{s}</span>
                 ))}
               </div>
             </div>
           </div>
-          <div style={{ borderTop: '1px solid #111', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-            <span style={{ fontSize: 12, color: '#333' }}>© {new Date().getFullYear()} Me Gusta. Visos teisės saugomos.</span>
-            <span style={{ fontSize: 12, color: '#333' }}>Designed with passion for movement.</span>
+          <div style={{ borderTop: '1px solid #1c1c1c', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+            <span style={{ fontSize: 12, color: '#6e6e6e' }}>© {new Date().getFullYear()} Me Gusta. Visos teisės saugomos.</span>
+            <span style={{ fontSize: 12, color: '#6e6e6e' }}>Designed with passion for movement.</span>
           </div>
         </div>
       </footer>
@@ -922,6 +944,20 @@ export default function App() {
         @media (prefers-reduced-motion: reduce) {
           .day-tab::before { transition: none; }
           .time-colon { animation: none; }
+        }
+        /* Scroll-in intro (CTA banner): rise + fade in reading order once in view. */
+        .reveal { opacity: 0; transform: translateY(32px); }
+        [data-reveal].in-view .reveal { animation: heroIn 900ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+        [data-reveal].in-view .reveal-1 { animation-delay: 0ms; }
+        [data-reveal].in-view .reveal-2 { animation-delay: 120ms; }
+        [data-reveal].in-view .reveal-3 { animation-delay: 240ms; }
+        [data-reveal].in-view .reveal-4 { animation-delay: 400ms; }
+        /* "Pirmoji treniruotė nemokama": shake 0.5s after it appears, then every 2s. */
+        .cta-shake { display: inline-block; }
+        [data-reveal].in-view .cta-shake { animation: heroShake 2s ease-in-out 0.5s infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .reveal { opacity: 1; transform: none; }
+          [data-reveal].in-view .reveal, [data-reveal].in-view .cta-shake { animation: none; }
         }
         @media (prefers-reduced-motion: reduce) {
           .hero-photo-in, .hero-in, .hero-fade-in, .hero-shake { animation: none; }
