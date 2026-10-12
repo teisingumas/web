@@ -61,11 +61,15 @@ export default function ThemeSwitch() {
       <style>{`
         .theme-switch {
           position: relative; flex-shrink: 0; width: 64px; height: 32px; padding: 0; border-radius: 999px; cursor: pointer;
-          background: #161616; border: 1px solid #2c2c2c;
-          box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+          background: linear-gradient(180deg, #0b0b0b 0%, #1d1d1d 100%); border: 1px solid #2c2c2c;
+          /* recessed track: deep inner shadow, a faint lit lower edge, and a drop shadow under the pill */
+          box-shadow: inset 0 3px 6px rgba(0,0,0,0.85), inset 0 -1px 0 rgba(255,255,255,0.06), 0 1px 0 rgba(255,255,255,0.05), 0 4px 10px rgba(0,0,0,0.5);
           transition: background-color 320ms cubic-bezier(0.23, 1, 0.32, 1), border-color 320ms cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .theme-switch[data-theme="light"] { background: #FFB3C6; border-color: #FFB3C6; box-shadow: inset 0 2px 4px rgba(120,40,60,0.35); }
+        .theme-switch[data-theme="light"] {
+          background: linear-gradient(180deg, #f59ab3 0%, #FFB3C6 100%); border-color: #f7a3bb;
+          box-shadow: inset 0 3px 6px rgba(120,30,60,0.45), inset 0 -1px 0 rgba(255,255,255,0.35), 0 4px 10px rgba(0,0,0,0.5);
+        }
         .theme-switch:hover { border-color: #FFB3C6; }
         .theme-switch:focus-visible { outline: 2px solid #FFB3C6; outline-offset: 3px; }
         .theme-switch__icon {
@@ -78,12 +82,14 @@ export default function ThemeSwitch() {
         .theme-switch__knob {
           position: absolute; top: 2px; left: 2px; width: 26px; height: 26px; border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
-          background: linear-gradient(180deg, #ffffff 0%, #e6e6e6 100%); color: #080808;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.45), inset 0 -1px 0 rgba(0,0,0,0.08);
+          /* raised knob: top highlight, darker rim at the bottom, layered drop shadows */
+          background: radial-gradient(circle at 35% 28%, #ffffff 0%, #f1f1f1 45%, #d2d2d2 100%); color: #3a3a3a;
+          border: 1px solid rgba(0,0,0,0.12);
+          box-shadow: 0 1px 1px rgba(0,0,0,0.35), 0 3px 6px rgba(0,0,0,0.45), 0 6px 12px rgba(0,0,0,0.3),
+            inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -2px 3px rgba(0,0,0,0.15);
           transform: translateX(32px); transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .theme-switch[data-theme="dark"] .theme-switch__knob { color: #c2185b; }
-        .theme-switch[data-theme="light"] .theme-switch__knob { transform: translateX(0); color: #e08a00; }
+        .theme-switch[data-theme="light"] .theme-switch__knob { transform: translateX(0); }
         @media (max-width: 480px) { .theme-switch { transform: scale(0.85); transform-origin: right center; } }
         @media (prefers-reduced-motion: reduce) { .theme-switch, .theme-switch__knob, .theme-switch__icon { transition: none; } }
       `}</style>
