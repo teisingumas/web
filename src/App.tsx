@@ -4,6 +4,11 @@ import logo from './assets/logo-megusta.webp'
 import heroImage from './assets/hero.webp'
 import { heroPhotoStyle } from './heroPhoto'
 import LayoutEditor from './editor/LayoutEditor'
+import Odometer from './Odometer'
+import styleGatves from './assets/styles/gatves.webp'
+import stylePop from './assets/styles/pop.webp'
+import styleLady from './assets/styles/lady.webp'
+import styleBreikas from './assets/styles/breikas.webp'
 
 const DANCE_STYLES = [
   {
@@ -12,8 +17,7 @@ const DANCE_STYLES = [
     tagline: 'Born in the streets, perfected on stage',
     description:
       'Autentiški gatvės šokiai — nuo popping ir locking iki krump ir freestyle. Ugdome individualų stilių ir išraišką kiekviename judėjime. Treniruotės vyksta dinamiškoje aplinkoje, kurioje kiekvienas randa savo balsą.',
-    image:
-      'https://images.unsplash.com/photo-1761882619891-6529ff92df0a?w=900&h=620&fit=crop&auto=format',
+    image: styleGatves,
     color: '#FFB3C6',
     levels: ['4–6 m.', '7–11 m.', '12–15 m.', 'Nuo 16 m.'],
   },
@@ -23,9 +27,8 @@ const DANCE_STYLES = [
     tagline: 'Energy meets precision',
     description:
       'Komerciniai ir sceniniai šokiai — ryškūs, dinamiški, su chartiška energija. Tobulai tinka scenai, muzikos vaizdo klipams ir konkursams. Šie šokiai jungia stilių ir techniką į vieną sprogstantį mišinį.',
-    image:
-      'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=900&h=620&fit=crop&auto=format',
-    color: '#FF3DFF',
+    image: stylePop,
+    color: '#FFB3C6',
     levels: ['7–11 m.', '12–15 m.', 'Nuo 16 m.'],
   },
   {
@@ -34,9 +37,8 @@ const DANCE_STYLES = [
     tagline: 'Power. Grace. Confidence.',
     description:
       'Moteriška plastika, heels šokiai ir sexy style. Atskleidžiame vidinę stiprybę ir išreiškiame ją per judėjimą. Lady Class — tai ne tik šokiai, tai savęs atradimas ir pasitikėjimo savimi ugdymas.',
-    image:
-      'https://images.unsplash.com/photo-1586211070543-61ae1ad4a665?w=900&h=620&fit=crop&auto=format',
-    color: '#FF5C8A',
+    image: styleLady,
+    color: '#FFB3C6',
     levels: ['12–15 m.', 'Nuo 16 m.', '4–99 m.'],
   },
   {
@@ -45,9 +47,8 @@ const DANCE_STYLES = [
     tagline: 'Defy gravity. Define limits.',
     description:
       'Breakdance — nuo toprocko ir footwork iki freezes ir power moves. Kietumas, disciplina ir neįtikėtinas kūno valdymas. Mūsų treneriai — tarptautiniai čempionai, pasiruošę perduoti visas paslaptis.',
-    image:
-      'https://images.unsplash.com/photo-1504293476958-6d6d0257d014?w=900&h=620&fit=crop&auto=format',
-    color: '#00CFFF',
+    image: styleBreikas,
+    color: '#FFB3C6',
     levels: ['7–11 m.', '12–15 m.', 'Nuo 16 m.'],
   },
 ]
@@ -306,7 +307,7 @@ export default function App() {
               letterSpacing: '-0.01em',
             }}>
               <span className="hero-in hero-in-2">TAVO</span><br />
-              <span className="hero-in hero-in-3" style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}>JUDESIO</span><br />
+              <span className="hero-in hero-in-3" style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}><span className="hero-shake">JUDESIO</span></span><br />
               <span className="hero-in hero-in-4">NAMAI</span>
             </h1>
             <p data-edit="Hero: aprašymas" className="hero-in hero-in-5" style={{ fontSize: 18, color: '#aaa', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
@@ -347,8 +348,8 @@ export default function App() {
 
         {/* scroll hint */}
         <div data-edit="Slinkti" className="hero-fade-in" style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 11, letterSpacing: 3, color: '#555', textTransform: 'uppercase' }}>Slinkti</span>
-          <div style={{ width: 1, height: 48, backgroundColor: '#333', position: 'relative', overflow: 'hidden' }}>
+          <span style={{ fontSize: 11, letterSpacing: 3, color: '#9a9a9a', textTransform: 'uppercase' }}>Slinkti</span>
+          <div style={{ width: 1, height: 48, backgroundColor: '#555', position: 'relative', overflow: 'hidden' }}>
             <div style={{
               position: 'absolute', top: 0, left: 0, right: 0,
               height: '40%', backgroundColor: '#FFB3C6',
@@ -368,7 +369,7 @@ export default function App() {
             { num: '4', label: 'Šokių stiliai' },
             { num: '5', label: 'Šokių mokytojai' },
             { num: '20', label: 'Metų patirties' },
-            { num: '500+', label: 'Laimėjimų' },
+            { num: '650+', label: 'Laimėjimų' },
           ].map((stat, i) => (
             <div
               key={i}
@@ -383,7 +384,7 @@ export default function App() {
                 fontWeight: 900, fontSize: 'clamp(52px, 6vw, 80px)',
                 color: '#080808', lineHeight: 1, letterSpacing: '-0.02em',
               }}>
-                {stat.num}
+                <Odometer value={stat.num} />
               </div>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#333', letterSpacing: 2, textTransform: 'uppercase', marginTop: 4 }}>
                 {stat.label}
@@ -406,23 +407,24 @@ export default function App() {
           </div>
 
           {/* Tab row */}
-          <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid #1a1a1a', marginBottom: 0, flexWrap: 'wrap' }}>
+          <div role="tablist" aria-label="Šokių stiliai" style={{ display: 'flex', gap: 0, borderBottom: '1px solid #1a1a1a', marginBottom: 0, flexWrap: 'wrap' }}>
             {DANCE_STYLES.map((s, i) => (
               <button
                 key={s.id}
+                type="button"
+                role="tab"
+                aria-selected={activeStyle === i}
+                className="style-tab"
                 onClick={() => setActiveStyle(i)}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
                   padding: '18px 32px',
                   fontFamily: "'Barlow Condensed', sans-serif",
                   fontWeight: 800, fontSize: 18, letterSpacing: 2, textTransform: 'uppercase',
-                  color: activeStyle === i ? s.color : '#444',
-                  borderBottom: activeStyle === i ? `3px solid ${s.color}` : '3px solid transparent',
+                  borderBottom: '3px solid transparent',
                   marginBottom: -1,
-                  transition: 'all 0.2s',
+                  position: 'relative',
                 }}
-                onMouseEnter={e => { if (activeStyle !== i) e.currentTarget.style.color = '#888'; }}
-                onMouseLeave={e => { if (activeStyle !== i) e.currentTarget.style.color = '#444'; }}
               >
                 {s.name}
               </button>
@@ -442,7 +444,6 @@ export default function App() {
                 style={{
                   width: '100%', height: '100%', objectFit: 'cover',
                   position: 'absolute', inset: 0,
-                  filter: 'brightness(0.75)',
                   transition: 'opacity 0.4s',
                 }}
               />
@@ -794,7 +795,7 @@ export default function App() {
             <div>
               <img src={logo} alt="Me Gusta" width={87} height={56} style={{ height: 56, width: 'auto', display: 'block', marginBottom: 20 }} />
               <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, maxWidth: 260 }}>
-                Profesionali hip hop šokių studija Kaune. 20 metų patirtis, 500+ laimėjimų, 4 šokių stiliai.
+                Profesionali hip hop šokių studija Kaune. 20 metų patirtis, 650+ laimėjimų, 4 šokių stiliai.
               </p>
             </div>
             <div>
@@ -882,8 +883,29 @@ export default function App() {
         .hero-in-5 { animation-delay: 820ms; }
         .hero-in-6 { animation-delay: 960ms; }
         .hero-fade-in { animation: heroFadeIn 800ms ease-out 1300ms both; }
+        /* JUDESIO: a short shake, then rest; repeats every 2s after the load-in. */
+        @keyframes heroShake {
+          0%, 100% { transform: none; }
+          3% { transform: translateX(-3px) rotate(-0.6deg); }
+          6% { transform: translateX(3px) rotate(0.6deg); }
+          9% { transform: translateX(-2px) rotate(-0.4deg); }
+          12% { transform: translateX(2px) rotate(0.3deg); }
+          15% { transform: none; }
+        }
+        .hero-shake { display: inline-block; animation: heroShake 2s ease-in-out 1.8s infinite; }
+        /* Style tabs: brighter idle state, underline grows in on hover, stays on the active tab. */
+        .style-tab { color: #707070; transition: color 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .style-tab:hover, .style-tab:focus-visible { color: #b0b0b0; }
+        .style-tab[aria-selected="true"] { color: #FFB3C6; }
+        .style-tab::after {
+          content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px;
+          background: #FFB3C6; transform: scaleX(0); transform-origin: center;
+          transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .style-tab:hover::after, .style-tab:focus-visible::after, .style-tab[aria-selected="true"]::after { transform: scaleX(1); }
         @media (prefers-reduced-motion: reduce) {
-          .hero-photo-in, .hero-in, .hero-fade-in { animation: none; }
+          .hero-photo-in, .hero-in, .hero-fade-in, .hero-shake { animation: none; }
+          .style-tab::after { transition: none; }
         }
         @keyframes scrollLine {
           0% { top: -40%; }
