@@ -1,19 +1,12 @@
 import { useState } from 'react'
-import { DANCE_STYLES, SCHEDULE_DAYS } from './data'
+import { TIMETABLE_TABS } from './data'
 
 const PINK = '#FFB3C6'
 const display = "'Barlow Condensed', sans-serif"
 
-// The schedule names styles as on the home page cards, so filter by those names.
-const FILTERS = ['Visi', ...DANCE_STYLES.map(s => s.name)]
-
 export default function Timetable() {
-  const [filter, setFilter] = useState('Visi')
-
-  const days = SCHEDULE_DAYS.map(d => ({
-    ...d,
-    classes: d.classes.filter(c => filter === 'Visi' || c.style === filter),
-  }))
+  const [tabId, setTabId] = useState(TIMETABLE_TABS[0].id)
+  const days = TIMETABLE_TABS.find(t => t.id === tabId)!.days
 
   return (
     <section id="tvarkarastis-pilnas" style={{ padding: '168px 0 120px', backgroundColor: 'var(--bg)' }}>
@@ -49,20 +42,27 @@ export default function Timetable() {
           </div>
         </div>
 
-        <div role="group" aria-label="Filtruoti pagal stilių" style={{ display: 'flex', gap: 4, marginBottom: 32, flexWrap: 'wrap' }}>
-          {FILTERS.map(f => (
+        <div role="tablist" aria-label="Tvarkaraščiai" className="tt-tabs">
+          {TIMETABLE_TABS.map(t => (
             <button
-              key={f}
+              key={t.id}
               type="button"
-              aria-pressed={filter === f}
+              role="tab"
+              aria-selected={tabId === t.id}
               className="day-tab"
-              onClick={() => setFilter(f)}
-              style={{ padding: '12px 20px', fontFamily: display, fontWeight: 800, fontSize: 14, letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer' }}
+              onClick={() => setTabId(t.id)}
+              style={{ padding: '14px 12px', fontFamily: display, fontWeight: 800, fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer' }}
             >
-              <span>{f}</span>
+              <span>{t.label}</span>
             </button>
           ))}
         </div>
+
+        {days.length === 0 && (
+          <p style={{ margin: 0, padding: '32px 24px', border: '1px solid var(--line)', fontSize: 15, color: 'var(--text-2)' }}>
+            Šios salės tvarkaraštis netrukus bus paskelbtas.
+          </p>
+        )}
 
         <div className="tt-week">
           {days.map(d => (
@@ -74,7 +74,7 @@ export default function Timetable() {
                 {d.full}
               </h2>
               {d.classes.length === 0 ? (
-                <p style={{ margin: 0, padding: '20px', fontSize: 14, color: 'var(--muted)' }}>Šią dieną pasirinkto stiliaus treniruočių nėra.</p>
+                <p style={{ margin: 0, padding: '20px', fontSize: 14, color: 'var(--muted)' }}>Šią dieną treniruočių nėra.</p>
               ) : d.classes.map((cls, i) => (
                 <div
                   key={i}
@@ -122,11 +122,14 @@ export default function Timetable() {
       </div>
 
       <style>{`
-        .tt-week { display: grid; grid-template-columns: repeat(${SCHEDULE_DAYS.length}, 1fr); gap: 16px; align-items: start; }
-        .day-tab[aria-pressed="true"] { color: #080808; border-color: ${PINK}; }
-        .day-tab[aria-pressed="true"]::before { transform: scaleX(1); }
+        /* All four tabs share one row; on phones they fold into two columns. */
+        .tt-tabs { display: grid; grid-template-columns: repeat(${TIMETABLE_TABS.length}, 1fr); gap: 4px; margin-bottom: 32px; }
+        .tt-week { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: start; }
         @media (max-width: 1024px) { .tt-week { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 640px) { .tt-week { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) {
+          .tt-week { grid-template-columns: 1fr; }
+          .tt-tabs { grid-template-columns: repeat(2, 1fr); }
+        }
       `}</style>
     </section>
   )

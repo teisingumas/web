@@ -93,6 +93,15 @@ export const SCHEDULE_DAYS = [
   },
 ]
 
+// Tabs on the timetable page. Hall timetables are filled in as each one is confirmed;
+// a tab with no days shows a "coming soon" note.
+export const TIMETABLE_TABS: { id: string; label: string; days: typeof SCHEDULE_DAYS }[] = [
+  { id: 'renkamos', label: 'Renkamos grupės', days: SCHEDULE_DAYS },
+  { id: 'didzioji', label: 'Didžioji salė Kaunas', days: [] },
+  { id: 'loft', label: 'LOFT salė Kaunas', days: [] },
+  { id: 'mazoji', label: 'Mažoji salė Kaunas', days: [] },
+]
+
 export const PLANS = [
   {
     name: 'Standart',
