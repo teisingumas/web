@@ -9,6 +9,7 @@ import Odometer from './Odometer'
 import { CONTACT, DANCE_STYLES, SCHEDULE_DAYS } from './data'
 import Registration from './Registration'
 import Pricing from './Pricing'
+import Timetable from './Timetable'
 import ThemeSwitch from './ThemeSwitch'
 
 const TRAINERS = [
@@ -87,22 +88,35 @@ const hoverPink = {
   onMouseLeave: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#ccc' },
 }
 
-const isRegistration = () => /^#registracija(-|$)/.test(window.location.hash)
+type Page = 'home' | 'registracija' | 'tvarkarastis'
+
+const pageFromHash = (): Page => {
+  const h = window.location.hash
+  if (/^#registracija(-|$)/.test(h)) return 'registracija'
+  if (h === '#tvarkarastis-pilnas') return 'tvarkarastis'
+  return 'home'
+}
+
+const PAGE_TITLES: Record<Page, string> = {
+  home: 'Me Gusta — Hip hop šokių studija Kaune',
+  registracija: 'Registracija — Me Gusta',
+  tvarkarastis: 'Tvarkaraštis — Me Gusta',
+}
 
 export default function App() {
-  // Two pages in one app: the home page and #registracija (hash routing works
-  // on any static host and in the preview). Section links leave registration.
-  const [page, setPage] = useState<'home' | 'registracija'>(() => (isRegistration() ? 'registracija' : 'home'))
+  // Inner pages live under their own hashes (#registracija, #tvarkarastis-pilnas);
+  // hash routing works on any static host and in the preview. Section links lead home.
+  const [page, setPage] = useState<Page>(pageFromHash)
 
   useEffect(() => {
-    const onHash = () => setPage(isRegistration() ? 'registracija' : 'home')
+    const onHash = () => setPage(pageFromHash())
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
   useEffect(() => {
-    document.title = page === 'registracija' ? 'Registracija — Me Gusta' : 'Me Gusta — Hip hop šokių studija Kaune'
-    if (page === 'registracija') {
+    document.title = PAGE_TITLES[page]
+    if (page !== 'home') {
       window.scrollTo(0, 0)
       return
     }
@@ -207,7 +221,7 @@ export default function App() {
         </div>
       </nav>
 
-      {page === 'registracija' ? <Registration /> : (<>
+      {page === 'registracija' ? <Registration /> : page === 'tvarkarastis' ? <Timetable /> : (<>
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}
@@ -520,8 +534,7 @@ export default function App() {
 
           <p style={{ marginTop: 20, fontSize: 13, color: 'var(--c-9a9a9a)', fontWeight: 400 }}>
             * Treniruotės vyksta Me Gusta salėje, Savanorių pr. 271, Kaunas. Pilną tvarkaraštį galite rasti paspaudę{' '}
-            {/* TODO: link to the timetable page once it exists */}
-            <a href="#" style={{ color: '#FFB3C6', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
+            <a href="#tvarkarastis-pilnas" style={{ color: '#FFB3C6', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
           </p>
         </div>
       </section>
