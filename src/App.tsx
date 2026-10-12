@@ -103,16 +103,16 @@ const PLANS = [
   {
     name: 'Standart',
     price: '55',
-    desc: '1 užsiėmimas per savaitę',
-    features: ['4–5 treniruotės / mėn', '1 pasirinktas stilius', 'Persirengimo kambarys', 'Grupinės treniruotės', 'Prieiga prie vaizdo medžiagos'],
+    desc: '1 šokių stilius',
+    features: ['1 šokių stilius', '8 šokių pamokos per mėnesį', 'Studijos renginiai', 'Konkursai, čempionatai', 'Galimybė papildomai treniruotis'],
     highlight: false,
     cta: 'Rinktis Standart',
   },
   {
     name: 'Intensive',
     price: '70',
-    desc: '2 užsiėmimai per savaitę',
-    features: ['8–10 treniruotių / mėn', '2 pasirenkami stiliai', 'Persirengimo kambarys', 'Grupinės treniruotės', 'Vaizdo medžiagos archyvas', 'Pirmenybinė registracija į konkursus'],
+    desc: '2 šokių stiliai',
+    features: ['2 šokių stiliai', '16 šokių pamokų per mėnesį', 'Studijos renginiai', 'Konkursai, čempionatai', 'Galimybė papildomai treniruotis'],
     highlight: true,
     cta: 'Rinktis Intensive',
   },
@@ -672,8 +672,8 @@ export default function App() {
             ))}
           </div>
 
-          <p style={{ textAlign: 'center', marginTop: 32, fontSize: 13, color: '#444' }}>
-            Visos kainos su PVM. Pirmoji bandomoji treniruotė — nemokamai.
+          <p style={{ textAlign: 'center', maxWidth: 800, marginTop: 32, fontSize: 15, fontWeight: 700, color: '#f0f0f0', letterSpacing: 0.3 }}>
+            Pirmoji treniruotė nemokama.
           </p>
         </div>
       </section>
