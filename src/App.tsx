@@ -284,7 +284,7 @@ export default function App() {
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}
-        <div data-edit-photo className="hero-photo" style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(heroImage) }} aria-hidden="true" />
+        <div data-edit-photo className="hero-photo hero-photo-in" style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(heroImage) }} aria-hidden="true" />
         {/* gradient overlay */}
         <div className="hero-overlay" style={{
           position: 'absolute', inset: 0,
@@ -295,7 +295,7 @@ export default function App() {
 
         <div className="hero-content" style={{ position: 'relative', paddingTop: 144, paddingBottom: 80, width: '100%' }}>
           <div style={{ maxWidth: 720 }}>
-            <p data-edit="Hero: Kaunas · Nuo 2006" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: '#FFB3C6', marginBottom: 24, textTransform: 'uppercase' }}>
+            <p data-edit="Hero: Kaunas · Nuo 2006" className="hero-in hero-in-1" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: '#FFB3C6', marginBottom: 24, textTransform: 'uppercase' }}>
               ◆&nbsp;&nbsp;Kaunas · Nuo 2006
             </p>
             <h1 data-edit="Hero: antraštė" style={{
@@ -305,14 +305,14 @@ export default function App() {
               color: '#f0f0f0', margin: '0 0 16px',
               letterSpacing: '-0.01em',
             }}>
-              TAVO<br />
-              <span style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}>JUDESIO</span><br />
-              NAMAI
+              <span className="hero-in hero-in-2">TAVO</span><br />
+              <span className="hero-in hero-in-3" style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}>JUDESIO</span><br />
+              <span className="hero-in hero-in-4">NAMAI</span>
             </h1>
-            <p data-edit="Hero: aprašymas" style={{ fontSize: 18, color: '#aaa', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
+            <p data-edit="Hero: aprašymas" className="hero-in hero-in-5" style={{ fontSize: 18, color: '#aaa', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
               Profesionali hip hop šokių studija Kaune. Čia gatvių ritmai virsta scenos menu — nuo pirmų žingsnių iki čempionų podiumo.
             </p>
-            <div data-edit="Hero: mygtukai" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            <div data-edit="Hero: mygtukai" className="hero-in hero-in-6" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <a
                 href="#stiliai"
                 style={{
@@ -346,7 +346,7 @@ export default function App() {
         </div>
 
         {/* scroll hint */}
-        <div data-edit="Slinkti" style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+        <div data-edit="Slinkti" className="hero-fade-in" style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 11, letterSpacing: 3, color: '#555', textTransform: 'uppercase' }}>Slinkti</span>
           <div style={{ width: 1, height: 48, backgroundColor: '#333', position: 'relative', overflow: 'hidden' }}>
             <div style={{
@@ -857,6 +857,33 @@ export default function App() {
         }
         @media (max-width: 640px) {
           .nav-socials { display: none !important; }
+        }
+        /* Hero load-in: photo settles, then text rises in reading order.
+           Ease-out only, transform + opacity only; off for reduced motion. */
+        @keyframes heroPhotoIn {
+          from { opacity: 0; transform: scale(1.06); }
+          to { opacity: 1; transform: none; }
+        }
+        @keyframes heroIn {
+          from { opacity: 0; transform: translateY(28px); }
+          to { opacity: 1; transform: none; }
+        }
+        @keyframes heroFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .hero-photo-in { animation: heroPhotoIn 1400ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+        .hero-in { display: inline-block; animation: heroIn 900ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+        p.hero-in, div.hero-in { display: block; }
+        .hero-in-1 { animation-delay: 300ms; }
+        .hero-in-2 { animation-delay: 420ms; }
+        .hero-in-3 { animation-delay: 540ms; }
+        .hero-in-4 { animation-delay: 660ms; }
+        .hero-in-5 { animation-delay: 820ms; }
+        .hero-in-6 { animation-delay: 960ms; }
+        .hero-fade-in { animation: heroFadeIn 800ms ease-out 1300ms both; }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-photo-in, .hero-in, .hero-fade-in { animation: none; }
         }
         @keyframes scrollLine {
           0% { top: -40%; }
