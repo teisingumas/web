@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import logo from './assets/logo-megusta.webp'
+import heroImage from './assets/hero.webp'
 
 const DANCE_STYLES = [
   {
@@ -177,11 +179,9 @@ export default function App() {
         backdropFilter: 'blur(16px)',
         backgroundColor: 'rgba(8,8,8,0.88)',
       }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
-          <a href="#hero" style={{ textDecoration: 'none' }}>
-            <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 26, letterSpacing: 3, color: '#FFB3C6', textTransform: 'uppercase' }}>
-              MOVE<span style={{ color: '#f0f0f0' }}>STUDIO</span>
-            </span>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 76 }}>
+          <a href="#hero" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
+            <img src={logo} alt="Me Gusta" width={75} height={48} style={{ height: 48, width: 'auto', display: 'block' }} />
           </a>
           <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links">
             {['Stiliai', 'Tvarkaraštis', 'Kainos', 'Treneriai'].map((item) => (
@@ -216,14 +216,13 @@ export default function App() {
         {/* bg image */}
         <div style={{
           position: 'absolute', inset: 0,
-          backgroundImage: 'url(https://images.unsplash.com/photo-1511750931603-12cb2c8d28cc?w=1400&h=900&fit=crop&auto=format)',
-          backgroundSize: 'cover', backgroundPosition: 'center 30%',
-          filter: 'brightness(0.22)',
+          backgroundImage: `url(${heroImage})`,
+          backgroundSize: 'cover', backgroundPosition: '75% center',
         }} aria-hidden="true" />
         {/* gradient overlay */}
-        <div style={{
+        <div className="hero-overlay" style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(100deg, #080808 42%, transparent 100%)',
+          background: 'linear-gradient(100deg, #080808 30%, rgba(8,8,8,0.6) 50%, transparent 75%)',
         }} aria-hidden="true" />
         {/* accent line */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: 6, height: '100%', backgroundColor: '#FFB3C6' }} aria-hidden="true" />
@@ -231,7 +230,7 @@ export default function App() {
         <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '120px 24px 80px', width: '100%' }}>
           <div style={{ maxWidth: 720 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: '#FFB3C6', marginBottom: 24, textTransform: 'uppercase' }}>
-              ◆&nbsp;&nbsp;Kaunas · Est. 2000
+              ◆&nbsp;&nbsp;Kaunas · Nuo 2006
             </p>
             <h1 style={{
               fontFamily: "'Barlow Condensed', sans-serif",
@@ -240,12 +239,12 @@ export default function App() {
               color: '#f0f0f0', margin: '0 0 16px',
               letterSpacing: '-0.01em',
             }}>
-              ŠOKIŲ<br /><br />
-              <span style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}>KULTŪRA</span><br />
-              GIMSTA ČIA
+              TAVO<br /><br />
+              <span style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}>JUDESIO</span><br />
+              NAMAI
             </h1>
             <p style={{ fontSize: 18, color: '#aaa', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
-              Profesionali hip hop šokių studija Vilniuje. Čia gatvių ritmai virsta scenos menu — nuo pirmų žingsnių iki čempionų podiumo.
+              Profesionali hip hop šokių studija Kaune. Čia gatvių ritmai virsta scenos menu — nuo pirmų žingsnių iki čempionų podiumo.
             </p>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <a
@@ -731,7 +730,7 @@ export default function App() {
                 MOVE<span style={{ color: '#f0f0f0' }}>STUDIO</span>
               </span>
               <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, maxWidth: 260 }}>
-                Profesionali hip hop šokių studija Vilniuje. 20 metų patirtis, 500+ laimėjimų, 4 šokių stiliai.
+                Profesionali hip hop šokių studija Kaune. 20 metų patirtis, 500+ laimėjimų, 4 šokių stiliai.
               </p>
             </div>
             <div>
@@ -772,6 +771,11 @@ export default function App() {
         }
         @media (max-width: 1024px) {
           .nav-links { display: none !important; }
+        }
+        @media (max-width: 900px) {
+          .hero-overlay {
+            background: linear-gradient(180deg, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.8) 60%, rgba(8,8,8,0.9) 100%) !important;
+          }
         }
         @media (max-width: 900px) {
           section > div > div[style*="grid-template-columns: 1fr 1fr"] {
