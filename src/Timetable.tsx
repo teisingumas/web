@@ -25,9 +25,28 @@ export default function Timetable() {
           <h1 style={{ fontFamily: display, fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
             Tvarkaraštis
           </h1>
-          <p style={{ marginTop: 20, fontSize: 16, color: 'var(--text-2)', maxWidth: 560, lineHeight: 1.6, fontWeight: 300 }}>
-            Visa savaitės treniruočių programa vienoje vietoje. Pasirinkite stilių, kad matytumėte tik jo grupes.
-          </p>
+          <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
+            <div>
+              <p style={{ margin: 0, fontSize: 14, color: 'var(--text-2)', letterSpacing: 0.5 }}>
+                Galioja nuo: <strong style={{ color: 'var(--text)', fontWeight: 600 }}>2026.09.02</strong>
+              </p>
+              <p style={{ margin: '6px 0 0', fontFamily: display, fontWeight: 800, fontSize: 24, letterSpacing: 1.5, textTransform: 'uppercase', color: PINK }}>
+                Me Gusta 2026/2027 sezonas
+              </p>
+            </div>
+            <a
+              href="#registracija"
+              style={{
+                backgroundColor: PINK, color: '#080808', textDecoration: 'none',
+                padding: '14px 32px', fontWeight: 800, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--btn-hover)' }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = PINK }}
+            >
+              Registracija
+            </a>
+          </div>
         </div>
 
         <div role="group" aria-label="Filtruoti pagal stilių" style={{ display: 'flex', gap: 4, marginBottom: 32, flexWrap: 'wrap' }}>
