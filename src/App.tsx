@@ -284,8 +284,10 @@ export default function App() {
         {/* bg image */}
         <div style={{
           position: 'absolute', inset: 0,
-          backgroundImage: `url(${heroImage})`,
-          backgroundSize: 'cover', backgroundPosition: '75% center',
+          // ~10% zoom-out from cover: image height 90% of the hero, anchored to the floor.
+          // The photo's edges are near-black; the top fade hides the seam into #020202.
+          backgroundImage: `linear-gradient(180deg, #020202 10%, rgba(2,2,2,0) 30%), url(${heroImage})`,
+          backgroundSize: '100% 100%, auto 90%', backgroundPosition: '0 0, 60% bottom', backgroundRepeat: 'no-repeat', backgroundColor: '#020202',
         }} aria-hidden="true" />
         {/* gradient overlay */}
         <div className="hero-overlay" style={{
@@ -295,7 +297,7 @@ export default function App() {
         {/* accent line */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: 6, height: '100%', backgroundColor: '#FFB3C6' }} aria-hidden="true" />
 
-        <div className="wide-container" style={{ position: 'relative', paddingTop: 144, paddingBottom: 80, width: '100%' }}>
+        <div className="hero-content" style={{ position: 'relative', paddingTop: 144, paddingBottom: 176, width: '100%' }}>
           <div style={{ maxWidth: 720 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: '#FFB3C6', marginBottom: 24, textTransform: 'uppercase' }}>
               ◆&nbsp;&nbsp;Kaunas · Nuo 2006
@@ -836,6 +838,15 @@ export default function App() {
         .wide-container {
           padding-left: max(24px, min(calc((100% - 1280px) / 2 + 24px), 8.3333%));
           padding-right: max(24px, min(calc((100% - 1280px) / 2 + 24px), 8.3333%));
+        }
+        /* Hero text: 10% of the width, which centers the 480px text block in the
+           dark area left of the dancers (~45% of the width at 1920px). */
+        .hero-content {
+          padding-left: max(24px, min(calc((100% - 1280px) / 2 + 24px), 10%));
+          padding-right: max(24px, min(calc((100% - 1280px) / 2 + 24px), 10%));
+        }
+        @media (max-width: 900px) {
+          .hero-content { padding-bottom: 96px !important; }
         }
         @media (max-width: 640px) {
           .nav-socials { display: none !important; }
