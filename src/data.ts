@@ -93,13 +93,73 @@ export const SCHEDULE_DAYS = [
   },
 ]
 
-// Tabs on the timetable page. Hall timetables are filled in as each one is confirmed;
-// a tab with no days shows a "coming soon" note.
-export const TIMETABLE_TABS: { id: string; label: string; days: typeof SCHEDULE_DAYS }[] = [
-  { id: 'renkamos', label: 'Renkamos grupės', days: SCHEDULE_DAYS },
-  { id: 'didzioji', label: 'Didžioji salė Kaunas', days: [] },
-  { id: 'loft', label: 'LOFT salė Kaunas', days: [] },
-  { id: 'mazoji', label: 'Mažoji salė Kaunas', days: [] },
+// Timetable page: one tab per hall. A slot is a group's weekly class (or free
+// hall time); a tab with no days shows a "coming soon" note.
+export type SlotStatus = 'Renkama grupė' | 'Uždara grupė' | 'Laisvas laikas'
+export type Slot = { status: SlotStatus; start: string; end: string; group: string; trainer?: string }
+export type TimetableDay = { full: string; slots: Slot[] }
+
+const addHour = (time: string) => `${String(Number(time.slice(0, 2)) + 1).padStart(2, '0')}${time.slice(2)}`
+
+// Groups open for sign-up: the home page programme (all 60 min classes).
+const RECRUITING: TimetableDay[] = SCHEDULE_DAYS.map(d => ({
+  full: d.full,
+  slots: d.classes.map(c => ({ status: 'Renkama grupė', start: c.time, end: addHour(c.time), group: `${c.style} ${c.age}` })),
+}))
+
+const free = (start: string, end: string): Slot => ({ status: 'Laisvas laikas', start, end, group: 'Reikalinga rezervacija' })
+
+const BIG_HALL: TimetableDay[] = [
+  {
+    full: 'Pirmadienis',
+    slots: [
+      free('16:00', '17:00'),
+      { status: 'Renkama grupė', start: '17:00', end: '18:00', group: 'Gatvės šokiai 12–15 m.', trainer: 'Rytis Survila' },
+      { status: 'Renkama grupė', start: '18:00', end: '19:00', group: 'Pop Dance 8–11 m.', trainer: 'Aušrė Savonytė' },
+      { status: 'Uždara grupė', start: '19:00', end: '20:00', group: 'Pop Stars', trainer: 'Aušrė Savonytė' },
+    ],
+  },
+  {
+    full: 'Antradienis',
+    slots: [
+      { status: 'Uždara grupė', start: '17:00', end: '18:00', group: 'Me Gusta Juniors Team', trainer: 'Rytis Survila' },
+      { status: 'Uždara grupė', start: '18:00', end: '19:00', group: 'Me Gusta Children', trainer: 'Rytis Survila' },
+      { status: 'Renkama grupė', start: '19:00', end: '20:00', group: 'Lady Class nuo 16 m.', trainer: 'Aušrė Savonytė' },
+      { status: 'Uždara grupė', start: '20:00', end: '21:00', group: 'Gatvės šokiai nuo 19 m.', trainer: 'Greta Pukenytė' },
+    ],
+  },
+  {
+    full: 'Trečiadienis',
+    slots: [
+      free('16:00', '17:00'),
+      { status: 'Renkama grupė', start: '17:00', end: '18:00', group: 'Gatvės šokiai 12–15 m.', trainer: 'Rytis Survila' },
+      { status: 'Renkama grupė', start: '18:00', end: '19:00', group: 'Pop Dance 8–11 m.', trainer: 'Aušrė Savonytė' },
+      { status: 'Uždara grupė', start: '19:00', end: '20:00', group: 'Pop Stars', trainer: 'Aušrė Savonytė' },
+    ],
+  },
+  {
+    full: 'Ketvirtadienis',
+    slots: [
+      { status: 'Uždara grupė', start: '17:00', end: '18:00', group: 'Me Gusta Juniors Team', trainer: 'Rytis Survila' },
+      { status: 'Uždara grupė', start: '18:00', end: '19:00', group: 'Children 2', trainer: 'Rytis Survila' },
+      { status: 'Renkama grupė', start: '19:00', end: '20:00', group: 'Lady Class nuo 16 m.', trainer: 'Aušrė Savonytė' },
+      { status: 'Uždara grupė', start: '20:00', end: '21:00', group: 'Gatvės šokiai nuo 19 m.', trainer: 'Greta Pukenytė' },
+    ],
+  },
+  {
+    full: 'Penktadienis',
+    slots: [
+      { status: 'Uždara grupė', start: '17:00', end: '18:00', group: 'Me Gusta Juniors Team', trainer: 'Rytis Survila' },
+      { status: 'Uždara grupė', start: '18:00', end: '19:00', group: 'Me Gusta Children', trainer: 'Rytis Survila' },
+    ],
+  },
+]
+
+export const TIMETABLE_TABS: { id: string; label: string; days: TimetableDay[] }[] = [
+  { id: 'renkamos', label: 'Renkamos grupės', days: RECRUITING },
+  { id: 'didzioji', label: 'Didžioji salė', days: BIG_HALL },
+  { id: 'loft', label: 'LOFT salė', days: [] },
+  { id: 'mazoji', label: 'Mažoji salė', days: [] },
 ]
 
 export const PLANS = [

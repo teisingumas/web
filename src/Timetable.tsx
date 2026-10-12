@@ -1,12 +1,32 @@
-import { useState } from 'react'
-import { TIMETABLE_TABS } from './data'
+import { useEffect, useState } from 'react'
+import type React from 'react'
+import { TIMETABLE_TABS, type SlotStatus } from './data'
 
 const PINK = '#FFB3C6'
 const display = "'Barlow Condensed', sans-serif"
 
+const STATUS_CLASS: Record<SlotStatus, string> = {
+  'Renkama grupė': 'open',
+  'Uždara grupė': 'closed',
+  'Laisvas laikas': 'free',
+}
+
+// "17:00" with the same blinking colon as the home page timetable.
+function Clock({ time }: { time: string }) {
+  const [h, m] = time.split(':')
+  return <>{h}<span className="time-colon">:</span>{m}</>
+}
+
 export default function Timetable() {
   const [tabId, setTabId] = useState(TIMETABLE_TABS[0].id)
   const days = TIMETABLE_TABS.find(t => t.id === tabId)!.days
+
+  // Times mounted on a tab switch would start their own blink cycle; keep all colons in step.
+  useEffect(() => {
+    document.getAnimations().forEach(a => {
+      if ((a as CSSAnimation).animationName === 'colonBlink') a.startTime = 0
+    })
+  }, [tabId])
 
   return (
     <section id="tvarkarastis-pilnas" style={{ padding: '168px 0 120px', backgroundColor: 'var(--bg)' }}>
@@ -64,38 +84,34 @@ export default function Timetable() {
           </p>
         )}
 
-        <div className="tt-week">
+        <div className="tt-week" style={{ '--tt-cols': Math.max(days.length, 1) } as React.CSSProperties}>
           {days.map(d => (
-            <div key={d.day} style={{ border: '1px solid var(--line)', display: 'flex', flexDirection: 'column' }}>
+            <div key={d.full} style={{ border: '1px solid var(--line)', display: 'flex', flexDirection: 'column' }}>
               <h2 style={{
                 margin: 0, padding: '16px 20px', backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--line)',
                 fontFamily: display, fontWeight: 800, fontSize: 20, letterSpacing: 1.5, textTransform: 'uppercase', color: 'var(--text)',
               }}>
                 {d.full}
               </h2>
-              {d.classes.length === 0 ? (
+              {d.slots.length === 0 ? (
                 <p style={{ margin: 0, padding: '20px', fontSize: 14, color: 'var(--muted)' }}>Šią dieną treniruočių nėra.</p>
-              ) : d.classes.map((cls, i) => (
+              ) : d.slots.map((slot, i) => (
                 <div
                   key={i}
                   style={{
                     padding: '16px 20px',
-                    borderBottom: i < d.classes.length - 1 ? '1px solid var(--line-soft)' : 'none',
+                    borderBottom: i < d.slots.length - 1 ? '1px solid var(--line-soft)' : 'none',
+                    // every second row slightly lighter for easier reading down the day
                     backgroundColor: i % 2 === 1 ? 'var(--zebra)' : 'transparent',
-                    display: 'grid', gridTemplateColumns: '64px 1fr', columnGap: 12, rowGap: 6, alignItems: 'center',
+                    display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6,
                   }}
                 >
-                  <span style={{ fontFamily: display, fontWeight: 800, fontSize: 22, color: PINK, letterSpacing: 1 }}>
-                    {cls.time.split(':')[0]}<span className="time-colon">:</span>{cls.time.split(':')[1]}
+                  <span className={`tt-status tt-status--${STATUS_CLASS[slot.status]}`}>{slot.status}</span>
+                  <span style={{ fontFamily: display, fontWeight: 800, fontSize: 22, color: PINK, letterSpacing: 1, marginTop: 4 }}>
+                    <Clock time={slot.start} />&nbsp;–&nbsp;<Clock time={slot.end} />
                   </span>
-                  <span style={{ fontWeight: 600, fontSize: 16, color: 'var(--text)' }}>{cls.style}</span>
-                  <span style={{ fontSize: 13, color: 'var(--text-2)' }}>{cls.duration}</span>
-                  <span style={{
-                    fontSize: 11, letterSpacing: 1.5, fontWeight: 600, color: cls.color, textTransform: 'uppercase',
-                    padding: '8px 6.5px 8px 8px', lineHeight: 1, border: `1px solid ${cls.color}66`, justifySelf: 'start',
-                  }}>
-                    {cls.age}
-                  </span>
+                  <span style={{ fontWeight: 600, fontSize: 15, color: 'var(--text)', lineHeight: 1.35 }}>{slot.group}</span>
+                  {slot.trainer && <span style={{ fontSize: 13, color: 'var(--text-2)' }}>{slot.trainer}</span>}
                 </div>
               ))}
             </div>
@@ -124,7 +140,15 @@ export default function Timetable() {
       <style>{`
         /* All four tabs share one row; on phones they fold into two columns. */
         .tt-tabs { display: grid; grid-template-columns: repeat(${TIMETABLE_TABS.length}, 1fr); gap: 4px; margin-bottom: 32px; }
-        .tt-week { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: start; }
+        .tt-week { display: grid; grid-template-columns: repeat(var(--tt-cols), 1fr); gap: 16px; align-items: start; }
+        /* Slot status: open groups in pink, closed ones muted, free hall time dashed. */
+        .tt-status {
+          font-size: 11px; letter-spacing: 1.5px; font-weight: 600; text-transform: uppercase; line-height: 1;
+          padding: 7px 6.5px 7px 8px; border: 1px solid;
+        }
+        .tt-status--open { color: ${PINK}; border-color: ${PINK}66; }
+        .tt-status--closed { color: var(--muted); border-color: var(--line-strong); }
+        .tt-status--free { color: var(--text-2); border-style: dashed; border-color: var(--line-strong); }
         @media (max-width: 1024px) { .tt-week { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) {
           .tt-week { grid-template-columns: 1fr; }
