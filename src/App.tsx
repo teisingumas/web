@@ -5,118 +5,8 @@ import heroImage from './assets/hero.webp'
 import { heroPhotoStyle } from './heroPhoto'
 import LayoutEditor from './editor/LayoutEditor'
 import Odometer from './Odometer'
-import styleGatves from './assets/styles/gatves.webp'
-import stylePop from './assets/styles/pop.webp'
-import styleLady from './assets/styles/lady.webp'
-import styleBreikas from './assets/styles/breikas.webp'
-
-const DANCE_STYLES = [
-  {
-    id: 'gatves',
-    name: 'Gatvės šokiai',
-    tagline: 'Born in the streets, perfected on stage',
-    description:
-      'Autentiški gatvės šokiai — nuo popping ir locking iki krump ir freestyle. Ugdome individualų stilių ir išraišką kiekviename judėjime. Treniruotės vyksta dinamiškoje aplinkoje, kurioje kiekvienas randa savo balsą.',
-    image: styleGatves,
-    color: '#FFB3C6',
-    levels: ['4–6 m.', '7–11 m.', '12–15 m.', 'Nuo 16 m.'],
-  },
-  {
-    id: 'pop',
-    name: 'Pop Dance',
-    tagline: 'Energy meets precision',
-    description:
-      'Komerciniai ir sceniniai šokiai — ryškūs, dinamiški, su chartiška energija. Tobulai tinka scenai, muzikos vaizdo klipams ir konkursams. Šie šokiai jungia stilių ir techniką į vieną sprogstantį mišinį.',
-    image: stylePop,
-    color: '#FFB3C6',
-    levels: ['7–11 m.', '12–15 m.', 'Nuo 16 m.'],
-  },
-  {
-    id: 'lady',
-    name: 'Lady Class',
-    tagline: 'Power. Grace. Confidence.',
-    description:
-      'Moteriška plastika, heels šokiai ir sexy style. Atskleidžiame vidinę stiprybę ir išreiškiame ją per judėjimą. Lady Class — tai ne tik šokiai, tai savęs atradimas ir pasitikėjimo savimi ugdymas.',
-    image: styleLady,
-    color: '#FFB3C6',
-    levels: ['12–15 m.', 'Nuo 16 m.', '4–99 m.'],
-  },
-  {
-    id: 'breikas',
-    name: 'Breikas',
-    tagline: 'Defy gravity. Define limits.',
-    description:
-      'Breakdance — nuo toprocko ir footwork iki freezes ir power moves. Kietumas, disciplina ir neįtikėtinas kūno valdymas. Mūsų treneriai — tarptautiniai čempionai, pasiruošę perduoti visas paslaptis.',
-    image: styleBreikas,
-    color: '#FFB3C6',
-    levels: ['7–11 m.', '12–15 m.', 'Nuo 16 m.'],
-  },
-]
-
-// Weekly timetable: Mon & Wed share one programme, Tue & Thu the other.
-const SCHEDULE_DAYS = [
-  {
-    day: 'Pirmad.',
-    full: 'Pirmadienis',
-    classes: [
-      { time: '17:00', duration: '60 min', style: 'Breikas', age: 'Nuo 7 m.', color: '#FFB3C6' },
-      { time: '17:00', duration: '60 min', style: 'Gatvės šokiai', age: '12–15 m.', color: '#FFB3C6' },
-      { time: '17:30', duration: '60 min', style: 'Gatvės šokiai', age: '4–5 m.', color: '#FFB3C6' },
-      { time: '18:00', duration: '60 min', style: 'Gatvės šokiai', age: '8–11 m.', color: '#FFB3C6' },
-      { time: '18:00', duration: '60 min', style: 'Pop Dance', age: '8–11 m.', color: '#FFB3C6' },
-      { time: '18:30', duration: '60 min', style: 'Gatvės šokiai', age: '6–7 m.', color: '#FFB3C6' },
-    ],
-  },
-  {
-    day: 'Antrad.',
-    full: 'Antradienis',
-    classes: [
-      { time: '17:00', duration: '60 min', style: 'Pop Dance', age: '12–15 m.', color: '#FFB3C6' },
-      { time: '19:00', duration: '60 min', style: 'Lady Class', age: 'Nuo 16 m.', color: '#FFB3C6' },
-      { time: '19:00', duration: '60 min', style: 'Gatvės šokiai', age: 'Nuo 18 m.', color: '#FFB3C6' },
-    ],
-  },
-  {
-    day: 'Trečiad.',
-    full: 'Trečiadienis',
-    classes: [
-      { time: '17:00', duration: '60 min', style: 'Breikas', age: 'Nuo 7 m.', color: '#FFB3C6' },
-      { time: '17:00', duration: '60 min', style: 'Gatvės šokiai', age: '12–15 m.', color: '#FFB3C6' },
-      { time: '17:30', duration: '60 min', style: 'Gatvės šokiai', age: '4–5 m.', color: '#FFB3C6' },
-      { time: '18:00', duration: '60 min', style: 'Gatvės šokiai', age: '8–11 m.', color: '#FFB3C6' },
-      { time: '18:00', duration: '60 min', style: 'Pop Dance', age: '8–11 m.', color: '#FFB3C6' },
-      { time: '18:30', duration: '60 min', style: 'Gatvės šokiai', age: '6–7 m.', color: '#FFB3C6' },
-    ],
-  },
-  {
-    day: 'Ketvirt.',
-    full: 'Ketvirtadienis',
-    classes: [
-      { time: '17:00', duration: '60 min', style: 'Pop Dance', age: '12–15 m.', color: '#FFB3C6' },
-      { time: '19:00', duration: '60 min', style: 'Lady Class', age: 'Nuo 16 m.', color: '#FFB3C6' },
-      { time: '19:00', duration: '60 min', style: 'Gatvės šokiai', age: 'Nuo 18 m.', color: '#FFB3C6' },
-    ],
-  },
-]
-
-const PLANS = [
-  {
-    name: 'Standart',
-    price: '55',
-    desc: '1 šokių stilius',
-    features: ['1 šokių stilius', '8 šokių pamokos per mėnesį', 'Studijos renginiai', 'Konkursai, čempionatai', 'Galimybė papildomai treniruotis'],
-    highlight: false,
-    cta: 'Rinktis Standart',
-  },
-  {
-    name: 'Intensive',
-    price: '70',
-    desc: '2 šokių stiliai',
-    features: ['2 šokių stiliai', '16 šokių pamokų per mėnesį', 'Studijos renginiai', 'Konkursai, čempionatai', 'Galimybė papildomai treniruotis'],
-    highlight: true,
-    cta: 'Rinktis Intensive',
-  },
-]
+import { CONTACT, DANCE_STYLES, PLANS, SCHEDULE_DAYS } from './data'
+import Registration from './Registration'
 
 const TRAINERS = [
   {
@@ -152,12 +42,6 @@ const TRAINERS = [
     image: 'https://images.unsplash.com/photo-1769535348343-d01ebd9ed8e4?w=400&h=520&fit=crop&auto=format',
   },
 ]
-
-const CONTACT = {
-  email: 'labas@megusta.lt',
-  phone: '+370 606 44888',
-  phoneHref: 'tel:+37060644888',
-}
 
 // Social links will be provided later; '#' until then.
 const SOCIALS = [
@@ -200,7 +84,28 @@ const hoverPink = {
   onMouseLeave: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#ccc' },
 }
 
+const isRegistration = () => /^#registracija(-|$)/.test(window.location.hash)
+
 export default function App() {
+  // Two pages in one app: the home page and #registracija (hash routing works
+  // on any static host and in the preview). Section links leave registration.
+  const [page, setPage] = useState<'home' | 'registracija'>(() => (isRegistration() ? 'registracija' : 'home'))
+
+  useEffect(() => {
+    const onHash = () => setPage(isRegistration() ? 'registracija' : 'home')
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
+  useEffect(() => {
+    document.title = page === 'registracija' ? 'Registracija — Me Gusta' : 'Me Gusta — Hip hop šokių studija Kaune'
+    if (page === 'registracija') {
+      window.scrollTo(0, 0)
+      return
+    }
+    const target = window.location.hash && document.getElementById(window.location.hash.slice(1))
+    if (target) target.scrollIntoView()
+  }, [page])
   const [activeStyle, setActiveStyle] = useState(0)
   const [activeDay, setActiveDay] = useState(0)
 
@@ -221,7 +126,7 @@ export default function App() {
     }, { threshold: 0.35 })
     sections.forEach(el => io.observe(el))
     return () => io.disconnect()
-  }, [])
+  }, [page])
 
   // Rows mounted on a day switch would start their own blink cycle; pin every
   // colon animation to the same start so all times blink together.
@@ -281,7 +186,7 @@ export default function App() {
               </a>
             ))}
             <a
-              href="#kainos"
+              href="#registracija"
               style={{
                 backgroundColor: '#FFB3C6', color: '#080808', textDecoration: 'none',
                 padding: '8px 20px', fontWeight: 700, fontSize: 12, letterSpacing: 1.5,
@@ -296,6 +201,7 @@ export default function App() {
         </div>
       </nav>
 
+      {page === 'registracija' ? <Registration /> : (<>
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}
@@ -672,7 +578,7 @@ export default function App() {
                   </ul>
                 </div>
                 <a
-                  href="#kontaktai"
+                  href={`#registracija-${plan.name.toLowerCase()}`}
                   style={{
                     display: 'block', textAlign: 'center',
                     padding: '16px 24px',
@@ -790,7 +696,7 @@ export default function App() {
         </h2>
         <div className="reveal reveal-4">
         <a
-          href={`mailto:${CONTACT.email}`}
+          href="#registracija"
           style={{
             display: 'inline-block',
             backgroundColor: '#080808', color: '#FFB3C6',
@@ -805,6 +711,8 @@ export default function App() {
         </a>
         </div>
       </section>
+
+      </>)}
 
       {/* FOOTER */}
       <footer id="kontaktai" style={{ backgroundColor: '#050505', borderTop: '1px solid #1c1c1c', padding: '60px 24px 40px' }}>
