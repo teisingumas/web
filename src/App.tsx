@@ -140,7 +140,7 @@ export default function App() {
   const current = DANCE_STYLES[activeStyle]
 
   return (
-    <div style={{ backgroundColor: '#080808', color: '#f0f0f0', fontFamily: "'Outfit', sans-serif", overflowX: 'hidden' }}>
+    <div style={{ backgroundColor: '#080808', color: '#f0f0f0', fontFamily: "'Outfit', sans-serif", overflowX: 'clip' }}>
 
       {/* NAV */}
       <nav style={{
@@ -578,7 +578,7 @@ export default function App() {
                   </ul>
                 </div>
                 <a
-                  href={`#registracija-${plan.name.toLowerCase()}`}
+                  href="#registracija"
                   style={{
                     display: 'block', textAlign: 'center',
                     padding: '16px 24px',
