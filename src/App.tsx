@@ -284,7 +284,7 @@ export default function App() {
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}
-        <div data-edit-photo style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(heroImage) }} aria-hidden="true" />
+        <div data-edit-photo className="hero-photo" style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(heroImage) }} aria-hidden="true" />
         {/* gradient overlay */}
         <div className="hero-overlay" style={{
           position: 'absolute', inset: 0,
@@ -837,11 +837,23 @@ export default function App() {
           padding-left: max(24px, min(calc((100% - 1280px) / 2 + 24px), 8.3333%));
           padding-right: max(24px, min(calc((100% - 1280px) / 2 + 24px), 8.3333%));
         }
-        /* Hero text: 12% of the width (230px at 1920px), never further right
-           than the 1280px content edge. */
+        /* Hero text: 12% of the width, never further right than the 1280px
+           content edge. */
         .hero-content {
           padding-left: max(24px, min(calc((100% - 1280px) / 2 + 24px), 12%));
           padding-right: max(24px, min(calc((100% - 1280px) / 2 + 24px), 12%));
+        }
+        /* Placed with the layout editor at 1845px: +90px right (4.88% of the
+           width) and 40px up. Desktop only; phones keep the plain layout. */
+        @media (min-width: 1025px) {
+          .hero-content {
+            padding-left: calc(max(24px, min(calc((100% - 1280px) / 2 + 24px), 12%)) + 4.88%);
+            top: -40px;
+          }
+        }
+        /* Phones: keep the dancers in frame (desktop framing shows the dark left side). */
+        @media (max-width: 900px) {
+          .hero-photo { background-position: 0 0, 75% 50% !important; }
         }
         @media (max-width: 640px) {
           .nav-socials { display: none !important; }
