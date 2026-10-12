@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type React from 'react'
 import logo from './assets/logo-megusta.webp'
 import heroImage from './assets/hero.webp'
@@ -203,6 +203,14 @@ const hoverPink = {
 export default function App() {
   const [activeStyle, setActiveStyle] = useState(0)
   const [activeDay, setActiveDay] = useState(0)
+
+  // Rows mounted on a day switch would start their own blink cycle; pin every
+  // colon animation to the same start so all times blink together.
+  useEffect(() => {
+    document.getAnimations().forEach(a => {
+      if ((a as CSSAnimation).animationName === 'colonBlink') a.startTime = 0
+    })
+  }, [activeDay])
   const [menuOpen, setMenuOpen] = useState(false)
 
   const current = DANCE_STYLES[activeStyle]
@@ -516,7 +524,6 @@ export default function App() {
                 type="button"
                 role="tab"
                 aria-selected={activeDay === i}
-                aria-label={d.full}
                 className="day-tab"
                 onClick={() => setActiveDay(i)}
                 style={{
@@ -526,7 +533,7 @@ export default function App() {
                   cursor: 'pointer',
                 }}
               >
-                <span>{d.day}</span>
+                <span>{d.full}</span>
               </button>
             ))}
           </div>
@@ -566,8 +573,10 @@ export default function App() {
                 <span style={{
                   fontSize: 11, letterSpacing: 1.5, fontWeight: 600,
                   color: cls.color, textTransform: 'uppercase',
-                  padding: '4px 10px', border: `1px solid ${cls.color}66`,
-                  display: 'inline-block',
+                  // equal space on every side; the right side is 1.5px less to
+                  // offset the letter-spacing after the last character
+                  padding: '10px 8.5px 10px 10px', lineHeight: 1, border: `1px solid ${cls.color}66`,
+                  display: 'inline-block', justifySelf: 'start',
                 }}>
                   {cls.age}
                 </span>
