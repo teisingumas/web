@@ -1,6 +1,8 @@
 import { cloneElement, useEffect, useState } from 'react'
 import type React from 'react'
 import { CONTACT } from './data'
+import { FAQ } from './faq'
+import Pricing from './Pricing'
 
 // Where submissions are POSTed as JSON (e.g. a Formspree / Web3Forms / own API URL).
 // Until it is set, the form validates and shows the thank-you screen but sends nothing.
@@ -90,7 +92,27 @@ function validate(f: Form) {
 
 const fullPhone = (p: Phone) => (p.number ? `${COUNTRIES.find(c => c.code === p.country)!.dial} ${p.number}` : '')
 
+// Tabs live in the address hash so links (and the FAQ) can open a specific tab.
+const TABS = [
+  { id: 'registracija', label: 'Registracija', hash: '#registracija' },
+  { id: 'informacija', label: 'Informacija', hash: '#registracija-informacija' },
+  { id: 'kainos', label: 'Kainos', hash: '#registracija-kainos' },
+] as const
+type TabId = (typeof TABS)[number]['id']
+const tabFromHash = (): TabId => TABS.find(t => t.hash === window.location.hash)?.id ?? 'registracija'
+
 export default function Registration() {
+  const [tab, setTab] = useState<TabId>(tabFromHash)
+
+  useEffect(() => {
+    const onHash = () => {
+      setTab(tabFromHash())
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
   const [form, setForm] = useState<Form>(EMPTY)
   const [touched, setTouched] = useState(false)
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -135,16 +157,29 @@ export default function Registration() {
           <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: PINK, textTransform: 'uppercase', marginBottom: 12 }}>
             ◆&nbsp;&nbsp;Pradėk šokti šiandien
           </p>
-          <h1 style={{ fontFamily: display, fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
-            Registracija
-          </h1>
-          <p style={{ marginTop: 20, fontSize: 17, color: '#b0b0b0', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
-            Užpildykite formą, o mes el. paštu atsiųsime visą informaciją apie pirmąją, <span style={{ color: PINK, fontWeight: 500 }}>nemokamą</span> šokių pamoką.
-          </p>
+          <h1 className="sr-only">Registracija</h1>
+          <nav role="tablist" aria-label="Registracijos skiltys" className="page-tabs">
+            {TABS.map(t => (
+              <a key={t.id} href={t.hash} role="tab" aria-selected={tab === t.id} className="page-tab">
+                {t.label}
+              </a>
+            ))}
+          </nav>
+          {tab === 'registracija' && (
+            <p style={{ marginTop: 24, fontSize: 17, color: '#b0b0b0', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
+              Užpildykite formą, o mes el. paštu atsiųsime visą informaciją apie pirmąją, <span style={{ color: PINK, fontWeight: 500 }}>nemokamą</span> šokių pamoką.
+            </p>
+          )}
+          {tab === 'informacija' && (
+            <p style={{ marginTop: 24, fontSize: 17, color: '#b0b0b0', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
+              Dažniausiai užduodami klausimai. Neradote atsakymo? Parašykite <a href={`mailto:${CONTACT.email}`} className="faq-link">{CONTACT.email}</a> arba skambinkite <a href={CONTACT.phoneHref} className="faq-link">{CONTACT.phone}</a>.
+            </p>
+          )}
         </div>
 
+        {tab === 'kainos' ? <Pricing centered /> : (
         <div className="reg-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: 40, alignItems: 'start' }}>
-          {status === 'sent' ? (
+          {tab === 'informacija' ? <Faq /> : status === 'sent' ? (
             <div role="status" style={{ border: `1px solid ${PINK}`, padding: '48px 40px', backgroundColor: '#0d0d0d' }}>
               <p style={{ fontFamily: display, fontWeight: 900, fontSize: 40, textTransform: 'uppercase', color: PINK, margin: '0 0 16px' }}>Ačiū!</p>
               <p style={{ fontSize: 17, color: '#d0d0d0', lineHeight: 1.6, margin: '0 0 24px' }}>
@@ -271,9 +306,49 @@ export default function Registration() {
             </div>
           </aside>
         </div>
+        )}
       </div>
 
       <style>{`
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+        /* Page tabs: the active one is heading-sized with a pink underline; the rest are smaller and light up on hover. */
+        .page-tabs { display: flex; align-items: flex-end; flex-wrap: wrap; column-gap: 40px; row-gap: 8px; border-bottom: 1px solid #1f1f1f; }
+        .page-tab {
+          position: relative; padding-bottom: 12px; text-decoration: none;
+          font-family: ${display}; font-weight: 900; text-transform: uppercase; line-height: 0.95;
+          font-size: clamp(22px, 2.6vw, 36px); color: #6e6e6e;
+          transition: font-size 320ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .page-tab:hover, .page-tab:focus-visible { color: ${PINK}; }
+        .page-tab[aria-selected="true"] { font-size: clamp(48px, 6vw, 88px); color: #f0f0f0; }
+        .page-tab::after {
+          content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: ${PINK};
+          transform: scaleX(0); transform-origin: left center; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .page-tab[aria-selected="true"]::after { transform: scaleX(1); }
+        .page-tab:focus-visible { outline: none; }
+        .faq-link { color: ${PINK}; text-decoration: underline; text-underline-offset: 3px; }
+        .faq-link:hover { color: #fff; }
+        .faq-q {
+          width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+          background: none; border: none; cursor: pointer; text-align: left; padding: 22px 4px;
+          font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: #f0f0f0; line-height: 1.4;
+        }
+        .faq-q:hover { color: ${PINK}; }
+        .faq-q:focus-visible { outline: 2px solid ${PINK}; outline-offset: 2px; }
+        .faq-plus { position: relative; width: 18px; height: 18px; flex-shrink: 0; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .faq-plus::before, .faq-plus::after { content: ''; position: absolute; left: 50%; top: 50%; background: ${PINK}; transform: translate(-50%, -50%); }
+        .faq-plus::before { width: 18px; height: 2px; }
+        .faq-plus::after { width: 2px; height: 18px; }
+        .faq-q[aria-expanded="true"] .faq-plus { transform: rotate(45deg); }
+        .faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .faq-a[data-open="true"] { grid-template-rows: 1fr; }
+        .faq-a > div { overflow: hidden; }
+        .faq-a p { margin: 0 0 12px; font-size: 15px; color: #a8a8a8; line-height: 1.7; max-width: 720px; }
+        .faq-a > div > div { padding: 0 4px 14px; }
+        @media (prefers-reduced-motion: reduce) {
+          .page-tab, .page-tab::after, .faq-plus, .faq-a { transition: none; }
+        }
         .reg-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
         .reg-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         .reg-fieldset { border: none; margin: 0; padding: 0; min-width: 0; }
@@ -391,6 +466,44 @@ function PhoneField({ id, label, required, value, error, onChange }: {
         />
       </div>
       {error && <span id={`${id}-error`} style={{ color: ERROR, fontSize: 13, marginTop: 8 }}>{error}</span>}
+    </div>
+  )
+}
+
+function Faq() {
+  const [open, setOpen] = useState<Set<string>>(() => new Set())
+  const toggle = (id: string) => setOpen(prev => {
+    const next = new Set(prev)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    return next
+  })
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 56, minWidth: 0 }}>
+      {FAQ.map((group, gi) => (
+        <section key={group.title} aria-labelledby={`faq-g${gi}`}>
+          <h2 id={`faq-g${gi}`} style={{ fontFamily: display, fontWeight: 900, fontSize: 30, textTransform: 'uppercase', letterSpacing: 1, color: '#f0f0f0', margin: '0 0 8px' }}>
+            {group.title}
+          </h2>
+          <div style={{ borderTop: '1px solid #1a1a1a' }}>
+            {group.items.map((item, ii) => {
+              const id = `faq-${gi}-${ii}`
+              const isOpen = open.has(id)
+              return (
+                <div key={id} style={{ borderBottom: '1px solid #1a1a1a' }}>
+                  <button type="button" className="faq-q" aria-expanded={isOpen} aria-controls={`${id}-a`} id={`${id}-q`} onClick={() => toggle(id)}>
+                    <span>{item.q}</span>
+                    <span className="faq-plus" aria-hidden="true" />
+                  </button>
+                  <div className="faq-a" id={`${id}-a`} role="region" aria-labelledby={`${id}-q`} data-open={isOpen} inert={!isOpen}>
+                    <div><div>{item.a}</div></div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      ))}
     </div>
   )
 }

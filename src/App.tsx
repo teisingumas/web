@@ -5,8 +5,9 @@ import heroImage from './assets/hero.webp'
 import { heroPhotoStyle } from './heroPhoto'
 import LayoutEditor from './editor/LayoutEditor'
 import Odometer from './Odometer'
-import { CONTACT, DANCE_STYLES, PLANS, SCHEDULE_DAYS } from './data'
+import { CONTACT, DANCE_STYLES, SCHEDULE_DAYS } from './data'
 import Registration from './Registration'
+import Pricing from './Pricing'
 
 const TRAINERS = [
   {
@@ -520,86 +521,7 @@ export default function App() {
       {/* PRICING */}
       <section id="kainos" style={{ padding: '120px 0', backgroundColor: '#080808', borderTop: '1px solid #111' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
-          <div style={{ marginBottom: 64 }}>
-            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
-              ◆&nbsp;&nbsp;Prisijunk prie mūsų
-            </p>
-            <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
-              Kainos
-            </h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, maxWidth: 800 }}>
-            {PLANS.map((plan) => (
-              <div
-                key={plan.name}
-                style={{
-                  backgroundColor: plan.highlight ? '#FFB3C6' : '#0d0d0d',
-                  border: '1px solid ' + (plan.highlight ? '#FFB3C6' : '#1a1a1a'),
-                  padding: '48px 40px',
-                  display: 'flex', flexDirection: 'column',
-                  position: 'relative',
-                  transition: 'transform 0.2s',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
-              >
-                {plan.highlight && (
-                  <div style={{
-                    position: 'absolute', top: -12, left: 40,
-                    backgroundColor: '#080808', color: '#FFB3C6',
-                    padding: '4px 16px', fontSize: 10, fontWeight: 800,
-                    letterSpacing: 3, textTransform: 'uppercase',
-                    border: '1px solid #FFB3C6',
-                  }}>
-                    Populiariausias
-                  </div>
-                )}
-                <div>
-                  <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 4, textTransform: 'uppercase', color: plan.highlight ? '#333' : '#555', marginBottom: 8 }}>
-                    {plan.desc}
-                  </p>
-                  <h3 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 32, textTransform: 'uppercase', color: plan.highlight ? '#080808' : '#f0f0f0', margin: '0 0 28px', letterSpacing: 2 }}>
-                    {plan.name}
-                  </h3>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 36 }}>
-                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 72, color: plan.highlight ? '#080808' : '#f0f0f0', lineHeight: 1 }}>
-                      €{plan.price}
-                    </span>
-                    <span style={{ fontSize: 14, color: plan.highlight ? '#333' : '#555', fontWeight: 500 }}>/mėn</span>
-                  </div>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 40px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                    {plan.features.map(f => (
-                      <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 15, color: plan.highlight ? '#111' : '#aaa', fontWeight: 400 }}>
-                        <span style={{ color: plan.highlight ? '#080808' : '#FFB3C6', fontWeight: 700, fontSize: 16, lineHeight: 1 }}>✓</span>
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <a
-                  href="#registracija"
-                  style={{
-                    display: 'block', textAlign: 'center',
-                    padding: '16px 24px',
-                    backgroundColor: plan.highlight ? '#080808' : '#FFB3C6',
-                    color: plan.highlight ? '#FFB3C6' : '#080808',
-                    fontWeight: 800, fontSize: 13, letterSpacing: 2,
-                    textTransform: 'uppercase', textDecoration: 'none',
-                    transition: 'all 0.2s', marginTop: 'auto',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}
-                  onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
-                >
-                  {plan.cta} →
-                </a>
-              </div>
-            ))}
-          </div>
-
-          <p style={{ textAlign: 'center', maxWidth: 800, marginTop: 32, fontSize: 15, fontWeight: 700, color: '#cfcfcf', letterSpacing: 0.3 }}>
-            Pirmoji treniruotė nemokama.
-          </p>
+          <Pricing />
         </div>
       </section>
 
@@ -907,7 +829,7 @@ export default function App() {
           section > div > div[style*="grid-template-columns: repeat(3"] {
             grid-template-columns: 1fr !important;
           }
-          section > div > div[style*="grid-template-columns: repeat(2"] {
+          section > div > div[style*="grid-template-columns: repeat(2"], .pricing-grid {
             grid-template-columns: 1fr !important;
             gap: 24px !important;
           }
