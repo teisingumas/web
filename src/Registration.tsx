@@ -296,18 +296,6 @@ export default function Registration() {
                 ))}
               </ol>
             </div>
-            <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 15 }}>
-              <p style={{ fontSize: 11, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 4px' }}>Turite klausimų?</p>
-              <a href={CONTACT.phoneHref} style={{ color: '#f0f0f0', textDecoration: 'none' }}>{CONTACT.phone}</a>
-              <a href={`mailto:${CONTACT.email}`} style={{ color: '#f0f0f0', textDecoration: 'none' }}>{CONTACT.email}</a>
-              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="reg-maps" aria-label="Savanorių pr. 271, Kaunas (atidaryti Google Maps)">
-                {/* Material Symbols "location_on" (Google Fonts, Apache 2.0) */}
-                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
-                  <path fill={PINK} d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                </svg>
-                Savanorių pr. 271, Kaunas
-              </a>
-            </div>
             <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 24 }}>
               <p style={{ fontSize: 11, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 12px' }}>Studijos darbo laikas</p>
               <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 20, rowGap: 8, margin: 0, fontSize: 15, fontVariantNumeric: 'tabular-nums' }}>
@@ -318,6 +306,28 @@ export default function Registration() {
                   </div>
                 ))}
               </dl>
+            </div>
+            <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 15 }}>
+              <p style={{ fontSize: 11, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 4px' }}>Turite klausimų?</p>
+              {/* Icons: Material Symbols "call", "mail", "location_on" (Google Fonts, Apache 2.0) */}
+              <a href={CONTACT.phoneHref} className="reg-maps">
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
+                  <path fill={PINK} d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.98.98 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
+                </svg>
+                {CONTACT.phone}
+              </a>
+              <a href={`mailto:${CONTACT.email}`} className="reg-maps">
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
+                  <path fill={PINK} d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+                </svg>
+                {CONTACT.email}
+              </a>
+              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="reg-maps" aria-label="Savanorių pr. 271, Kaunas (atidaryti Google Maps)">
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
+                  <path fill={PINK} d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+                </svg>
+                Savanorių pr. 271, Kaunas
+              </a>
             </div>
           </aside>
         </div>
@@ -335,7 +345,7 @@ export default function Registration() {
           transition: font-size 320ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
         }
         .page-tab:hover, .page-tab:focus-visible { color: ${PINK}; }
-        .page-tab[aria-selected="true"] { font-size: clamp(48px, 6vw, 88px); color: #f0f0f0; }
+        .page-tab[aria-selected="true"] { font-size: clamp(40px, 4.2vw, 60px); color: #f0f0f0; }
         .page-tab::after {
           content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: ${PINK};
           transform: scaleX(0); transform-origin: left center; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1);
