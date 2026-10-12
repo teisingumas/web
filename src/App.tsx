@@ -53,61 +53,48 @@ const DANCE_STYLES = [
   },
 ]
 
+// Weekly timetable: Mon & Wed share one programme, Tue & Thu the other.
 const SCHEDULE_DAYS = [
   {
     day: 'Pirmad.',
     full: 'Pirmadienis',
     classes: [
-      { time: '16:00', duration: '60 min', style: 'Gatvės šokiai', age: '7–11 m.', color: '#FFB3C6' },
-      { time: '17:15', duration: '60 min', style: 'Lady Class', age: '12–15 m.', color: '#FF5C8A' },
-      { time: '18:30', duration: '90 min', style: 'Breikas', age: 'Nuo 16 m.', color: '#00CFFF' },
+      { time: '17:00', duration: '60 min', style: 'Breikas', age: 'Nuo 7 m.', color: '#FFB3C6' },
+      { time: '17:00', duration: '60 min', style: 'Gatvės šokiai', age: '12–15 m.', color: '#FFB3C6' },
+      { time: '17:30', duration: '60 min', style: 'Gatvės šokiai', age: '4–5 m.', color: '#FFB3C6' },
+      { time: '18:00', duration: '60 min', style: 'Gatvės šokiai', age: '8–11 m.', color: '#FFB3C6' },
+      { time: '18:00', duration: '60 min', style: 'Pop Dance', age: '8–11 m.', color: '#FFB3C6' },
+      { time: '18:30', duration: '60 min', style: 'Gatvės šokiai', age: '6–7 m.', color: '#FFB3C6' },
     ],
   },
   {
     day: 'Antrad.',
     full: 'Antradienis',
     classes: [
-      { time: '16:00', duration: '60 min', style: 'Pop Dance', age: '7–11 m.', color: '#FF3DFF' },
-      { time: '17:15', duration: '60 min', style: 'Gatvės šokiai', age: '12–15 m.', color: '#FFB3C6' },
-      { time: '18:30', duration: '90 min', style: 'Lady Class', age: 'Nuo 16 m.', color: '#FF5C8A' },
+      { time: '17:00', duration: '60 min', style: 'Pop Dance', age: '12–15 m.', color: '#FFB3C6' },
+      { time: '19:00', duration: '60 min', style: 'Lady Class', age: 'Nuo 16 m.', color: '#FFB3C6' },
+      { time: '19:00', duration: '60 min', style: 'Gatvės šokiai', age: 'Nuo 18 m.', color: '#FFB3C6' },
     ],
   },
   {
     day: 'Trečiad.',
     full: 'Trečiadienis',
     classes: [
-      { time: '15:00', duration: '60 min', style: 'Gatvės šokiai', age: '4–6 m.', color: '#FFB3C6' },
-      { time: '16:15', duration: '60 min', style: 'Breikas', age: '7–11 m.', color: '#00CFFF' },
-      { time: '17:30', duration: '60 min', style: 'Lady Class', age: '12–15 m.', color: '#FF5C8A' },
-      { time: '19:00', duration: '90 min', style: 'Pop Dance', age: 'Nuo 16 m.', color: '#FF3DFF' },
+      { time: '17:00', duration: '60 min', style: 'Breikas', age: 'Nuo 7 m.', color: '#FFB3C6' },
+      { time: '17:00', duration: '60 min', style: 'Gatvės šokiai', age: '12–15 m.', color: '#FFB3C6' },
+      { time: '17:30', duration: '60 min', style: 'Gatvės šokiai', age: '4–5 m.', color: '#FFB3C6' },
+      { time: '18:00', duration: '60 min', style: 'Gatvės šokiai', age: '8–11 m.', color: '#FFB3C6' },
+      { time: '18:00', duration: '60 min', style: 'Pop Dance', age: '8–11 m.', color: '#FFB3C6' },
+      { time: '18:30', duration: '60 min', style: 'Gatvės šokiai', age: '6–7 m.', color: '#FFB3C6' },
     ],
   },
   {
     day: 'Ketvirt.',
     full: 'Ketvirtadienis',
     classes: [
-      { time: '16:00', duration: '60 min', style: 'Breikas', age: '7–11 m.', color: '#00CFFF' },
-      { time: '17:15', duration: '60 min', style: 'Pop Dance', age: '12–15 m.', color: '#FF3DFF' },
-      { time: '18:30', duration: '90 min', style: 'Gatvės šokiai', age: 'Nuo 16 m.', color: '#FFB3C6' },
-    ],
-  },
-  {
-    day: 'Penktad.',
-    full: 'Penktadienis',
-    classes: [
-      { time: '16:00', duration: '60 min', style: 'Lady Class', age: '7–11 m.', color: '#FF5C8A' },
-      { time: '17:15', duration: '60 min', style: 'Gatvės šokiai', age: '12–15 m.', color: '#FFB3C6' },
-      { time: '18:30', duration: '90 min', style: 'Breikas', age: 'Nuo 16 m.', color: '#00CFFF' },
-    ],
-  },
-  {
-    day: 'Šeštad.',
-    full: 'Šeštadienis',
-    classes: [
-      { time: '10:00', duration: '60 min', style: 'Gatvės šokiai', age: '4–6 m.', color: '#FFB3C6' },
-      { time: '11:15', duration: '60 min', style: 'Breikas', age: '7–11 m.', color: '#00CFFF' },
-      { time: '12:30', duration: '60 min', style: 'Pop Dance', age: '12–15 m.', color: '#FF3DFF' },
-      { time: '14:00', duration: '90 min', style: 'Lady Class', age: 'Nuo 16 m.', color: '#FF5C8A' },
+      { time: '17:00', duration: '60 min', style: 'Pop Dance', age: '12–15 m.', color: '#FFB3C6' },
+      { time: '19:00', duration: '60 min', style: 'Lady Class', age: 'Nuo 16 m.', color: '#FFB3C6' },
+      { time: '19:00', duration: '60 min', style: 'Gatvės šokiai', age: 'Nuo 18 m.', color: '#FFB3C6' },
     ],
   },
 ]
@@ -493,7 +480,7 @@ export default function App() {
               <a
                 href="#kainos"
                 style={{
-                  display: 'inline-block', padding: '16px 36px',
+                  display: 'inline-block', padding: '16px 72px',
                   backgroundColor: current.color, color: '#080808',
                   fontWeight: 800, fontSize: 13, letterSpacing: 2,
                   textTransform: 'uppercase', textDecoration: 'none',
@@ -514,7 +501,7 @@ export default function App() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
-              ◆&nbsp;&nbsp;Kada šokami
+              ◆&nbsp;&nbsp;Kada šokam
             </p>
             <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
               Tvarkaraštis
@@ -522,24 +509,24 @@ export default function App() {
           </div>
 
           {/* Day tabs */}
-          <div style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
+          <div role="tablist" aria-label="Savaitės dienos" style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
             {SCHEDULE_DAYS.map((d, i) => (
               <button
                 key={d.day}
+                type="button"
+                role="tab"
+                aria-selected={activeDay === i}
+                aria-label={d.full}
+                className="day-tab"
                 onClick={() => setActiveDay(i)}
                 style={{
-                  background: activeDay === i ? '#FFB3C6' : '#111',
-                  border: '1px solid ' + (activeDay === i ? '#FFB3C6' : '#1e1e1e'),
-                  color: activeDay === i ? '#080808' : '#888',
                   padding: '12px 20px',
                   fontFamily: "'Barlow Condensed', sans-serif",
                   fontWeight: 800, fontSize: 14, letterSpacing: 1.5, textTransform: 'uppercase',
-                  cursor: 'pointer', transition: 'all 0.15s',
+                  cursor: 'pointer',
                 }}
-                onMouseEnter={e => { if (activeDay !== i) { e.currentTarget.style.background = '#1a1a1a'; e.currentTarget.style.color = '#ccc'; } }}
-                onMouseLeave={e => { if (activeDay !== i) { e.currentTarget.style.background = '#111'; e.currentTarget.style.color = '#888'; } }}
               >
-                {d.day}
+                <span>{d.day}</span>
               </button>
             ))}
           </div>
@@ -553,7 +540,7 @@ export default function App() {
               backgroundColor: '#0d0d0d',
             }}>
               {['Laikas', 'Stilius', 'Trukmė', 'Amžius'].map(h => (
-                <span key={h} style={{ fontSize: 10, letterSpacing: 3, color: '#444', textTransform: 'uppercase', fontWeight: 700 }}>{h}</span>
+                <span key={h} style={{ fontSize: 10, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700 }}>{h}</span>
               ))}
             </div>
             {SCHEDULE_DAYS[activeDay].classes.map((cls, i) => (
@@ -564,11 +551,9 @@ export default function App() {
                   padding: '20px 24px',
                   borderBottom: i < SCHEDULE_DAYS[activeDay].classes.length - 1 ? '1px solid #131313' : 'none',
                   alignItems: 'center',
-                  transition: 'background 0.15s',
-                  cursor: 'default',
+                  // every second row slightly lighter for easier reading across
+                  backgroundColor: i % 2 === 1 ? '#141414' : 'transparent',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#0f0f0f'; }}
-                onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; }}
               >
                 <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: 22, color: '#FFB3C6', letterSpacing: 1 }}>
                   {cls.time}
@@ -577,11 +562,11 @@ export default function App() {
                   <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: cls.color, flexShrink: 0, display: 'inline-block' }} />
                   <span style={{ fontWeight: 600, fontSize: 16, color: '#f0f0f0' }}>{cls.style}</span>
                 </div>
-                <span style={{ fontSize: 14, color: '#888', fontWeight: 400 }}>{cls.duration}</span>
+                <span style={{ fontSize: 14, color: '#c4c4c4', fontWeight: 400 }}>{cls.duration}</span>
                 <span style={{
                   fontSize: 11, letterSpacing: 1.5, fontWeight: 600,
                   color: cls.color, textTransform: 'uppercase',
-                  padding: '4px 10px', border: `1px solid ${cls.color}33`,
+                  padding: '4px 10px', border: `1px solid ${cls.color}66`,
                   display: 'inline-block',
                 }}>
                   {cls.age}
@@ -590,8 +575,10 @@ export default function App() {
             ))}
           </div>
 
-          <p style={{ marginTop: 20, fontSize: 13, color: '#444', fontWeight: 400 }}>
-            * Treniruotės vyksta Me Gusta salėje — Gedimino pr. 45, Vilnius. Pilną tvarkaraštį rasite registracijos formoje.
+          <p style={{ marginTop: 20, fontSize: 13, color: '#9a9a9a', fontWeight: 400 }}>
+            * Treniruotės vyksta Me Gusta salėje, Savanorių pr. 271, Kaunas. Pilną tvarkaraštį galite rasti paspaudę{' '}
+            {/* TODO: link to the timetable page once it exists */}
+            <a href="#" style={{ color: '#FFB3C6', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
           </p>
         </div>
       </section>
@@ -812,7 +799,7 @@ export default function App() {
             </div>
             <div>
               <p style={{ fontSize: 10, letterSpacing: 3, color: '#333', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Kontaktai</p>
-              <p style={{ fontSize: 14, color: '#555', marginBottom: 8 }}>Laisvės al. 50, Kaunas</p>
+              <p style={{ fontSize: 14, color: '#555', marginBottom: 8 }}>Savanorių pr. 271, Kaunas</p>
               <p style={{ fontSize: 14, marginBottom: 8 }}><a href={CONTACT.phoneHref} style={{ color: '#555', textDecoration: 'none' }}>{CONTACT.phone}</a></p>
               <p style={{ fontSize: 14, marginBottom: 16 }}><a href={`mailto:${CONTACT.email}`} style={{ color: '#555', textDecoration: 'none' }}>{CONTACT.email}</a></p>
               <div style={{ display: 'flex', gap: 12 }}>
@@ -903,6 +890,23 @@ export default function App() {
           transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1);
         }
         .style-tab:hover::after, .style-tab:focus-visible::after, .style-tab[aria-selected="true"]::after { transform: scaleX(1); }
+        /* Day tabs: hover fills the tab with pink from left to right, like the active one. */
+        .day-tab {
+          position: relative; overflow: hidden;
+          background: #111; border: 1px solid #1e1e1e; color: #a0a0a0;
+          transition: color 260ms cubic-bezier(0.23, 1, 0.32, 1), border-color 260ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .day-tab::before {
+          content: ''; position: absolute; inset: 0; background: #FFB3C6;
+          transform: scaleX(0); transform-origin: left center;
+          transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .day-tab > span { position: relative; }
+        .day-tab:hover, .day-tab:focus-visible, .day-tab[aria-selected="true"] { color: #080808; border-color: #FFB3C6; }
+        .day-tab:hover::before, .day-tab:focus-visible::before, .day-tab[aria-selected="true"]::before { transform: scaleX(1); }
+        @media (prefers-reduced-motion: reduce) {
+          .day-tab::before { transition: none; }
+        }
         @media (prefers-reduced-motion: reduce) {
           .hero-photo-in, .hero-in, .hero-fade-in, .hero-shake { animation: none; }
           .style-tab::after { transition: none; }
@@ -960,7 +964,7 @@ export default function App() {
             padding-left: 12px !important;
             padding-right: 12px !important;
           }
-          div[style*="grid-template-columns: 120px 1fr 110px 110px"][style*="background-color"] > span {
+          div[style*="grid-template-columns: 120px 1fr 110px 110px"][style*="rgb(13, 13, 13)"] > span {
             letter-spacing: 1px !important;
           }
         }
