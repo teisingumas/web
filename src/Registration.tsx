@@ -177,7 +177,7 @@ export default function Registration() {
           )}
         </div>
 
-        {tab === 'kainos' ? <Pricing centered /> : (
+        {tab === 'kainos' ? <Pricing centered heading={false} /> : (
         <div className="reg-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: 40, alignItems: 'start' }}>
           {tab === 'informacija' ? <Faq /> : status === 'sent' ? (
             <div role="status" style={{ border: `1px solid ${PINK}`, padding: '48px 40px', backgroundColor: '#0d0d0d' }}>
@@ -300,9 +300,24 @@ export default function Registration() {
               <p style={{ fontSize: 11, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 4px' }}>Turite klausimų?</p>
               <a href={CONTACT.phoneHref} style={{ color: '#f0f0f0', textDecoration: 'none' }}>{CONTACT.phone}</a>
               <a href={`mailto:${CONTACT.email}`} style={{ color: '#f0f0f0', textDecoration: 'none' }}>{CONTACT.email}</a>
-              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#f0f0f0', textDecoration: 'none' }}>
-                Savanorių pr. 271, Kaunas <span aria-hidden="true" style={{ color: PINK }}>↗</span>
+              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="reg-maps" aria-label="Savanorių pr. 271, Kaunas (atidaryti Google Maps)">
+                {/* Material Symbols "location_on" (Google Fonts, Apache 2.0) */}
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
+                  <path fill={PINK} d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+                </svg>
+                Savanorių pr. 271, Kaunas
               </a>
+            </div>
+            <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 24 }}>
+              <p style={{ fontSize: 11, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 12px' }}>Studijos darbo laikas</p>
+              <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 20, rowGap: 8, margin: 0, fontSize: 15, fontVariantNumeric: 'tabular-nums' }}>
+                {[['I–IV', '16:00–20:30'], ['V', '16:00–19:00']].map(([days, hours]) => (
+                  <div key={days} style={{ display: 'contents' }}>
+                    <dt style={{ color: PINK, fontFamily: display, fontWeight: 800, fontSize: 17, letterSpacing: 1 }}>{days}</dt>
+                    <dd style={{ margin: 0, color: '#f0f0f0' }}>{hours}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </aside>
         </div>
@@ -327,6 +342,8 @@ export default function Registration() {
         }
         .page-tab[aria-selected="true"]::after { transform: scaleX(1); }
         .page-tab:focus-visible { outline: none; }
+        .reg-maps { display: inline-flex; align-items: center; gap: 8px; color: #f0f0f0; text-decoration: none; transition: color 160ms; }
+        .reg-maps:hover { color: ${PINK}; }
         .faq-link { color: ${PINK}; text-decoration: underline; text-underline-offset: 3px; }
         .faq-link:hover { color: #fff; }
         .faq-q {

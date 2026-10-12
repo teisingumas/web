@@ -1,16 +1,18 @@
 import { PLANS } from './data'
 
 // Pricing block: home page section and the "Kainos" tab on the registration page (centered).
-export default function Pricing({ centered = false }: { centered?: boolean }) {
+export default function Pricing({ centered = false, heading = true }: { centered?: boolean; heading?: boolean }) {
   return (
     <>
-    <div style={{ marginBottom: 64, textAlign: centered ? 'center' : undefined }}>
+    <div style={{ marginBottom: heading ? 64 : 40, textAlign: centered ? 'center' : undefined }}>
       <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
         ◆&nbsp;&nbsp;Prisijunk prie mūsų
       </p>
-      <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
-        Kainos
-      </h2>
+      {heading && (
+        <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
+          Kainos
+        </h2>
+      )}
     </div>
 
     <div className="pricing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, maxWidth: 800, margin: centered ? '0 auto' : undefined }}>
