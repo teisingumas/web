@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { HERO_PHOTO, HERO_PHOTO_RATIO, heroPhotoStyle } from '../heroPhoto'
-import heroImage from '../assets/hero.webp'
 
 // Drag-and-drop layout editor. Off on the live site; turn it on with the
 // #redaguoti address hash, or build with VITE_EDITOR=1.
@@ -91,7 +90,7 @@ function Editor() {
   // apply photo framing
   useEffect(() => {
     const el = document.querySelector<HTMLElement>('[data-edit-photo]')
-    if (el) Object.assign(el.style, heroPhotoStyle(heroImage, photo))
+    if (el) Object.assign(el.style, heroPhotoStyle(photo))
   }, [photo])
 
   useEffect(() => save({ offsets, photo }), [offsets, photo])

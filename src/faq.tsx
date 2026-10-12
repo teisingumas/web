@@ -9,7 +9,7 @@ function L({ href, children }: { href: string; children: React.ReactNode }) {
   return <a href={href} className="faq-link">{children}</a>
 }
 
-const B = ({ children }: { children: React.ReactNode }) => <strong style={{ color: '#e6e6e6', fontWeight: 600 }}>{children}</strong>
+const B = ({ children }: { children: React.ReactNode }) => <strong style={{ color: 'var(--text)', fontWeight: 600 }}>{children}</strong>
 
 const Admin = () => <L href={`mailto:${ADMIN_EMAIL}`}>{ADMIN_EMAIL}</L>
 

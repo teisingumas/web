@@ -151,7 +151,7 @@ export default function Registration() {
   }
 
   return (
-    <section id="registracija" style={{ padding: '168px 0 120px', backgroundColor: '#080808' }}>
+    <section id="registracija" style={{ padding: '168px 0 120px', backgroundColor: 'var(--bg)' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ marginBottom: 56 }}>
           <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: PINK, textTransform: 'uppercase', marginBottom: 12 }}>
@@ -166,12 +166,12 @@ export default function Registration() {
             ))}
           </nav>
           {tab === 'registracija' && (
-            <p style={{ marginTop: 24, fontSize: 17, color: '#b0b0b0', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
+            <p style={{ marginTop: 24, fontSize: 17, color: 'var(--c-b0b0b0)', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
               Užpildykite formą, o mes el. paštu atsiųsime visą informaciją apie pirmąją, <span style={{ color: PINK, fontWeight: 500 }}>nemokamą</span> šokių pamoką.
             </p>
           )}
           {tab === 'informacija' && (
-            <p style={{ marginTop: 24, fontSize: 17, color: '#b0b0b0', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
+            <p style={{ marginTop: 24, fontSize: 17, color: 'var(--c-b0b0b0)', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
               Dažniausiai užduodami klausimai. Neradote atsakymo? Parašykite <a href={`mailto:${CONTACT.email}`} className="faq-link">{CONTACT.email}</a> arba skambinkite <a href={CONTACT.phoneHref} className="faq-link">{CONTACT.phone}</a>.
             </p>
           )}
@@ -180,14 +180,14 @@ export default function Registration() {
         {tab === 'kainos' ? <Pricing centered heading={false} /> : (
         <div className="reg-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: 40, alignItems: 'start' }}>
           {tab === 'informacija' ? <Faq /> : status === 'sent' ? (
-            <div role="status" style={{ border: `1px solid ${PINK}`, padding: '48px 40px', backgroundColor: '#0d0d0d' }}>
+            <div role="status" style={{ border: `1px solid ${PINK}`, padding: '48px 40px', backgroundColor: 'var(--surface)' }}>
               <p style={{ fontFamily: display, fontWeight: 900, fontSize: 40, textTransform: 'uppercase', color: PINK, margin: '0 0 16px' }}>Ačiū!</p>
-              <p style={{ fontSize: 17, color: '#d0d0d0', lineHeight: 1.6, margin: '0 0 24px' }}>
-                Registracija gauta: <b style={{ color: '#f0f0f0' }}>{form.dancer}</b>.
+              <p style={{ fontSize: 17, color: 'var(--c-d0d0d0)', lineHeight: 1.6, margin: '0 0 24px' }}>
+                Registracija gauta: <b style={{ color: 'var(--text)' }}>{form.dancer}</b>.
                 Artimiausiu metu informaciją apie pirmąją pamoką atsiųsime el. paštu {form.email}.
               </p>
               {!ENDPOINT && (
-                <p style={{ fontSize: 13, color: '#9a9a9a', lineHeight: 1.6, margin: '0 0 24px', borderLeft: '1px solid #333', paddingLeft: 12 }}>
+                <p style={{ fontSize: 13, color: 'var(--c-9a9a9a)', lineHeight: 1.6, margin: '0 0 24px', borderLeft: '1px solid var(--line-strong)', paddingLeft: 12 }}>
                   Peržiūros versija: forma dar neprijungta, todėl duomenys niekur neišsiųsti.
                 </p>
               )}
@@ -253,12 +253,12 @@ export default function Registration() {
                 {errors.source && <span style={{ color: ERROR, fontSize: 13, marginTop: 8, display: 'block' }}>{errors.source}</span>}
               </fieldset>
 
-              <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#f0f0f0', lineHeight: 1.5, maxWidth: 640 }}>
+              <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text)', lineHeight: 1.5, maxWidth: 640 }}>
                 Užsiregistravus, artimiausiu metu el. paštu išsiųsime Jums visą reikalingą informaciją apie pirmąją šokių pamoką.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-                <label htmlFor="reg-consent" style={{ display: 'flex', gap: 12, alignItems: 'flex-start', fontSize: 14, color: '#c4c4c4', lineHeight: 1.5, cursor: 'pointer' }}>
+                <label htmlFor="reg-consent" style={{ display: 'flex', gap: 12, alignItems: 'flex-start', fontSize: 14, color: 'var(--text-2)', lineHeight: 1.5, cursor: 'pointer' }}>
                   <input id="reg-consent" type="checkbox" checked={form.consent} onChange={e => set('consent', e.target.checked)} style={{ width: 18, height: 18, marginTop: 2, accentColor: PINK, flexShrink: 0 }} />
                   <span>
                     Sutinku, kad mano pateikti duomenys būtų naudojami registracijai tvarkyti ir susisiekti dėl treniruočių.
@@ -269,7 +269,7 @@ export default function Registration() {
                   <button type="submit" className="reg-btn" disabled={status === 'sending'}>
                     {status === 'sending' ? 'Siunčiama…' : 'Registruotis →'}
                   </button>
-                  <span style={{ fontSize: 14, color: '#9a9a9a' }}>Pirmoji treniruotė nemokama</span>
+                  <span style={{ fontSize: 14, color: 'var(--c-9a9a9a)' }}>Pirmoji treniruotė nemokama</span>
                 </div>
                 {status === 'error' && (
                   <p role="alert" style={{ color: ERROR, fontSize: 14, margin: 0 }}>
@@ -280,35 +280,35 @@ export default function Registration() {
             </form>
           )}
 
-          <aside className="reg-aside" style={{ border: '1px solid #1a1a1a', backgroundColor: '#0d0d0d', padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 28 }}>
+          <aside className="reg-aside" style={{ border: '1px solid var(--line)', backgroundColor: 'var(--surface)', padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 28 }}>
             <div>
-              <p style={{ fontFamily: display, fontWeight: 800, fontSize: 20, textTransform: 'uppercase', letterSpacing: 1, color: '#f0f0f0', margin: '0 0 16px' }}>Kas toliau</p>
+              <p style={{ fontFamily: display, fontWeight: 800, fontSize: 20, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text)', margin: '0 0 16px' }}>Kas toliau</p>
               <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {[
                   'Užpildote registracijos formą.',
                   'El. paštu atsiunčiame visą informaciją apie pirmąją pamoką.',
                   'Atvykstate į pirmąją treniruotę, ji nemokama.',
                 ].map((t, i) => (
-                  <li key={t} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 8, fontSize: 15, color: '#c4c4c4', lineHeight: 1.5 }}>
+                  <li key={t} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 8, fontSize: 15, color: 'var(--text-2)', lineHeight: 1.5 }}>
                     <span style={{ fontFamily: display, fontWeight: 900, fontSize: 20, color: PINK, lineHeight: 1.2 }}>{i + 1}</span>
                     {t}
                   </li>
                 ))}
               </ol>
             </div>
-            <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 24 }}>
-              <p style={{ fontSize: 11, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 12px' }}>Studijos darbo laikas</p>
+            <div style={{ borderTop: '1px solid var(--line)', paddingTop: 24 }}>
+              <p style={{ fontSize: 11, letterSpacing: 3, color: 'var(--muted)', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 12px' }}>Studijos darbo laikas</p>
               <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 20, rowGap: 8, margin: 0, fontSize: 15, fontVariantNumeric: 'tabular-nums' }}>
                 {[['I–IV', '16:00–20:30'], ['V', '16:00–19:00']].map(([days, hours]) => (
                   <div key={days} style={{ display: 'contents' }}>
                     <dt style={{ color: PINK, fontFamily: display, fontWeight: 800, fontSize: 17, letterSpacing: 1 }}>{days}</dt>
-                    <dd style={{ margin: 0, color: '#f0f0f0' }}>{hours}</dd>
+                    <dd style={{ margin: 0, color: 'var(--text)' }}>{hours}</dd>
                   </div>
                 ))}
               </dl>
             </div>
-            <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 15 }}>
-              <p style={{ fontSize: 11, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 4px' }}>Turite klausimų?</p>
+            <div style={{ borderTop: '1px solid var(--line)', paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 15 }}>
+              <p style={{ fontSize: 11, letterSpacing: 3, color: 'var(--muted)', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 4px' }}>Turite klausimų?</p>
               {/* Icons: Material Symbols "call", "mail", "location_on" (Google Fonts, Apache 2.0) */}
               <a href={CONTACT.phoneHref} className="reg-maps">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
@@ -337,29 +337,29 @@ export default function Registration() {
       <style>{`
         .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
         /* Page tabs: the active one is heading-sized with a pink underline; the rest are smaller and light up on hover. */
-        .page-tabs { display: flex; align-items: flex-end; flex-wrap: wrap; column-gap: 40px; row-gap: 8px; border-bottom: 1px solid #1f1f1f; }
+        .page-tabs { display: flex; align-items: flex-end; flex-wrap: wrap; column-gap: 40px; row-gap: 8px; border-bottom: 1px solid var(--c-1f1f1f); }
         .page-tab {
           position: relative; padding-bottom: 12px; text-decoration: none;
           font-family: ${display}; font-weight: 900; text-transform: uppercase; line-height: 0.95;
-          font-size: clamp(22px, 2.6vw, 36px); color: #6e6e6e;
+          font-size: clamp(22px, 2.6vw, 36px); color: var(--c-6e6e6e);
           transition: font-size 320ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
         }
         .page-tab:hover, .page-tab:focus-visible { color: ${PINK}; }
-        .page-tab[aria-selected="true"] { font-size: clamp(40px, 4.2vw, 60px); color: #f0f0f0; }
+        .page-tab[aria-selected="true"] { font-size: clamp(40px, 4.2vw, 60px); color: var(--text); }
         .page-tab::after {
           content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: ${PINK};
           transform: scaleX(0); transform-origin: left center; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1);
         }
         .page-tab[aria-selected="true"]::after { transform: scaleX(1); }
         .page-tab:focus-visible { outline: none; }
-        .reg-maps { display: inline-flex; align-items: center; gap: 8px; color: #f0f0f0; text-decoration: none; transition: color 160ms; }
+        .reg-maps { display: inline-flex; align-items: center; gap: 8px; color: var(--text); text-decoration: none; transition: color 160ms; }
         .reg-maps:hover { color: ${PINK}; }
         .faq-link { color: ${PINK}; text-decoration: underline; text-underline-offset: 3px; }
-        .faq-link:hover { color: #fff; }
+        .faq-link:hover { color: var(--c-ffffff); }
         .faq-q {
           width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px;
           background: none; border: none; cursor: pointer; text-align: left; padding: 22px 4px;
-          font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: #f0f0f0; line-height: 1.4;
+          font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.4;
         }
         .faq-q:hover { color: ${PINK}; }
         .faq-q:focus-visible { outline: 2px solid ${PINK}; outline-offset: 2px; }
@@ -371,7 +371,7 @@ export default function Registration() {
         .faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 320ms cubic-bezier(0.23, 1, 0.32, 1); }
         .faq-a[data-open="true"] { grid-template-rows: 1fr; }
         .faq-a > div { overflow: hidden; }
-        .faq-a p { margin: 0 0 12px; font-size: 15px; color: #a8a8a8; line-height: 1.7; max-width: 720px; }
+        .faq-a p { margin: 0 0 12px; font-size: 15px; color: var(--c-a8a8a8); line-height: 1.7; max-width: 720px; }
         .faq-a > div > div { padding: 0 4px 14px; }
         @media (prefers-reduced-motion: reduce) {
           .page-tab, .page-tab::after, .faq-plus, .faq-a { transition: none; }
@@ -379,34 +379,34 @@ export default function Registration() {
         .reg-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
         .reg-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         .reg-fieldset { border: none; margin: 0; padding: 0; min-width: 0; }
-        .reg-label { font-size: 14px; font-weight: 600; color: #d0d0d0; padding: 0; margin-bottom: 10px; }
+        .reg-label { font-size: 14px; font-weight: 600; color: var(--c-d0d0d0); padding: 0; margin-bottom: 10px; }
         .reg-req { color: ${PINK}; }
         .reg-input {
           width: 100%; min-height: 48px; padding: 0 14px;
-          background: #0d0d0d; border: 1px solid #262626; color: #f0f0f0;
+          background: var(--surface); border: 1px solid var(--c-262626); color: var(--text);
           font-family: 'Outfit', sans-serif; font-size: 15px; border-radius: 0;
-          color-scheme: dark; transition: border-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
+          color-scheme: var(--scheme); transition: border-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .reg-input::placeholder { color: #5e5e5e; }
-        .reg-input:hover { border-color: #3a3a3a; }
+        .reg-input::placeholder { color: var(--placeholder); }
+        .reg-input:hover { border-color: var(--c-3a3a3a); }
         .reg-input:focus { outline: none; border-color: ${PINK}; }
         .reg-input[aria-invalid="true"] { border-color: ${ERROR}; }
-        .reg-phone { display: flex; align-items: stretch; background: #0d0d0d; border: 1px solid #262626; transition: border-color 160ms; }
-        .reg-phone:hover { border-color: #3a3a3a; }
+        .reg-phone { display: flex; align-items: stretch; background: var(--surface); border: 1px solid var(--c-262626); transition: border-color 160ms; }
+        .reg-phone:hover { border-color: var(--c-3a3a3a); }
         .reg-phone:focus-within { border-color: ${PINK}; }
         .reg-phone[data-invalid="true"] { border-color: ${ERROR}; }
         .reg-phone .reg-input { border: none; min-height: 46px; padding-left: 6px; }
-        .reg-country { position: relative; display: flex; align-items: center; gap: 8px; padding: 0 10px 0 14px; border-right: 1px solid #262626; color: #f0f0f0; font-size: 15px; }
-        .reg-country select { position: absolute; inset: 0; opacity: 0; cursor: pointer; color-scheme: dark; }
-        .reg-check { display: flex; align-items: center; gap: 12px; font-size: 15px; color: #c4c4c4; cursor: pointer; }
-        .reg-check input, #reg-consent { width: 18px; height: 18px; margin: 0; accent-color: ${PINK}; color-scheme: dark; flex-shrink: 0; cursor: pointer; }
-        .reg-check:hover { color: #f0f0f0; }
+        .reg-country { position: relative; display: flex; align-items: center; gap: 8px; padding: 0 10px 0 14px; border-right: 1px solid var(--c-262626); color: var(--text); font-size: 15px; }
+        .reg-country select { position: absolute; inset: 0; opacity: 0; cursor: pointer; color-scheme: var(--scheme); }
+        .reg-check { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--text-2); cursor: pointer; }
+        .reg-check input, #reg-consent { width: 18px; height: 18px; margin: 0; accent-color: ${PINK}; color-scheme: var(--scheme); flex-shrink: 0; cursor: pointer; }
+        .reg-check:hover { color: var(--text); }
         /* "Apie Me Gusta sužinojau" stays a single choice but looks like the style checkboxes. */
         .reg-check input[type="radio"] {
           appearance: none; -webkit-appearance: none; border-radius: 3px;
-          border: 1px solid #6e6e6e; background: #1a1a1a; display: inline-grid; place-content: center;
+          border: 1px solid var(--c-6e6e6e); background: var(--line); display: inline-grid; place-content: center;
         }
-        .reg-check input[type="radio"]:hover { border-color: #9a9a9a; }
+        .reg-check input[type="radio"]:hover { border-color: var(--c-9a9a9a); }
         .reg-check input[type="radio"]:checked {
           border-color: ${PINK}; background: ${PINK} url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23080808' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
         }
@@ -417,7 +417,7 @@ export default function Registration() {
           padding: 18px 44px; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 14px;
           letter-spacing: 2px; text-transform: uppercase; transition: background-color 160ms, transform 160ms;
         }
-        .reg-btn:hover { background: #fff; transform: translateY(-2px); }
+        .reg-btn:hover { background: var(--btn-hover); transform: translateY(-2px); }
         .reg-btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
         .reg-btn--ghost { background: transparent; color: ${PINK}; }
         .reg-btn--ghost:hover { background: ${PINK}; color: #080808; }
@@ -477,7 +477,7 @@ function PhoneField({ id, label, required, value, error, onChange }: {
       <div className="reg-phone" data-invalid={!!error}>
         <span className="reg-country">
           <Flag stripes={country.stripes} />
-          <span aria-hidden="true" style={{ fontSize: 10, color: '#9a9a9a' }}>▼</span>
+          <span aria-hidden="true" style={{ fontSize: 10, color: 'var(--c-9a9a9a)' }}>▼</span>
           <select
             aria-label={`${label}: šalies kodas`} value={value.country}
             onChange={e => onChange({ ...value, country: e.target.value as Phone['country'] })}
@@ -485,7 +485,7 @@ function PhoneField({ id, label, required, value, error, onChange }: {
             {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.code} {c.dial}</option>)}
           </select>
         </span>
-        <span style={{ display: 'flex', alignItems: 'center', paddingLeft: 12, color: '#f0f0f0', fontSize: 15 }}>{country.dial}</span>
+        <span style={{ display: 'flex', alignItems: 'center', paddingLeft: 12, color: 'var(--text)', fontSize: 15 }}>{country.dial}</span>
         <input
           id={id} className="reg-input" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="000 00000"
           aria-invalid={!!error} aria-describedby={error ? `${id}-error` : undefined}
@@ -509,15 +509,15 @@ function Faq() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 56, minWidth: 0 }}>
       {FAQ.map((group, gi) => (
         <section key={group.title} aria-labelledby={`faq-g${gi}`}>
-          <h2 id={`faq-g${gi}`} style={{ fontFamily: display, fontWeight: 900, fontSize: 30, textTransform: 'uppercase', letterSpacing: 1, color: '#f0f0f0', margin: '0 0 8px' }}>
+          <h2 id={`faq-g${gi}`} style={{ fontFamily: display, fontWeight: 900, fontSize: 30, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text)', margin: '0 0 8px' }}>
             {group.title}
           </h2>
-          <div style={{ borderTop: '1px solid #1a1a1a' }}>
+          <div style={{ borderTop: '1px solid var(--line)' }}>
             {group.items.map((item, ii) => {
               const id = `faq-${gi}-${ii}`
               const isOpen = open.has(id)
               return (
-                <div key={id} style={{ borderBottom: '1px solid #1a1a1a' }}>
+                <div key={id} style={{ borderBottom: '1px solid var(--line)' }}>
                   <button type="button" className="faq-q" aria-expanded={isOpen} aria-controls={`${id}-a`} id={`${id}-q`} onClick={() => toggle(id)}>
                     <span>{item.q}</span>
                     <span className="faq-plus" aria-hidden="true" />

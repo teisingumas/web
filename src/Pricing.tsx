@@ -9,7 +9,7 @@ export default function Pricing({ centered = false, heading = true }: { centered
         ◆&nbsp;&nbsp;Prisijunk prie mūsų
       </p>
       {heading && (
-        <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
+        <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
           Kainos
         </h2>
       )}
@@ -20,8 +20,8 @@ export default function Pricing({ centered = false, heading = true }: { centered
         <div
           key={plan.name}
           style={{
-            backgroundColor: plan.highlight ? '#FFB3C6' : '#0d0d0d',
-            border: '1px solid ' + (plan.highlight ? '#FFB3C6' : '#1a1a1a'),
+            backgroundColor: plan.highlight ? '#FFB3C6' : 'var(--surface)',
+            border: '1px solid ' + (plan.highlight ? '#FFB3C6' : 'var(--line)'),
             padding: '48px 40px',
             display: 'flex', flexDirection: 'column',
             position: 'relative',
@@ -42,21 +42,21 @@ export default function Pricing({ centered = false, heading = true }: { centered
             </div>
           )}
           <div>
-            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 4, textTransform: 'uppercase', color: plan.highlight ? '#333' : '#555', marginBottom: 8 }}>
+            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 4, textTransform: 'uppercase', color: plan.highlight ? '#333' : 'var(--c-555555)', marginBottom: 8 }}>
               {plan.desc}
             </p>
-            <h3 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 32, textTransform: 'uppercase', color: plan.highlight ? '#080808' : '#f0f0f0', margin: '0 0 28px', letterSpacing: 2 }}>
+            <h3 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 32, textTransform: 'uppercase', color: plan.highlight ? '#080808' : 'var(--text)', margin: '0 0 28px', letterSpacing: 2 }}>
               {plan.name}
             </h3>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 36 }}>
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 72, color: plan.highlight ? '#080808' : '#f0f0f0', lineHeight: 1 }}>
+              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 72, color: plan.highlight ? '#080808' : 'var(--text)', lineHeight: 1 }}>
                 €{plan.price}
               </span>
-              <span style={{ fontSize: 14, color: plan.highlight ? '#333' : '#555', fontWeight: 500 }}>/mėn</span>
+              <span style={{ fontSize: 14, color: plan.highlight ? '#333' : 'var(--c-555555)', fontWeight: 500 }}>/mėn</span>
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 40px', display: 'flex', flexDirection: 'column', gap: 12 }}>
               {plan.features.map(f => (
-                <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 15, color: plan.highlight ? '#111' : '#aaa', fontWeight: 400 }}>
+                <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 15, color: plan.highlight ? '#111' : 'var(--c-aaaaaa)', fontWeight: 400 }}>
                   <span style={{ color: plan.highlight ? '#080808' : '#FFB3C6', fontWeight: 700, fontSize: 16, lineHeight: 1 }}>✓</span>
                   {f}
                 </li>
@@ -83,7 +83,7 @@ export default function Pricing({ centered = false, heading = true }: { centered
       ))}
     </div>
 
-    <p style={{ textAlign: 'center', maxWidth: 800, margin: centered ? '32px auto 0' : '32px 0 0', fontSize: 15, fontWeight: 700, color: '#cfcfcf', letterSpacing: 0.3 }}>
+    <p style={{ textAlign: 'center', maxWidth: 800, margin: centered ? '32px auto 0' : '32px 0 0', fontSize: 15, fontWeight: 700, color: 'var(--c-cfcfcf)', letterSpacing: 0.3 }}>
       Pirmoji treniruotė nemokama.
     </p>
     </>

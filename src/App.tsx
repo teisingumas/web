@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type React from 'react'
 import logo from './assets/logo-megusta.webp'
 import heroImage from './assets/hero.webp'
+import heroImageLight from './assets/hero-light.webp'
 import { heroPhotoStyle } from './heroPhoto'
 import LayoutEditor from './editor/LayoutEditor'
 import Odometer from './Odometer'
@@ -142,10 +143,10 @@ export default function App() {
   const current = DANCE_STYLES[activeStyle]
 
   return (
-    <div style={{ backgroundColor: '#080808', color: '#f0f0f0', fontFamily: "'Outfit', sans-serif", overflowX: 'clip' }}>
+    <div style={{ backgroundColor: 'var(--bg)', color: 'var(--text)', fontFamily: "'Outfit', sans-serif", overflowX: 'clip' }}>
 
       {/* NAV */}
-      <nav style={{
+      <nav className="site-header" style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
         borderBottom: '1px solid #1a1a1a',
         backdropFilter: 'blur(16px)',
@@ -210,11 +211,14 @@ export default function App() {
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}
-        <div data-edit-photo className="hero-photo hero-photo-in" style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(heroImage) }} aria-hidden="true" />
+        <div
+          data-edit-photo className="hero-photo hero-photo-in" aria-hidden="true"
+          style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(), '--hero-img-dark': `url(${heroImage})`, '--hero-img-light': `url(${heroImageLight})` } as React.CSSProperties}
+        />
         {/* gradient overlay */}
         <div className="hero-overlay" style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(100deg, #080808 30%, rgba(8,8,8,0.6) 50%, transparent 75%)',
+          background: 'linear-gradient(100deg, rgb(var(--bg-rgb)) 30%, rgba(var(--bg-rgb), 0.6) 50%, transparent 75%)',
         }} aria-hidden="true" />
         {/* accent line */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: 6, height: '100%', backgroundColor: '#FFB3C6' }} aria-hidden="true" />
@@ -228,14 +232,14 @@ export default function App() {
               fontFamily: "'Barlow Condensed', sans-serif",
               fontWeight: 900, fontSize: 'clamp(72px, 10vw, 140px)',
               lineHeight: 0.92, textTransform: 'uppercase',
-              color: '#f0f0f0', margin: '0 0 16px',
+              color: 'var(--text)', margin: '0 0 16px',
               letterSpacing: '-0.01em',
             }}>
               <span className="hero-in hero-in-2">TAVO</span><br />
               <span className="hero-in hero-in-3" style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}><span className="hero-shake">JUDESIO</span></span><br />
               <span className="hero-in hero-in-4">NAMAI</span>
             </h1>
-            <p data-edit="Hero: aprašymas" className="hero-in hero-in-5" style={{ fontSize: 18, color: '#aaa', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
+            <p data-edit="Hero: aprašymas" className="hero-in hero-in-5" style={{ fontSize: 18, color: 'var(--c-aaaaaa)', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
               Profesionali hip hop šokių studija Kaune. Čia gatvių ritmai virsta scenos menu — nuo pirmų žingsnių iki čempionų podiumo.
             </p>
             <div data-edit="Hero: mygtukai" className="hero-in hero-in-6" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
@@ -248,7 +252,7 @@ export default function App() {
                   textDecoration: 'none', display: 'inline-block',
                   transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--btn-hover)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                 onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#FFB3C6'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
                 Pasirink stilių →
@@ -256,14 +260,14 @@ export default function App() {
               <a
                 href="#tvarkarastis"
                 style={{
-                  border: '1px solid #333', color: '#f0f0f0',
+                  border: '1px solid var(--line-strong)', color: 'var(--text)',
                   padding: '16px 40px', fontWeight: 600, fontSize: 14,
                   letterSpacing: 2, textTransform: 'uppercase',
                   textDecoration: 'none', display: 'inline-block',
                   transition: 'all 0.2s',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB3C6'; e.currentTarget.style.color = '#FFB3C6'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#f0f0f0'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line-strong)'; e.currentTarget.style.color = 'var(--text)'; }}
               >
                 Tvarkaraštis
               </a>
@@ -273,8 +277,8 @@ export default function App() {
 
         {/* scroll hint */}
         <div data-edit="Slinkti" className="hero-fade-in" style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 11, letterSpacing: 3, color: '#9a9a9a', textTransform: 'uppercase' }}>Slinkti</span>
-          <div style={{ width: 1, height: 48, backgroundColor: '#555', position: 'relative', overflow: 'hidden' }}>
+          <span style={{ fontSize: 11, letterSpacing: 3, color: 'var(--c-9a9a9a)', textTransform: 'uppercase' }}>Slinkti</span>
+          <div style={{ width: 1, height: 48, backgroundColor: 'var(--c-555555)', position: 'relative', overflow: 'hidden' }}>
             <div style={{
               position: 'absolute', top: 0, left: 0, right: 0,
               height: '40%', backgroundColor: '#FFB3C6',
@@ -320,19 +324,19 @@ export default function App() {
       </section>
 
       {/* DANCE STYLE SELECTOR */}
-      <section id="stiliai" style={{ padding: '120px 0', backgroundColor: '#080808' }}>
+      <section id="stiliai" style={{ padding: '120px 0', backgroundColor: 'var(--bg)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;Ko mokome
             </p>
-            <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
+            <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
               Pasirink savo<br /><span style={{ color: '#FFB3C6' }}>stilių</span>
             </h2>
           </div>
 
           {/* Tab row */}
-          <div role="tablist" aria-label="Šokių stiliai" style={{ display: 'flex', gap: 0, borderBottom: '1px solid #1a1a1a', marginBottom: 0, flexWrap: 'wrap' }}>
+          <div role="tablist" aria-label="Šokių stiliai" style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--line)', marginBottom: 0, flexWrap: 'wrap' }}>
             {DANCE_STYLES.map((s, i) => (
               <button
                 key={s.id}
@@ -359,10 +363,10 @@ export default function App() {
           {/* Content panel */}
           <div style={{
             display: 'grid', gridTemplateColumns: '1fr 1fr',
-            border: '1px solid #1a1a1a', borderTop: 'none',
+            border: '1px solid var(--line)', borderTop: 'none',
           }}>
             {/* Image */}
-            <div style={{ position: 'relative', overflow: 'hidden', minHeight: 480, backgroundColor: '#111' }}>
+            <div style={{ position: 'relative', overflow: 'hidden', minHeight: 480, backgroundColor: 'var(--surface-2)' }}>
               <img
                 src={current.image}
                 alt={current.name}
@@ -388,16 +392,16 @@ export default function App() {
             </div>
 
             {/* Info */}
-            <div style={{ padding: '56px 48px', backgroundColor: '#0d0d0d', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ padding: '56px 48px', backgroundColor: 'var(--surface)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
                 <p style={{ fontSize: 13, letterSpacing: 3, color: current.color, textTransform: 'uppercase', fontWeight: 600, marginBottom: 20 }}>
                   {current.tagline}
                 </p>
-                <p style={{ fontSize: 17, color: '#ccc', lineHeight: 1.75, fontWeight: 300, marginBottom: 40 }}>
+                <p style={{ fontSize: 17, color: 'var(--c-cccccc)', lineHeight: 1.75, fontWeight: 300, marginBottom: 40 }}>
                   {current.description}
                 </p>
                 <div style={{ marginBottom: 40 }}>
-                  <p style={{ fontSize: 11, letterSpacing: 3, color: '#555', textTransform: 'uppercase', marginBottom: 12 }}>Lygiai</p>
+                  <p style={{ fontSize: 11, letterSpacing: 3, color: 'var(--c-555555)', textTransform: 'uppercase', marginBottom: 12 }}>Lygiai</p>
                   <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                     {current.levels.map(l => (
                       <span
@@ -435,13 +439,13 @@ export default function App() {
       </section>
 
       {/* SCHEDULE */}
-      <section id="tvarkarastis" style={{ padding: '120px 0', backgroundColor: '#060606', borderTop: '1px solid #111' }}>
+      <section id="tvarkarastis" style={{ padding: '120px 0', backgroundColor: 'var(--bg-alt)', borderTop: '1px solid var(--c-111111)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;Kada šokam
             </p>
-            <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
+            <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
               Tvarkaraštis
             </h2>
           </div>
@@ -469,15 +473,15 @@ export default function App() {
           </div>
 
           {/* Classes for active day */}
-          <div style={{ border: '1px solid #1a1a1a' }}>
-            <div style={{
+          <div style={{ border: '1px solid var(--line)' }}>
+            <div className="sched-head" style={{
               display: 'grid', gridTemplateColumns: '120px 1fr 110px 110px',
               padding: '12px 24px',
-              borderBottom: '1px solid #1a1a1a',
-              backgroundColor: '#0d0d0d',
+              borderBottom: '1px solid var(--line)',
+              backgroundColor: 'var(--surface)',
             }}>
               {['Laikas', 'Stilius', 'Trukmė', 'Amžius'].map(h => (
-                <span key={h} style={{ fontSize: 10, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700 }}>{h}</span>
+                <span key={h} style={{ fontSize: 10, letterSpacing: 3, color: 'var(--muted)', textTransform: 'uppercase', fontWeight: 700 }}>{h}</span>
               ))}
             </div>
             {SCHEDULE_DAYS[activeDay].classes.map((cls, i) => (
@@ -486,10 +490,10 @@ export default function App() {
                 style={{
                   display: 'grid', gridTemplateColumns: '120px 1fr 110px 110px',
                   padding: '20px 24px',
-                  borderBottom: i < SCHEDULE_DAYS[activeDay].classes.length - 1 ? '1px solid #131313' : 'none',
+                  borderBottom: i < SCHEDULE_DAYS[activeDay].classes.length - 1 ? '1px solid var(--line-soft)' : 'none',
                   alignItems: 'center',
                   // every second row slightly lighter for easier reading across
-                  backgroundColor: i % 2 === 1 ? '#141414' : 'transparent',
+                  backgroundColor: i % 2 === 1 ? 'var(--zebra)' : 'transparent',
                 }}
               >
                 <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: 22, color: '#FFB3C6', letterSpacing: 1 }}>
@@ -497,9 +501,9 @@ export default function App() {
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: cls.color, flexShrink: 0, display: 'inline-block' }} />
-                  <span style={{ fontWeight: 600, fontSize: 16, color: '#f0f0f0' }}>{cls.style}</span>
+                  <span style={{ fontWeight: 600, fontSize: 16, color: 'var(--text)' }}>{cls.style}</span>
                 </div>
-                <span style={{ fontSize: 14, color: '#c4c4c4', fontWeight: 400 }}>{cls.duration}</span>
+                <span style={{ fontSize: 14, color: 'var(--text-2)', fontWeight: 400 }}>{cls.duration}</span>
                 <span style={{
                   fontSize: 11, letterSpacing: 1.5, fontWeight: 600,
                   color: cls.color, textTransform: 'uppercase',
@@ -514,7 +518,7 @@ export default function App() {
             ))}
           </div>
 
-          <p style={{ marginTop: 20, fontSize: 13, color: '#9a9a9a', fontWeight: 400 }}>
+          <p style={{ marginTop: 20, fontSize: 13, color: 'var(--c-9a9a9a)', fontWeight: 400 }}>
             * Treniruotės vyksta Me Gusta salėje, Savanorių pr. 271, Kaunas. Pilną tvarkaraštį galite rasti paspaudę{' '}
             {/* TODO: link to the timetable page once it exists */}
             <a href="#" style={{ color: '#FFB3C6', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
@@ -523,20 +527,20 @@ export default function App() {
       </section>
 
       {/* PRICING */}
-      <section id="kainos" style={{ padding: '120px 0', backgroundColor: '#080808', borderTop: '1px solid #111' }}>
+      <section id="kainos" style={{ padding: '120px 0', backgroundColor: 'var(--bg)', borderTop: '1px solid var(--c-111111)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <Pricing />
         </div>
       </section>
 
       {/* TRAINERS */}
-      <section id="treneriai" style={{ padding: '120px 0', backgroundColor: '#060606', borderTop: '1px solid #111' }}>
+      <section id="treneriai" style={{ padding: '120px 0', backgroundColor: 'var(--bg-alt)', borderTop: '1px solid var(--c-111111)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;Komanda
             </p>
-            <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
+            <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
               Mūsų treneriai
             </h2>
           </div>
@@ -547,7 +551,7 @@ export default function App() {
                 key={t.name}
                 style={{
                   position: 'relative', overflow: 'hidden',
-                  backgroundColor: '#111',
+                  backgroundColor: 'var(--surface-2)',
                   cursor: 'default',
                 }}
                 onMouseEnter={e => {
@@ -597,12 +601,12 @@ export default function App() {
 
                 {/* Info bar */}
                 <div style={{ padding: '20px 20px', borderTop: `3px solid ${t.color}` }}>
-                  <h3 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 22, textTransform: 'uppercase', color: '#f0f0f0', margin: '0 0 4px', letterSpacing: 0.5 }}>
+                  <h3 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 22, textTransform: 'uppercase', color: 'var(--text)', margin: '0 0 4px', letterSpacing: 0.5 }}>
                     {t.name}
                   </h3>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: 12, color: t.color, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase' }}>{t.specialty}</span>
-                    <span style={{ fontSize: 11, color: '#555', fontWeight: 500, letterSpacing: 1 }}>{t.exp}</span>
+                    <span style={{ fontSize: 11, color: 'var(--c-555555)', fontWeight: 500, letterSpacing: 1 }}>{t.exp}</span>
                   </div>
                 </div>
               </div>
@@ -747,8 +751,8 @@ export default function App() {
         }
         .hero-shake { display: inline-block; animation: heroShake 2s ease-in-out 1.8s infinite; }
         /* Style tabs: brighter idle state, underline grows in on hover, stays on the active tab. */
-        .style-tab { color: #707070; transition: color 180ms cubic-bezier(0.23, 1, 0.32, 1); }
-        .style-tab:hover, .style-tab:focus-visible { color: #b0b0b0; }
+        .style-tab { color: var(--c-707070); transition: color 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .style-tab:hover, .style-tab:focus-visible { color: var(--c-b0b0b0); }
         .style-tab[aria-selected="true"] { color: #FFB3C6; }
         .style-tab::after {
           content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px;
@@ -759,7 +763,7 @@ export default function App() {
         /* Day tabs: hover fills the tab with pink from left to right, like the active one. */
         .day-tab {
           position: relative; overflow: hidden;
-          background: #111; border: 1px solid #1e1e1e; color: #a0a0a0;
+          background: var(--surface-2); border: 1px solid var(--c-1e1e1e); color: var(--text-3);
           transition: color 260ms cubic-bezier(0.23, 1, 0.32, 1), border-color 260ms cubic-bezier(0.23, 1, 0.32, 1);
         }
         .day-tab::before {
@@ -807,7 +811,7 @@ export default function App() {
         }
         @media (max-width: 900px) {
           .hero-overlay {
-            background: linear-gradient(180deg, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.8) 60%, rgba(8,8,8,0.9) 100%) !important;
+            background: linear-gradient(180deg, rgba(var(--bg-rgb), 0.55) 0%, rgba(var(--bg-rgb), 0.8) 60%, rgba(var(--bg-rgb), 0.9) 100%) !important;
           }
         }
         @media (max-width: 900px) {
@@ -851,7 +855,7 @@ export default function App() {
             padding-left: 12px !important;
             padding-right: 12px !important;
           }
-          div[style*="grid-template-columns: 120px 1fr 110px 110px"][style*="rgb(13, 13, 13)"] > span {
+          .sched-head > span {
             letter-spacing: 1px !important;
           }
         }
