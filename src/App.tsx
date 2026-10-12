@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type React from 'react'
 import logo from './assets/logo-megusta.webp'
 import heroImage from './assets/hero.webp'
+import { heroPhotoStyle } from './heroPhoto'
+import LayoutEditor from './editor/LayoutEditor'
 
 const DANCE_STYLES = [
   {
@@ -229,10 +231,10 @@ export default function App() {
       }}>
         <div className="wide-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 88, gap: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-            <a href="#hero" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
+            <a href="#hero" data-edit="Logotipas" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
               <img src={logo} alt="Me Gusta" width={81} height={52} style={{ height: 52, width: 'auto', display: 'block' }} />
             </a>
-            <div className="nav-contacts" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div className="nav-contacts" data-edit="Kontaktai" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <a href={`mailto:${CONTACT.email}`} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
                 <span style={{ color: '#FFB3C6' }}><Icon name="mail" size={14} /></span>
                 {CONTACT.email}
@@ -243,7 +245,7 @@ export default function App() {
               </a>
             </div>
             <span className="nav-socials" aria-hidden="true" style={{ width: 1, height: 40, backgroundColor: '#2a2a2a' }} />
-            <div className="nav-socials" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 16px)', gap: 10 }}>
+            <div className="nav-socials" data-edit="Soc. tinklai" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 16px)', gap: 10 }}>
               {SOCIALS.map(s => (
                 <a key={s.name} href={s.href} aria-label={s.name} title={s.name} style={{ color: '#ccc', display: 'flex', transition: 'color 0.2s' }} {...hoverPink}>
                   <Icon name={s.icon} size={16} />
@@ -251,7 +253,7 @@ export default function App() {
               ))}
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links">
+          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links" data-edit="Meniu">
             {['Stiliai', 'Tvarkaraštis', 'Kainos', 'Treneriai'].map((item) => (
               <a
                 key={item}
@@ -282,13 +284,7 @@ export default function App() {
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          // ~10% zoom-out from cover: image height 90% of the hero, anchored to the floor.
-          // The photo's edges are near-black; the top fade hides the seam into #020202.
-          backgroundImage: `linear-gradient(180deg, #020202 10%, rgba(2,2,2,0) 30%), url(${heroImage})`,
-          backgroundSize: '100% 100%, auto 90%', backgroundPosition: '0 0, 60% bottom', backgroundRepeat: 'no-repeat', backgroundColor: '#020202',
-        }} aria-hidden="true" />
+        <div data-edit-photo style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(heroImage) }} aria-hidden="true" />
         {/* gradient overlay */}
         <div className="hero-overlay" style={{
           position: 'absolute', inset: 0,
@@ -297,12 +293,12 @@ export default function App() {
         {/* accent line */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: 6, height: '100%', backgroundColor: '#FFB3C6' }} aria-hidden="true" />
 
-        <div className="hero-content" style={{ position: 'relative', paddingTop: 144, paddingBottom: 176, width: '100%' }}>
+        <div className="hero-content" style={{ position: 'relative', paddingTop: 144, paddingBottom: 80, width: '100%' }}>
           <div style={{ maxWidth: 720 }}>
-            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: '#FFB3C6', marginBottom: 24, textTransform: 'uppercase' }}>
+            <p data-edit="Hero: Kaunas · Nuo 2006" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: '#FFB3C6', marginBottom: 24, textTransform: 'uppercase' }}>
               ◆&nbsp;&nbsp;Kaunas · Nuo 2006
             </p>
-            <h1 style={{
+            <h1 data-edit="Hero: antraštė" style={{
               fontFamily: "'Barlow Condensed', sans-serif",
               fontWeight: 900, fontSize: 'clamp(72px, 10vw, 140px)',
               lineHeight: 0.92, textTransform: 'uppercase',
@@ -313,10 +309,10 @@ export default function App() {
               <span style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}>JUDESIO</span><br />
               NAMAI
             </h1>
-            <p style={{ fontSize: 18, color: '#aaa', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
+            <p data-edit="Hero: aprašymas" style={{ fontSize: 18, color: '#aaa', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
               Profesionali hip hop šokių studija Kaune. Čia gatvių ritmai virsta scenos menu — nuo pirmų žingsnių iki čempionų podiumo.
             </p>
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            <div data-edit="Hero: mygtukai" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <a
                 href="#stiliai"
                 style={{
@@ -350,7 +346,7 @@ export default function App() {
         </div>
 
         {/* scroll hint */}
-        <div style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+        <div data-edit="Slinkti" style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 11, letterSpacing: 3, color: '#555', textTransform: 'uppercase' }}>Slinkti</span>
           <div style={{ width: 1, height: 48, backgroundColor: '#333', position: 'relative', overflow: 'hidden' }}>
             <div style={{
@@ -832,6 +828,8 @@ export default function App() {
         </div>
       </footer>
 
+      <LayoutEditor />
+
       <style>{`
         /* Header + hero edge: one column of a 12-column grid (1/12 of the width),
            never further right than the 1280px content container, min 24px. */
@@ -839,14 +837,11 @@ export default function App() {
           padding-left: max(24px, min(calc((100% - 1280px) / 2 + 24px), 8.3333%));
           padding-right: max(24px, min(calc((100% - 1280px) / 2 + 24px), 8.3333%));
         }
-        /* Hero text: 10% of the width, which centers the 480px text block in the
-           dark area left of the dancers (~45% of the width at 1920px). */
+        /* Hero text: 12% of the width (230px at 1920px), never further right
+           than the 1280px content edge. */
         .hero-content {
-          padding-left: max(24px, min(calc((100% - 1280px) / 2 + 24px), 10%));
-          padding-right: max(24px, min(calc((100% - 1280px) / 2 + 24px), 10%));
-        }
-        @media (max-width: 900px) {
-          .hero-content { padding-bottom: 96px !important; }
+          padding-left: max(24px, min(calc((100% - 1280px) / 2 + 24px), 12%));
+          padding-right: max(24px, min(calc((100% - 1280px) / 2 + 24px), 12%));
         }
         @media (max-width: 640px) {
           .nav-socials { display: none !important; }

@@ -32,3 +32,10 @@ Jei svetainė talpinama ne domeno šaknyje (pvz. GitHub Pages `/web/`), build'in
 - Pašalinti Figma Make specifiniai Vite pluginai ir `.figma/make/site.json` priklausomybė.
 
 Nuotraukos kraunamos iš Unsplash CDN (kaip ir Figma originale).
+
+## Išdėstymo redaktorius
+
+Pridėkite `#redaguoti` prie adreso (pvz. `http://localhost:5173/#redaguoti`) arba build'inkite su
+`VITE_EDITOR=1`. Pažymėtus elementus galima tempti pele, tuščią hero vietą tempiant juda nuotrauka.
+Panelėje matomos reikšmės, kurias galima nukopijuoti ir perkelti į kodą. Redaktorius pažymi tik
+elementus su `data-edit` atributu; paprastiems lankytojams jis nerodomas.
