@@ -9,6 +9,7 @@ const ENDPOINT = import.meta.env.VITE_REGISTRATION_ENDPOINT as string | undefine
 const PINK = '#FFB3C6'
 const ERROR = '#ff8a8a'
 const display = "'Barlow Condensed', sans-serif"
+const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Savanorių pr. 271, Kaunas')
 
 const STYLE_OPTIONS = [
   'Gatvės šokiai (nuo 4m. iki neribojamo amžiaus)',
@@ -132,13 +133,13 @@ export default function Registration() {
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ marginBottom: 56 }}>
           <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: PINK, textTransform: 'uppercase', marginBottom: 12 }}>
-            ◆&nbsp;&nbsp;Pirmoji treniruotė nemokama
+            ◆&nbsp;&nbsp;Pradėk šokti šiandien
           </p>
           <h1 style={{ fontFamily: display, fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: '#f0f0f0', margin: 0 }}>
             Registracija
           </h1>
           <p style={{ marginTop: 20, fontSize: 17, color: '#b0b0b0', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
-            Užpildykite formą, o mes el. paštu atsiųsime visą informaciją apie pirmąją, nemokamą šokių pamoką.
+            Užpildykite formą, o mes el. paštu atsiųsime visą informaciją apie pirmąją, <span style={{ color: PINK, fontWeight: 500 }}>nemokamą</span> šokių pamoką.
           </p>
         </div>
 
@@ -264,7 +265,9 @@ export default function Registration() {
               <p style={{ fontSize: 11, letterSpacing: 3, color: '#8a8a8a', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 4px' }}>Turite klausimų?</p>
               <a href={CONTACT.phoneHref} style={{ color: '#f0f0f0', textDecoration: 'none' }}>{CONTACT.phone}</a>
               <a href={`mailto:${CONTACT.email}`} style={{ color: '#f0f0f0', textDecoration: 'none' }}>{CONTACT.email}</a>
-              <span style={{ color: '#9a9a9a' }}>Savanorių pr. 271, Kaunas</span>
+              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#f0f0f0', textDecoration: 'none' }}>
+                Savanorių pr. 271, Kaunas <span aria-hidden="true" style={{ color: PINK }}>↗</span>
+              </a>
             </div>
           </aside>
         </div>
@@ -296,6 +299,16 @@ export default function Registration() {
         .reg-check { display: flex; align-items: center; gap: 12px; font-size: 15px; color: #c4c4c4; cursor: pointer; }
         .reg-check input, #reg-consent { width: 18px; height: 18px; margin: 0; accent-color: ${PINK}; color-scheme: dark; flex-shrink: 0; cursor: pointer; }
         .reg-check:hover { color: #f0f0f0; }
+        /* "Apie Me Gusta sužinojau" stays a single choice but looks like the style checkboxes. */
+        .reg-check input[type="radio"] {
+          appearance: none; -webkit-appearance: none; border-radius: 3px;
+          border: 1px solid #6e6e6e; background: #1a1a1a; display: inline-grid; place-content: center;
+        }
+        .reg-check input[type="radio"]:hover { border-color: #9a9a9a; }
+        .reg-check input[type="radio"]:checked {
+          border-color: ${PINK}; background: ${PINK} url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23080808' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+        }
+        .reg-check input[type="radio"]:focus-visible { outline: 2px solid ${PINK}; outline-offset: 2px; }
         .reg-aside { position: sticky; top: 113px; }
         .reg-btn {
           background: ${PINK}; color: #080808; border: 1px solid ${PINK}; cursor: pointer;
