@@ -99,7 +99,7 @@ export const FAQ: FaqGroup[] = [
         a: (
           <p>
             Savo būsimą trenerį galite pamatyti ant tvarkaraščio laiko lentelės, kuri skirta jūsų šokio grupei.{' '}
-            <L href="#tvarkarastis">Tvarkaraštis</L>. Taip pat, apie trenerius galite sužinoti puslapyje <L href="#treneriai">mokytojai</L>.
+            <L href="#tvarkarastis-pilnas">Tvarkaraštis</L>. Taip pat, apie trenerius galite sužinoti puslapyje <L href="#treneriai">mokytojai</L>.
           </p>
         ),
       },
