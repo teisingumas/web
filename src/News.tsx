@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { inlineData, section } from './content'
 import type { PostPage } from './content/types'
 import { fetchNewsPage, formatDate } from './publicApi'
-import { newsPagePath } from './router'
+import { newsPagePath, PATHS } from './router'
 import { pageTitle } from './seo'
 
 const display = "'Barlow Condensed', sans-serif"
@@ -10,8 +10,20 @@ const display = "'Barlow Condensed', sans-serif"
 // The page the server rendered comes inline; later pages are fetched.
 let inlinePage: PostPage | null = inlineData.view?.type === 'news' ? inlineData.view.data : null
 
-export default function News({ pageNum }: { pageNum: number }) {
+export default function News({ pageNum: routePage }: { pageNum: number }) {
   const news = section('news')
+  // The page number lives in state, not in the address: the pager swaps the six posts in place
+  // and the address stays /naujienos. /naujienos/N still opens that page (old links, crawlers).
+  const [pageNum, setPageNum] = useState(routePage)
+  const listTop = useRef<HTMLDivElement>(null)
+  useEffect(() => { setPageNum(routePage) }, [routePage])
+  const goToPage = (n: number) => {
+    setPageNum(n)
+    if (window.location.pathname !== PATHS.news) {
+      try { window.history.replaceState(null, '', PATHS.news) } catch { /* preview frames */ }
+    }
+    listTop.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
   const [state, setState] = useState<{ status: 'loading' | 'ready' | 'error'; data?: PostPage; page: number }>(() =>
     inlinePage && inlinePage.page === pageNum ? { status: 'ready', data: inlinePage, page: pageNum } : { status: 'loading', page: pageNum },
   )
@@ -89,6 +101,7 @@ export default function News({ pageNum }: { pageNum: number }) {
 
         {data && data.items.length > 0 && (
           <>
+            <div ref={listTop} className="news-list-top" />
             <div className="news-grid">
               {data.items.map(post => (
                 <a key={post.slug} href={`/${post.slug}`} className="news-card">
@@ -104,12 +117,13 @@ export default function News({ pageNum }: { pageNum: number }) {
                 </a>
               ))}
             </div>
-            {data.pages > 1 && <Pagination page={pageNum} pages={data.pages} />}
+            {data.pages > 1 && <Pagination page={pageNum} pages={data.pages} onChange={goToPage} />}
           </>
         )}
       </div>
 
       <style>{`
+        .news-list-top { scroll-margin-top: 120px; }
         .news-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
         .news-card {
           display: flex; flex-direction: column; text-decoration: none; color: inherit;
@@ -134,7 +148,7 @@ export default function News({ pageNum }: { pageNum: number }) {
         .news-pages { display: flex; justify-content: center; align-items: center; gap: 4px; margin-top: 56px; flex-wrap: wrap; }
         .news-page {
           min-width: 48px; height: 48px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center;
-          font-family: ${display}; font-weight: 800; font-size: 18px; letter-spacing: 1px; text-decoration: none;
+          font-family: ${display}; font-weight: 800; font-size: 18px; letter-spacing: 1px; text-decoration: none; cursor: pointer;
         }
         .news-page[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
         /* the current page looks like the active day tab */
@@ -170,18 +184,18 @@ function pageList(page: number, pages: number): (number | 'gap')[] {
   return list
 }
 
-function Pagination({ page, pages }: { page: number; pages: number }) {
+function Pagination({ page, pages, onChange }: { page: number; pages: number; onChange: (n: number) => void }) {
   return (
     <nav className="news-pages" aria-label="Naujienų puslapiai">
-      <a className="news-page day-tab" href={newsPagePath(page - 1)} aria-disabled={page <= 1} aria-label="Ankstesnis puslapis"><span>←</span></a>
+      <button type="button" className="news-page day-tab" disabled={page <= 1} aria-disabled={page <= 1} aria-label="Ankstesnis puslapis" onClick={() => onChange(page - 1)}><span>←</span></button>
       {pageList(page, pages).map((n, i) =>
         n === 'gap' ? <span key={`gap-${i}`} className="news-gap" aria-hidden="true">…</span> : (
-          <a key={n} className="news-page day-tab" href={newsPagePath(n)} aria-current={n === page ? 'page' : undefined} aria-label={`${n} puslapis`}>
+          <button key={n} type="button" className="news-page day-tab" aria-current={n === page ? 'page' : undefined} aria-label={`${n} puslapis`} onClick={() => n !== page && onChange(n)}>
             <span>{n}</span>
-          </a>
+          </button>
         ),
       )}
-      <a className="news-page day-tab" href={newsPagePath(page + 1)} aria-disabled={page >= pages} aria-label="Kitas puslapis"><span>→</span></a>
+      <button type="button" className="news-page day-tab" disabled={page >= pages} aria-disabled={page >= pages} aria-label="Kitas puslapis" onClick={() => onChange(page + 1)}><span>→</span></button>
     </nav>
   )
 }
