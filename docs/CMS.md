@@ -72,31 +72,54 @@ Lentelių kurti nereikia: sistema jas sukurs pati, kai pirmą kartą prisijungsi
 
 ## 4 žingsnis. Nustatymų failas (Hostinger File Manager)
 
-1. hPanel → **Files → File Manager**.
-2. Atidarykite aplanką **`domains/testas.vedejasedvardas.lt/`**. Jame matysite aplanką `public_html`.
-   Failą kurkite **čia, šalia `public_html`**, ne jo viduje.
-3. Viršuje **New file** (naujas failas) → pavadinimas **`megusta-config.php`** → atidarykite redaguoti.
-4. Įklijuokite tekstą žemiau ir pakeiskite keturias reikšmes savo duomenimis (kabutes palikite):
+Failo `megusta-config.php` niekur atsisiųsti nereikia: jo dar **nėra**, jį sukuriate patys kaip naują tuščią failą
+ir įklijuojate žemiau esantį tekstą. Jame laikomi slaptažodžiai, todėl jo nėra GitHub'e ir jis nepatenka į viešą svetainę.
+
+**Kur jis turi būti** (šalia `public_html`, ne jo viduje):
+
+```
+domains/
+└── testas.vedejasedvardas.lt/
+    ├── public_html/            ← svetainės failai (čia NEKURTI)
+    └── megusta-config.php      ← ČIA
+```
+
+1. hPanel → **Websites** → prie `testas.vedejasedvardas.lt` spauskite **Manage** → kairėje **Files → File Manager**.
+2. File Manager dažniausiai atsidaro aplanke `public_html`. Pakilkite vienu lygiu aukščiau:
+   kelio juostoje viršuje spauskite **`testas.vedejasedvardas.lt`** (arba rodyklę „aukštyn“).
+   Turite matyti aplanką `public_html` kaip vieną iš sąrašo elementų.
+3. Viršutinėje juostoje spauskite **New File** (lapo su „+“ ikona), įrašykite pavadinimą **`megusta-config.php`** → **Create**.
+4. Du kartus spustelėkite naują failą: atsidarys tuščias redaktorius. Įklijuokite visą tekstą žemiau.
+5. Pakeiskite **5 reikšmes** tarp kabučių (pačias kabutes `'…'` palikite):
 
 ```php
 <?php
 return [
     'db' => [
         'host' => 'localhost',
-        'name' => 'u123456789_megusta',      // 1 žingsnis: duomenų bazės pavadinimas
-        'user' => 'u123456789_megusta',      // 1 žingsnis: vartotojas
-        'pass' => 'ČIA_SLAPTAŽODIS',         // 1 žingsnis: slaptažodis
+        'name' => 'u123456789_megusta',
+        'user' => 'u123456789_megusta',
+        'pass' => 'ČIA_SLAPTAŽODIS',
     ],
-    'clerk_publishable_key' => 'pk_test_…',  // 3 žingsnis, 7 punktas
+    'clerk_publishable_key' => 'pk_test_ČIA_RAKTAS',
     'admin_user_ids' => [
-        'user_…',                            // 3 žingsnis, 6 punktas
+        'user_ČIA_ID',
     ],
 ];
 ```
 
-5. **Save**.
+| Ką keisti | Iš kur paimti |
+|-----------|---------------|
+| `'name' => '…'` | 1 žingsnis: hPanel → Databases → Management, stulpelis **MySQL database** (pvz. `u123456789_megusta`) |
+| `'user' => '…'` | Ten pat, stulpelis **MySQL user** |
+| `'pass' => '…'` | Slaptažodis, kurį įrašėte kurdami duomenų bazę |
+| `'clerk_publishable_key' => '…'` | 3 žingsnis: Clerk → **API keys** → **Publishable key** (prasideda `pk_test_`) |
+| `'user_…'` | 3 žingsnis: Clerk → **Users** → spauskite vartotoją → **User ID** (prasideda `user_`) |
 
-Aplankas `megusta-data` (nuotraukoms) susikurs pats. Šablonas su paaiškinimais: `server/megusta-config.example.php`.
+6. Išsaugokite (diskelio ikona viršuje arba **Ctrl+S**) ir uždarykite redaktorių.
+
+Jei kliento User ID dar nežinote, palikite `'user_ČIA_ID'`: 6 žingsnyje prisijungus puslapis parodys tikrąjį ID ir jį įrašysite vėliau.
+Aplankas `megusta-data` (nuotraukoms) susikurs pats šalia šio failo.
 
 ## 5 žingsnis. Paleiskite naują versiją (GitHub)
 
