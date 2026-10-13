@@ -22,7 +22,8 @@
         var t = e.target
         if (!t || (t.tagName !== 'SCRIPT' && t.tagName !== 'LINK')) return
         var root = document.getElementById('root')
-        if (root && !root.childElementCount) {
+        // (index.php may pre-fill #root with a [data-prerender] copy of the article for search engines)
+        if (root && (!root.childElementCount || root.firstElementChild.hasAttribute('data-prerender'))) {
           root.innerHTML = '<p style="font:16px/1.5 system-ui,sans-serif;color:#f0f0f0;background:#080808;padding:24px;margin:0">Nepavyko įkelti failo: ' + (t.src || t.href) + '<br>Patikrinkite, ar aplankas <b>assets</b> įkeltas šalia index.html.</p>'
         }
       }, true)

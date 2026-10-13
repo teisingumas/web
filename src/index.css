@@ -120,7 +120,8 @@
 }
 
 :root[data-theme="light"] .site-header,
-:root[data-theme="light"] footer {
+:root[data-theme="light"] footer,
+:root[data-theme="light"] .adm-login {
   --pink-text: #FFB3C6;
   --bg: #080808;
   --bg-rgb: 8, 8, 8;
