@@ -88,7 +88,7 @@ export default function Timetable() {
             * Treniruotės vyksta Me Gusta salėje, Savanorių pr. 271, Kaunas.
           </p>
           <a
-            href="#registracija"
+            href="/registracija"
             style={{
               backgroundColor: PINK, color: '#080808', textDecoration: 'none',
               padding: '14px 32px', fontWeight: 800, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase',

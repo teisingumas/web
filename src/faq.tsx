@@ -15,7 +15,7 @@ const Admin = () => <L href={`mailto:${ADMIN_EMAIL}`}>{ADMIN_EMAIL}</L>
 
 const JOIN = (
   <p>
-    Studijoje šokėjai laukiami viso sezono metu. Visų pirma, reikia užpildyti <L href="#registracija">registracijos formą</L>.
+    Studijoje šokėjai laukiami viso sezono metu. Visų pirma, reikia užpildyti <L href="/registracija">registracijos formą</L>.
     Artimiausiu metu jums atsiųsime elektroninį laišką arba SMS žinutę su pakvietimu į pirmąją jūsų pasirinkto šokio stiliaus pamoką.
   </p>
 )
@@ -46,7 +46,7 @@ export const FAQ: FaqGroup[] = [
         a: (
           <p>
             Studijoje mokome: Streetdance (Gatvės šokiai): Hip-Hop, House, Locking, Popping, Breakdance (Breikas), Pop Dance, Lady Class.{' '}
-            <L href="#stiliai">Kaip pasirinkti šokio stilių?</L>
+            <L href="/#stiliai">Kaip pasirinkti šokio stilių?</L>
           </p>
         ),
       },
@@ -90,7 +90,7 @@ export const FAQ: FaqGroup[] = [
         a: (
           <p>
             Taip! Me Gustoje galite lankyti net kelis stilius. Šokant kelis stilius reikalingas papildomas PRO nario abonementas.{' '}
-            <L href="#registracija-kainos">Kainos</L>
+            <L href="/registracija/kainos">Kainos</L>
           </p>
         ),
       },
@@ -99,7 +99,7 @@ export const FAQ: FaqGroup[] = [
         a: (
           <p>
             Savo būsimą trenerį galite pamatyti ant tvarkaraščio laiko lentelės, kuri skirta jūsų šokio grupei.{' '}
-            <L href="#tvarkarastis-pilnas">Tvarkaraštis</L>. Taip pat, apie trenerius galite sužinoti puslapyje <L href="#treneriai">mokytojai</L>.
+            <L href="/tvarkarastis">Tvarkaraštis</L>. Taip pat, apie trenerius galite sužinoti puslapyje <L href="/#treneriai">mokytojai</L>.
           </p>
         ),
       },
@@ -119,7 +119,7 @@ export const FAQ: FaqGroup[] = [
         ),
       },
       { q: 'Ar Me Gustoje pritaikomas NVŠ krepšelis (15 eur)?', a: NVS },
-      { q: 'Kiek kainuoja šokti Me Gustoje?', a: <p>Šokių pamokų <L href="#registracija-kainos">kainos</L>.</p> },
+      { q: 'Kiek kainuoja šokti Me Gustoje?', a: <p>Šokių pamokų <L href="/registracija/kainos">kainos</L>.</p> },
       { q: 'Kokia apmokėjimo tvarka Me Gustoje už šokių pamokas?', a: <p>Už šokių pamokas yra mokama už einamąjį mėnesį. Nario mokestis mokamas mėnesio pradžioje.</p> },
       { q: 'Ką daryti, jei susirgau?', a: <p>Apie ligą <B>privaloma informuoti administratorę el. paštu</B> <Admin /> iš karto, kai tik liga pasireiškia.</p> },
       { q: 'Ką daryti, jei išvykstu atostogų?', a: <p>Ketinant praleisti daugiau nei savaitę atostogaujant, reikia <B>pranešti apie išvykimą studijos administratorei</B> el. paštu <Admin />.</p> },

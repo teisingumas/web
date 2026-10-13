@@ -11,6 +11,7 @@ import Registration from './Registration'
 import Pricing from './Pricing'
 import Timetable from './Timetable'
 import ThemeSwitch from './ThemeSwitch'
+import { installLinkHandling, PATHS, useRoute, type Page } from './router'
 
 const TRAINERS = [
   {
@@ -88,15 +89,6 @@ const hoverPink = {
   onMouseLeave: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#ccc' },
 }
 
-type Page = 'home' | 'registracija' | 'tvarkarastis'
-
-const pageFromHash = (): Page => {
-  const h = window.location.hash
-  if (/^#registracija(-|$)/.test(h)) return 'registracija'
-  if (h === '#tvarkarastis-pilnas') return 'tvarkarastis'
-  return 'home'
-}
-
 const PAGE_TITLES: Record<Page, string> = {
   home: 'Me Gusta — Hip hop šokių studija Kaune',
   registracija: 'Registracija — Me Gusta',
@@ -104,25 +96,18 @@ const PAGE_TITLES: Record<Page, string> = {
 }
 
 export default function App() {
-  // Inner pages live under their own hashes (#registracija, #tvarkarastis-pilnas);
-  // hash routing works on any static host and in the preview. Section links lead home.
-  const [page, setPage] = useState<Page>(pageFromHash)
+  // Inner pages have their own paths (/tvarkarastis, /registracija/...); see router.ts.
+  const route = useRoute()
+  const page = route.page
 
-  useEffect(() => {
-    const onHash = () => setPage(pageFromHash())
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
-  }, [])
+  useEffect(() => installLinkHandling(), [])
 
   useEffect(() => {
     document.title = PAGE_TITLES[page]
-    if (page !== 'home') {
-      // a new page opens at its top straight away, not via the smooth scroll from index.css
-      window.scrollTo({ top: 0, behavior: 'instant' })
-      return
-    }
+    // after switching pages, open at the top, or at the #section the link asked for
     const target = window.location.hash && document.getElementById(window.location.hash.slice(1))
     if (target) target.scrollIntoView()
+    else window.scrollTo({ top: 0, behavior: 'instant' })
   }, [page])
   const [activeStyle, setActiveStyle] = useState(0)
   const [activeDay, setActiveDay] = useState(0)
@@ -169,7 +154,7 @@ export default function App() {
       }}>
         <div className="wide-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 88, gap: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-            <a href="#hero" data-edit="Logotipas" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
+            <a href={PATHS.home} data-edit="Logotipas" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
               <img src={logo} alt="Me Gusta" width={81} height={52} style={{ height: 52, width: 'auto', display: 'block' }} />
             </a>
             <div className="nav-contacts" data-edit="Kontaktai" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -193,16 +178,18 @@ export default function App() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links" data-edit="Meniu">
+            {/* Only Tvarkaraštis has its page yet; the others get href once their pages exist. */}
             {[
-              { label: 'Stiliai', href: '#stiliai' },
-              { label: 'Tvarkaraštis', href: '#tvarkarastis-pilnas' },
-              { label: 'Kainos', href: '#kainos' },
-              { label: 'Treneriai', href: '#treneriai' },
-            ].map(({ label: item, href }) => (
+              { label: 'Stiliai' },
+              { label: 'Tvarkaraštis', href: PATHS.timetable },
+              { label: 'Kainos' },
+              { label: 'Treneriai' },
+            ].map(({ label: item, href }: { label: string; href?: string }) => (
               <a
                 key={item}
                 href={href}
-                style={{ color: '#888', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', transition: 'color 0.2s' }}
+                aria-current={href && href === window.location.pathname ? 'page' : undefined}
+                style={{ color: '#888', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', transition: 'color 0.2s', cursor: href ? 'pointer' : 'default' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#FFB3C6')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#888')}
               >
@@ -210,7 +197,7 @@ export default function App() {
               </a>
             ))}
             <a
-              href="#registracija"
+              href={PATHS.registration}
               style={{
                 backgroundColor: '#FFB3C6', color: '#080808', textDecoration: 'none',
                 padding: '8px 20px', fontWeight: 700, fontSize: 12, letterSpacing: 1.5,
@@ -227,7 +214,7 @@ export default function App() {
         </div>
       </nav>
 
-      {page === 'registracija' ? <Registration /> : page === 'tvarkarastis' ? <Timetable /> : (<>
+      {page === 'registracija' ? <Registration tab={route.tab} /> : page === 'tvarkarastis' ? <Timetable /> : (<>
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}
@@ -540,7 +527,7 @@ export default function App() {
 
           <p style={{ marginTop: 20, fontSize: 13, color: 'var(--c-9a9a9a)', fontWeight: 400 }}>
             * Treniruotės vyksta Me Gusta salėje, Savanorių pr. 271, Kaunas. Pilną tvarkaraštį galite rasti paspaudę{' '}
-            <a href="#tvarkarastis-pilnas" style={{ color: 'var(--pink-text)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
+            <a href={PATHS.timetable} style={{ color: 'var(--pink-text)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
           </p>
         </div>
       </section>
@@ -645,7 +632,7 @@ export default function App() {
         </h2>
         <div className="reveal reveal-4">
         <a
-          href="#registracija"
+          href={PATHS.registration}
           style={{
             display: 'inline-block',
             backgroundColor: '#080808', color: '#FFB3C6',

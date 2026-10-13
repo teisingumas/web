@@ -5,9 +5,9 @@ import path from 'node:path'
 
 // Vite config — https://vitejs.dev/config/
 export default defineConfig({
-  // Relative asset paths ("./assets/…") so the build works from any folder on any host
-  // (e.g. a Hostinger subdomain folder). Set BASE_PATH to force an absolute base.
-  base: process.env.BASE_PATH || './',
+  // Absolute asset paths: pages live at real paths (/tvarkarastis, /registracija/kainos),
+  // so assets must resolve from the site root. The site is served from the domain root.
+  base: process.env.BASE_PATH || '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

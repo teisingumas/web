@@ -64,7 +64,7 @@ export default function Pricing({ centered = false, heading = true }: { centered
             </ul>
           </div>
           <a
-            href="#registracija"
+            href="/registracija"
             style={{
               display: 'block', textAlign: 'center',
               padding: '16px 24px',

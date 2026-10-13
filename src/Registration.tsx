@@ -2,6 +2,7 @@ import { cloneElement, useEffect, useState } from 'react'
 import type React from 'react'
 import { CONTACT } from './data'
 import { FAQ } from './faq'
+import { PATHS, type RegTab } from './router'
 import Pricing from './Pricing'
 
 // Where submissions are POSTed as JSON (e.g. a Formspree / Web3Forms / own API URL).
@@ -94,27 +95,14 @@ function validate(f: Form) {
 
 const fullPhone = (p: Phone) => (p.number ? `${COUNTRIES.find(c => c.code === p.country)!.dial} ${p.number}` : '')
 
-// Tabs live in the address hash so links (and the FAQ) can open a specific tab.
+// Each tab has its own address, so links (and the FAQ) can open a specific tab.
 const TABS = [
-  { id: 'registracija', label: 'Registracija', hash: '#registracija' },
-  { id: 'informacija', label: 'Informacija', hash: '#registracija-informacija' },
-  { id: 'kainos', label: 'Kainos', hash: '#registracija-kainos' },
+  { id: 'registracija', label: 'Registracija', href: PATHS.registration },
+  { id: 'informacija', label: 'Informacija', href: PATHS.info },
+  { id: 'kainos', label: 'Kainos', href: PATHS.prices },
 ] as const
-type TabId = (typeof TABS)[number]['id']
-const tabFromHash = (): TabId => TABS.find(t => t.hash === window.location.hash)?.id ?? 'registracija'
 
-export default function Registration() {
-  const [tab, setTab] = useState<TabId>(tabFromHash)
-
-  useEffect(() => {
-    const onHash = () => {
-      setTab(tabFromHash())
-      window.scrollTo(0, 0)
-    }
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
-  }, [])
-
+export default function Registration({ tab }: { tab: RegTab }) {
   const [form, setForm] = useState<Form>(EMPTY)
   const [touched, setTouched] = useState(false)
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -162,7 +150,7 @@ export default function Registration() {
           <h1 className="sr-only">Registracija</h1>
           <nav role="tablist" aria-label="Registracijos skiltys" className="page-tabs">
             {TABS.map(t => (
-              <a key={t.id} href={t.hash} role="tab" aria-selected={tab === t.id} className="page-tab">
+              <a key={t.id} href={t.href} role="tab" aria-selected={tab === t.id} className="page-tab">
                 {t.label}
               </a>
             ))}
