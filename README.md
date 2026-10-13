@@ -17,12 +17,22 @@ npm run typecheck  # TypeScript patikra
 Jei svetainė talpinama ne domeno šaknyje (pvz. GitHub Pages `/web/`), build'inkite su
 `BASE_PATH=/web/ npm run build`.
 
+## Turinio valdymas (CMS)
+
+Klientas tekstus, nuotraukas, tvarkaraštį, naujienas ir SEO keičia adresu **`/adminas`** (prisijungimas per Clerk),
+valdymas yra **`/apzvalga`**. Turinys saugomas Hostinger MySQL duomenų bazėje, pakeitimai matomi iš karto.
+Paleidimo vadovas žingsnis po žingsnio ir naudojimo instrukcija: **[docs/CMS.md](docs/CMS.md)**.
+
 ## Struktūra
 
-- `src/App.tsx` — visas puslapis (nav, hero, statistika, stiliai, tvarkaraštis, kainos, treneriai, CTA, footer) ir jo duomenys
+- `src/App.tsx` — puslapio rėmas (nav, footer) ir pagrindinio puslapio skiltys
+- `src/content/` — turinio schema (`schema.json`), pradinis turinys (`defaults.ts`) ir tipai
+- `src/News.tsx`, `src/PostPage.tsx`, `src/NotFound.tsx` — naujienų sąrašas (`/naujienos`), naujiena (`/<adresas>`), 404
+- `src/admin/` — turinio valdymas (įkeliamas tik `/adminas` ir `/apzvalga`)
+- `server/` — PHP: `index.php` (SEO žymės ir turinys kiekvienam puslapiui), `api/` (JSON API), `lib/`; build metu nukopijuojama į `dist/`
 - `src/index.css` — šriftai (Barlow Condensed, Outfit), spalvų kintamieji, Tailwind
 - `src/main.tsx` — React įėjimo taškas
-- `index.html` — HTML apvalkalas (`lang="lt"`, title, meta)
+- `index.html` — HTML apvalkalas (`lang="lt"`); `index.php` jį papildo puslapio title ir meta žymėmis
 
 ## Skirtumai nuo Figma eksporto
 
@@ -31,7 +41,8 @@ Jei svetainė talpinama ne domeno šaknyje (pvz. GitHub Pages `/web/`), build'in
   meniu nuorodos nepasislėpdavo, statistika, kainos, tvarkaraštis ir footer išlįsdavo už ekrano krašto.
 - Pašalinti Figma Make specifiniai Vite pluginai ir `.figma/make/site.json` priklausomybė.
 
-Nuotraukos kraunamos iš Unsplash CDN (kaip ir Figma originale).
+Pradinės stilių ir hero nuotraukos yra `public/img/`; trenerių pradinės nuotraukos kraunamos iš Unsplash CDN.
+Kliento įkeltos nuotraukos saugomos serveryje (`megusta-data/media`) ir rodomos adresu `/media/…`.
 
 ## Išdėstymo redaktorius
 
@@ -48,5 +59,7 @@ elementus su `data-edit` atributu; paprastiems lankytojams jis nerodomas.
 - Hostinger (hPanel → Advanced → Git) iš šakos `hostinger` diegia failus į
   `domains/testas.vedejasedvardas.lt/public_html`. Auto Deployment webhook'as GitHub'e
   (Settings → Webhooks) praneša Hostinger'iui apie kiekvieną naują versiją.
-- Puslapiai turi tikrus adresus (`/tvarkarastis`, `/registracija`); `.htaccess` visus kitus
-  adresus nukreipia į `index.html`, todėl svetainė turi būti domeno šaknyje.
+- Puslapiai turi tikrus adresus (`/tvarkarastis`, `/registracija`, `/naujienos`, `/<naujiena>`); `.htaccess` visus kitus
+  adresus nukreipia į `index.php`, todėl svetainė turi būti domeno šaknyje.
+- Slapti nustatymai (`megusta-config.php`) ir nuotraukos (`megusta-data/`) yra aplanke virš `public_html`, todėl
+  naujos versijos jų neperrašo. Žr. [docs/CMS.md](docs/CMS.md).

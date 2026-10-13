@@ -1,8 +1,7 @@
 import { cloneElement, useEffect, useState } from 'react'
 import type React from 'react'
-import { CONTACT } from './data'
-import { FAQ } from './faq'
-import { TAB_EVENT, type RegTab, type Route } from './router'
+import { phoneHref, section } from './content'
+import { showRegistrationTab, TAB_EVENT, type RegTab, type Route } from './router'
 import Pricing from './Pricing'
 
 // Where submissions are POSTed as JSON (e.g. a Formspree / Web3Forms / own API URL).
@@ -14,17 +13,7 @@ const PINK = '#FFB3C6'
 const PINK_TEXT = 'var(--pink-text)'
 const ERROR = '#ff8a8a'
 const display = "'Barlow Condensed', sans-serif"
-const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Savanorių pr. 271, Kaunas')
-
-const STYLE_OPTIONS = [
-  'Gatvės šokiai (nuo 4m. iki neribojamo amžiaus)',
-  'Pop Dance (nuo 8m. iki 15m.)',
-  'Lady Class (nuo 16m.)',
-  'Breakdance (nuo 7m.)',
-]
-
-// Row-major, so the two columns read like the studio's paper form.
-const SOURCE_OPTIONS = ['Iš pažįstamų', 'Renginyje', 'Google', 'Facebook', 'Instagram', 'Tik Tok', 'Kitur']
+const mapsUrl = (address: string) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address)
 
 // Horizontal three-stripe flags (Poland has two), drawn instead of emoji, which Windows does not render.
 const COUNTRIES = [
@@ -105,6 +94,9 @@ const TABS = [
 
 export default function Registration({ route }: { route: Route }) {
   const [tab, setTab] = useState<RegTab>(route.tab)
+  const reg = section('registration')
+  const contacts = section('global.contacts')
+  const phoneLink = phoneHref(contacts.phone)
 
   // a new navigation (e.g. "Rinktis Standart" on the Kainos tab) opens the tab it asked for
   useEffect(() => {
@@ -163,7 +155,7 @@ export default function Registration({ route }: { route: Route }) {
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ marginBottom: 56 }}>
           <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: PINK_TEXT, textTransform: 'uppercase', marginBottom: 12 }}>
-            ◆&nbsp;&nbsp;Pradėk šokti šiandien
+            ◆&nbsp;&nbsp;{reg.kicker}
           </p>
           <h1 className="sr-only">Registracija</h1>
           <nav role="tablist" aria-label="Registracijos skiltys" className="page-tabs">
@@ -174,13 +166,11 @@ export default function Registration({ route }: { route: Route }) {
             ))}
           </nav>
           {tab === 'registracija' && (
-            <p style={{ marginTop: 24, fontSize: 17, color: 'var(--c-b0b0b0)', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
-              Užpildykite formą, o mes el. paštu atsiųsime visą informaciją apie pirmąją, <span style={{ color: PINK_TEXT, fontWeight: 500 }}>nemokamą</span> šokių pamoką.
-            </p>
+            <div className="reg-intro" style={{ marginTop: 24, fontSize: 17, color: 'var(--c-b0b0b0)', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }} dangerouslySetInnerHTML={{ __html: reg.intro }} />
           )}
           {tab === 'informacija' && (
             <p style={{ marginTop: 24, fontSize: 17, color: 'var(--c-b0b0b0)', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
-              Dažniausiai užduodami klausimai. Neradote atsakymo? Parašykite <a href={`mailto:${CONTACT.email}`} className="faq-link">{CONTACT.email}</a> arba skambinkite <a href={CONTACT.phoneHref} className="faq-link">{CONTACT.phone}</a>.
+              {reg.infoIntro} Parašykite <a href={`mailto:${contacts.email}`} className="faq-link">{contacts.email}</a> arba skambinkite <a href={phoneLink} className="faq-link">{contacts.phone}</a>.
             </p>
           )}
         </div>
@@ -223,7 +213,7 @@ export default function Registration({ route }: { route: Route }) {
               <fieldset className="reg-fieldset">
                 <legend className="reg-label">Pasirink norimą šokių stilių</legend>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {STYLE_OPTIONS.map((s, i) => (
+                  {reg.styleOptions.map((s, i) => (
                     <label key={s} className="reg-check">
                       <input
                         id={i === 0 ? 'reg-styles' : undefined} type="checkbox" checked={form.styles.includes(s)}
@@ -251,7 +241,7 @@ export default function Registration({ route }: { route: Route }) {
               <fieldset className="reg-fieldset">
                 <legend className="reg-label">Apie Me Gusta sužinojau<span className="reg-req"> *</span></legend>
                 <div className="reg-grid" role="radiogroup" style={{ rowGap: 10 }}>
-                  {SOURCE_OPTIONS.map((s, i) => (
+                  {reg.sourceOptions.map((s, i) => (
                     <label key={s} className="reg-check">
                       <input id={i === 0 ? 'reg-source' : undefined} type="radio" name="source" checked={form.source === s} onChange={() => set('source', s)} />
                       {s}
@@ -261,15 +251,17 @@ export default function Registration({ route }: { route: Route }) {
                 {errors.source && <span style={{ color: ERROR, fontSize: 13, marginTop: 8, display: 'block' }}>{errors.source}</span>}
               </fieldset>
 
-              <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text)', lineHeight: 1.5, maxWidth: 640 }}>
-                Užsiregistravus, artimiausiu metu el. paštu išsiųsime Jums visą reikalingą informaciją apie pirmąją šokių pamoką.
-              </p>
+              {reg.formNote && (
+                <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--text)', lineHeight: 1.5, maxWidth: 640 }}>
+                  {reg.formNote}
+                </p>
+              )}
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                 <label htmlFor="reg-consent" style={{ display: 'flex', gap: 12, alignItems: 'flex-start', fontSize: 14, color: 'var(--text-2)', lineHeight: 1.5, cursor: 'pointer' }}>
                   <input id="reg-consent" type="checkbox" checked={form.consent} onChange={e => set('consent', e.target.checked)} style={{ width: 18, height: 18, marginTop: 2, accentColor: PINK, flexShrink: 0 }} />
                   <span>
-                    Sutinku, kad mano pateikti duomenys būtų naudojami registracijai tvarkyti ir susisiekti dėl treniruočių.
+                    {reg.consent}
                     {errors.consent && <span style={{ display: 'block', color: ERROR, fontSize: 13, marginTop: 6 }}>{errors.consent}</span>}
                   </span>
                 </label>
@@ -277,11 +269,11 @@ export default function Registration({ route }: { route: Route }) {
                   <button type="submit" className="reg-btn" disabled={status === 'sending'}>
                     {status === 'sending' ? 'Siunčiama…' : 'Registruotis →'}
                   </button>
-                  <span style={{ fontSize: 14, color: 'var(--c-9a9a9a)' }}>Pirmoji treniruotė nemokama</span>
+                  {reg.freeNote && <span style={{ fontSize: 14, color: 'var(--c-9a9a9a)' }}>{reg.freeNote}</span>}
                 </div>
                 {status === 'error' && (
                   <p role="alert" style={{ color: ERROR, fontSize: 14, margin: 0 }}>
-                    Nepavyko išsiųsti registracijos. Bandykite dar kartą arba parašykite {CONTACT.email}.
+                    Nepavyko išsiųsti registracijos. Bandykite dar kartą arba parašykite {contacts.email}.
                   </p>
                 )}
               </div>
@@ -292,49 +284,45 @@ export default function Registration({ route }: { route: Route }) {
             <div>
               <p style={{ fontFamily: display, fontWeight: 800, fontSize: 20, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text)', margin: '0 0 16px' }}>Kas toliau</p>
               <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-                {[
-                  'Užpildote registracijos formą.',
-                  'El. paštu atsiunčiame visą informaciją apie pirmąją pamoką.',
-                  'Atvykstate į pirmąją treniruotę, ji nemokama.',
-                ].map((t, i) => (
-                  <li key={t} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 8, fontSize: 15, color: 'var(--text-2)', lineHeight: 1.5 }}>
+                {reg.steps.map((t, i) => (
+                  <li key={i} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 8, fontSize: 15, color: 'var(--text-2)', lineHeight: 1.5 }}>
                     <span style={{ fontFamily: display, fontWeight: 900, fontSize: 20, color: PINK_TEXT, lineHeight: 1.2 }}>{i + 1}</span>
                     {t}
                   </li>
                 ))}
               </ol>
             </div>
-            <div style={{ borderTop: '1px solid var(--line)', paddingTop: 24 }}>
+            {reg.hours.length > 0 && <div style={{ borderTop: '1px solid var(--line)', paddingTop: 24 }}>
               <p style={{ fontSize: 11, letterSpacing: 3, color: 'var(--muted)', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 12px' }}>Studijos darbo laikas</p>
               <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 20, rowGap: 8, margin: 0, fontSize: 15, fontVariantNumeric: 'tabular-nums' }}>
-                {[['I–IV', '16:00–20:30'], ['V', '16:00–19:00']].map(([days, hours]) => (
-                  <div key={days} style={{ display: 'contents' }}>
+                {reg.hours.map(({ days, hours }, i) => (
+                  <div key={i} style={{ display: 'contents' }}>
                     <dt style={{ color: PINK_TEXT, fontFamily: display, fontWeight: 800, fontSize: 17, letterSpacing: 1 }}>{days}</dt>
                     <dd style={{ margin: 0, color: 'var(--text)' }}>{hours}</dd>
                   </div>
                 ))}
               </dl>
-            </div>
+            </div>}
             <div style={{ borderTop: '1px solid var(--line)', paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 15 }}>
               <p style={{ fontSize: 11, letterSpacing: 3, color: 'var(--muted)', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 4px' }}>Turite klausimų?</p>
               {/* Icons: Material Symbols "call", "mail", "location_on" (Google Fonts, Apache 2.0) */}
-              <a href={CONTACT.phoneHref} className="reg-maps">
+              <a href={phoneLink} className="reg-maps">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
                   <path fill={PINK_TEXT} d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.98.98 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
                 </svg>
-                {CONTACT.phone}
+                {contacts.phone}
               </a>
-              <a href={`mailto:${CONTACT.email}`} className="reg-maps">
+              <a href={`mailto:${contacts.email}`} className="reg-maps">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
                   <path fill={PINK_TEXT} d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
                 </svg>
-                {CONTACT.email}
+                {contacts.email}
               </a>
-              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="reg-maps" aria-label="Savanorių pr. 271, Kaunas (atidaryti Google Maps)">
+              <a href={mapsUrl(contacts.address)} target="_blank" rel="noopener noreferrer" className="reg-maps" aria-label={`${contacts.address} (atidaryti Google Maps)`}>
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
                   <path fill={PINK_TEXT} d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
                 </svg>
-                Savanorių pr. 271, Kaunas
+                {contacts.address}
               </a>
             </div>
           </aside>
@@ -362,6 +350,12 @@ export default function Registration({ route }: { route: Route }) {
         .page-tab:focus-visible { outline: none; }
         .reg-maps { display: inline-flex; align-items: center; gap: 8px; color: var(--text); text-decoration: none; transition: color 160ms; }
         .reg-maps:hover { color: ${PINK_TEXT}; }
+        .reg-intro p { margin: 0; }
+        .reg-intro strong { color: ${PINK_TEXT}; font-weight: 500; }
+        .reg-intro a, .faq-a a { color: ${PINK_TEXT}; text-decoration: underline; text-underline-offset: 3px; }
+        .faq-a a:hover { color: var(--c-ffffff); }
+        .faq-a strong { color: var(--text); font-weight: 600; }
+        .faq-a ul, .faq-a ol { margin: 0 0 12px; padding-left: 22px; color: var(--c-a8a8a8); font-size: 15px; line-height: 1.7; }
         .faq-link { color: ${PINK_TEXT}; text-decoration: underline; text-underline-offset: 3px; }
         .faq-link:hover { color: var(--c-ffffff); }
         .faq-q {
@@ -506,6 +500,7 @@ function PhoneField({ id, label, required, value, error, onChange }: {
 }
 
 function Faq() {
+  const faq = section('registration.faq')
   const [open, setOpen] = useState<Set<string>>(() => new Set())
   const toggle = (id: string) => setOpen(prev => {
     const next = new Set(prev)
@@ -513,10 +508,18 @@ function Faq() {
     else next.add(id)
     return next
   })
+  // "#kainos" links in the answers open the Kainos tab on this page.
+  const onAnswerClick = (e: React.MouseEvent) => {
+    const a = (e.target as HTMLElement).closest('a')
+    if (a?.getAttribute('href') === '#kainos') {
+      e.preventDefault()
+      showRegistrationTab('kainos')
+    }
+  }
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 56, minWidth: 0 }}>
-      {FAQ.map((group, gi) => (
-        <section key={group.title} aria-labelledby={`faq-g${gi}`}>
+      {faq.groups.map((group, gi) => (
+        <section key={gi} aria-labelledby={`faq-g${gi}`}>
           <h2 id={`faq-g${gi}`} style={{ fontFamily: display, fontWeight: 900, fontSize: 30, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text)', margin: '0 0 8px' }}>
             {group.title}
           </h2>
@@ -531,7 +534,7 @@ function Faq() {
                     <span className="faq-plus" aria-hidden="true" />
                   </button>
                   <div className="faq-a" id={`${id}-a`} role="region" aria-labelledby={`${id}-q`} data-open={isOpen} inert={!isOpen}>
-                    <div><div>{item.a}</div></div>
+                    <div><div onClick={onAnswerClick} dangerouslySetInnerHTML={{ __html: item.a }} /></div>
                   </div>
                 </div>
               )

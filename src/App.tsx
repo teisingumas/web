@@ -1,62 +1,32 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import type React from 'react'
 import logo from './assets/logo-megusta.webp'
-import heroImage from './assets/hero.webp'
-import heroImageLight from './assets/hero-light.webp'
-import { heroPhotoStyle } from './heroPhoto'
+import { HERO_PHOTO, heroPhotoStyle } from './heroPhoto'
 import LayoutEditor from './editor/LayoutEditor'
 import Odometer from './Odometer'
-import { CONTACT, DANCE_STYLES, SCHEDULE_DAYS } from './data'
+import { heroImages, inlineData, phoneHref, section } from './content'
 import Registration from './Registration'
 import Pricing from './Pricing'
 import Timetable from './Timetable'
+import News from './News'
+import PostPage from './PostPage'
+import NotFound from './NotFound'
 import ThemeSwitch from './ThemeSwitch'
-import { installLinkHandling, PATHS, useRoute, type Page } from './router'
+import { installLinkHandling, isAdminPage, PATHS, useRoute, type Page } from './router'
+import { pageTitle } from './seo'
 
-const TRAINERS = [
-  {
-    name: 'Tomas Kazlauskas',
-    specialty: 'Gatvės šokiai',
-    exp: '12 m. patirtis',
-    bio: 'Lietuvos freestyle čempionas. Šokęs su žymiausiais Europos artistais ir vedęs masterclass 12 šalių.',
-    color: '#FFB3C6',
-    image: 'https://images.unsplash.com/photo-1605450984717-5b2386930f7c?w=400&h=520&fit=crop&auto=format',
-  },
-  {
-    name: 'Eglė Mockutė',
-    specialty: 'Lady Class',
-    exp: '8 m. patirtis',
-    bio: 'Heels ir women\'s style specialistė. Choreografė, dirbusi su Lietuvos muzikos žvaigždėmis ir TV projektais.',
-    color: '#FF5C8A',
-    image: 'https://images.unsplash.com/photo-1586211070543-61ae1ad4a665?w=400&h=520&fit=crop&auto=format',
-  },
-  {
-    name: 'Mantas Rimkus',
-    specialty: 'Breikas',
-    exp: '15 m. patirtis',
-    bio: 'Battle King Vilnius nugalėtojas. Atstovauja Lietuvai tarptautiniuose breakdance čempionatuose Europoje ir JAV.',
-    color: '#00CFFF',
-    image: 'https://images.unsplash.com/photo-1504293476958-6d6d0257d014?w=400&h=520&fit=crop&auto=format',
-  },
-  {
-    name: 'Karolis Adomaitis',
-    specialty: 'Pop Dance',
-    exp: '10 m. patirtis',
-    bio: 'Buvęs profesionalus šokėjas iš televizijos. Specializuojasi sceninėje choreografijoje ir konkursų ruošime.',
-    color: '#FF3DFF',
-    image: 'https://images.unsplash.com/photo-1769535348343-d01ebd9ed8e4?w=400&h=520&fit=crop&auto=format',
-  },
-]
+// The admin (Clerk sign-in, editors) loads only on /adminas and /apzvalga.
+const AdminApp = lazy(() => import('./admin/AdminApp'))
 
-// Social links will be provided later; '#' until then.
-const SOCIALS = [
-  { name: 'Facebook', href: '#', icon: 'facebook' },
-  { name: 'TikTok', href: '#', icon: 'tiktok' },
-  { name: 'Instagram', href: '#', icon: 'instagram' },
-  { name: 'YouTube', href: '#', icon: 'youtube' },
+// Header and footer social links; empty ones are not shown.
+const SOCIAL_ICONS = [
+  { key: 'facebook', name: 'Facebook', icon: 'facebook', short: 'FB' },
+  { key: 'tiktok', name: 'TikTok', icon: 'tiktok', short: 'TT' },
+  { key: 'instagram', name: 'Instagram', icon: 'instagram', short: 'IG' },
+  { key: 'youtube', name: 'YouTube', icon: 'youtube', short: 'YT' },
 ] as const
 
-type IconName = 'mail' | 'phone' | (typeof SOCIALS)[number]['icon']
+type IconName = 'mail' | 'phone' | (typeof SOCIAL_ICONS)[number]['icon']
 
 function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
   const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
@@ -89,21 +59,44 @@ const hoverPink = {
   onMouseLeave: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#ccc' },
 }
 
-const PAGE_TITLES: Record<Page, string> = {
-  home: 'Me Gusta — Hip hop šokių studija Kaune',
-  registracija: 'Registracija — Me Gusta',
-  tvarkarastis: 'Tvarkaraštis — Me Gusta',
-}
-
 export default function App() {
   // Inner pages have their own paths (/tvarkarastis, /registracija/...); see router.ts.
   const route = useRoute()
-  const page = route.page
 
   useEffect(() => installLinkHandling(), [])
 
+  if (isAdminPage(route.page)) {
+    return (
+      <Suspense fallback={<p style={{ font: "15px 'Outfit', sans-serif", color: 'var(--text-2)', padding: 32 }}>Kraunama…</p>}>
+        <AdminApp route={route} />
+      </Suspense>
+    )
+  }
+  return <Site page={route.page} />
+}
+
+const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos'])
+
+function Site({ page }: { page: Page }) {
+  const route = useRoute()
+  const contacts = section('global.contacts')
+  const socialLinks = section('global.socials')
+  const socials = SOCIAL_ICONS.filter(s => socialLinks[s.key])
+  const footer = section('global.footer')
+  const hero = section('home.hero')
+  const heroImg = heroImages(hero)
+  const heroFocus = { zoom: HERO_PHOTO.zoom, x: hero.image.x ?? HERO_PHOTO.x, y: hero.image.y ?? HERO_PHOTO.y }
+  // phones keep the dancers in frame: the default photo uses its own framing, a new one its focus point
+  const heroMobilePos = hero.image.src === '/img/hero.webp' ? '75% 50%' : `${heroFocus.x}% ${heroFocus.y}%`
+  const stats = section('home.stats')
+  const styles = section('home.styles')
+  const schedule = section('home.schedule')
+  const trainers = section('home.trainers')
+  const cta = section('home.cta')
+
   useEffect(() => {
-    document.title = PAGE_TITLES[page]
+    // news posts and the news list set their own titles
+    if (SITE_PAGES.has(page) && page !== 'naujienos') document.title = pageTitle(page)
     // after switching pages, open at the top, or at the #section the link asked for
     const target = window.location.hash && document.getElementById(window.location.hash.slice(1))
     if (target) target.scrollIntoView()
@@ -140,7 +133,8 @@ export default function App() {
   }, [activeDay])
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const current = DANCE_STYLES[activeStyle]
+  const current = styles.items[Math.min(activeStyle, styles.items.length - 1)]
+  const scheduleDay = schedule.days[Math.min(activeDay, schedule.days.length - 1)]
 
   return (
     <div style={{ backgroundColor: 'var(--bg)', color: 'var(--text)', fontFamily: "'Outfit', sans-serif", overflowX: 'clip' }}>
@@ -158,37 +152,40 @@ export default function App() {
               <img src={logo} alt="Me Gusta" width={81} height={52} style={{ height: 52, width: 'auto', display: 'block' }} />
             </a>
             <div className="nav-contacts" data-edit="Kontaktai" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <a href={`mailto:${CONTACT.email}`} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
+              <a href={`mailto:${contacts.email}`} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
                 <span style={{ color: '#FFB3C6' }}><Icon name="mail" size={14} /></span>
-                {CONTACT.email}
+                {contacts.email}
               </a>
-              <a href={CONTACT.phoneHref} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
+              <a href={phoneHref(contacts.phone)} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
                 <span style={{ color: '#FFB3C6' }}><Icon name="phone" size={14} /></span>
-                {CONTACT.phone}
+                {contacts.phone}
               </a>
             </div>
+            {socials.length > 0 && (<>
             <span className="nav-socials" aria-hidden="true" style={{ width: 1, height: 40, backgroundColor: '#2a2a2a' }} />
             <div className="nav-socials" data-edit="Soc. tinklai" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 16px)', gap: 10 }}>
-              {SOCIALS.map(s => (
-                <a key={s.name} href={s.href} aria-label={s.name} title={s.name} style={{ color: '#ccc', display: 'flex', transition: 'color 0.2s' }} {...hoverPink}>
+              {socials.map(s => (
+                <a key={s.name} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} title={s.name} style={{ color: '#ccc', display: 'flex', transition: 'color 0.2s' }} {...hoverPink}>
                   <Icon name={s.icon} size={16} />
                 </a>
               ))}
             </div>
+            </>)}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links" data-edit="Meniu">
-            {/* Only Tvarkaraštis has its page yet; the others get href once their pages exist. */}
+            {/* Tvarkaraštis and Naujienos have their pages; the others get href once their pages exist. */}
             {[
               { label: 'Stiliai' },
               { label: 'Tvarkaraštis', href: PATHS.timetable },
               { label: 'Kainos' },
               { label: 'Treneriai' },
+              { label: 'Naujienos', href: PATHS.news },
             ].map(({ label: item, href }: { label: string; href?: string }) => (
               <a
                 key={item}
                 href={href}
-                aria-current={href && href === window.location.pathname ? 'page' : undefined}
+                aria-current={href && (route.path === href || route.path.startsWith(href + '/') || (href === PATHS.news && page === 'post')) ? 'page' : undefined}
                 style={{ color: '#888', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', transition: 'color 0.2s', cursor: href ? 'pointer' : 'default' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#FFB3C6')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#888')}
@@ -214,13 +211,18 @@ export default function App() {
         </div>
       </nav>
 
-      {page === 'registracija' ? <Registration route={route} /> : page === 'tvarkarastis' ? <Timetable /> : (<>
+      {page === 'registracija' ? <Registration route={route} />
+        : page === 'tvarkarastis' ? <Timetable />
+        : page === 'naujienos' ? <News pageNum={route.pageNum} />
+        : page === 'post' ? <PostPage slug={route.slug} />
+        : page === 'notfound' ? <NotFound />
+        : (<>
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}
         <div
           data-edit-photo className="hero-photo hero-photo-in" aria-hidden="true"
-          style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(), '--hero-img-dark': `url(${heroImage})`, '--hero-img-light': `url(${heroImageLight})` } as React.CSSProperties}
+          style={{ position: 'absolute', inset: 0, ...heroPhotoStyle(heroFocus), '--hero-img-dark': `url(${JSON.stringify(heroImg.dark.src)})`, '--hero-img-light': `url(${JSON.stringify(heroImg.light.src)})`, '--hero-mobile-pos': heroMobilePos } as React.CSSProperties}
         />
         {/* gradient overlay */}
         <div className="hero-overlay" style={{
@@ -233,7 +235,7 @@ export default function App() {
         <div className="hero-content" style={{ position: 'relative', paddingTop: 144, paddingBottom: 80, width: '100%' }}>
           <div style={{ maxWidth: 720 }}>
             <p data-edit="Hero: Kaunas · Nuo 2006" className="hero-in hero-in-1" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: 'var(--pink-text)', marginBottom: 24, textTransform: 'uppercase' }}>
-              ◆&nbsp;&nbsp;Kaunas · Nuo 2006
+              ◆&nbsp;&nbsp;{hero.kicker}
             </p>
             <h1 data-edit="Hero: antraštė" style={{
               fontFamily: "'Barlow Condensed', sans-serif",
@@ -242,12 +244,12 @@ export default function App() {
               color: 'var(--text)', margin: '0 0 16px',
               letterSpacing: '-0.01em',
             }}>
-              <span className="hero-in hero-in-2">TAVO</span><br />
-              <span className="hero-in hero-in-3" style={{ color: 'var(--pink-text)', WebkitTextStroke: '0px' }}><span className="hero-shake">JUDESIO</span></span><br />
-              <span className="hero-in hero-in-4">NAMAI</span>
+              <span className="hero-in hero-in-2">{hero.line1}</span><br />
+              <span className="hero-in hero-in-3" style={{ color: 'var(--pink-text)', WebkitTextStroke: '0px' }}><span className="hero-shake">{hero.line2}</span></span>
+              {hero.line3 && <><br /><span className="hero-in hero-in-4">{hero.line3}</span></>}
             </h1>
             <p data-edit="Hero: aprašymas" className="hero-in hero-in-5" style={{ fontSize: 18, color: 'var(--c-aaaaaa)', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
-              Profesionali hip hop šokių studija Kaune. Čia gatvių ritmai virsta scenos menu — nuo pirmų žingsnių iki čempionų podiumo.
+              {hero.text}
             </p>
             <div data-edit="Hero: mygtukai" className="hero-in hero-in-6" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <a
@@ -262,7 +264,7 @@ export default function App() {
                 onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--btn-hover)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                 onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#FFB3C6'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
-                Pasirink stilių →
+                {hero.primaryCta}
               </a>
               <a
                 href="#tvarkarastis"
@@ -276,7 +278,7 @@ export default function App() {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB3C6'; e.currentTarget.style.color = 'var(--pink-text)'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line-strong)'; e.currentTarget.style.color = 'var(--text)'; }}
               >
-                Tvarkaraštis
+                {hero.secondaryCta}
               </a>
             </div>
           </div>
@@ -301,17 +303,12 @@ export default function App() {
           maxWidth: 1280, margin: '0 auto', padding: '0 24px',
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
         }}>
-          {[
-            { num: '4', label: 'Šokių stiliai' },
-            { num: '5', label: 'Šokių mokytojai' },
-            { num: '20', label: 'Metų patirties' },
-            { num: '650+', label: 'Laimėjimų' },
-          ].map((stat, i) => (
+          {stats.items.map((stat, i) => (
             <div
               key={i}
               style={{
                 padding: '40px 24px',
-                borderRight: i < 3 ? '1px solid rgba(0,0,0,0.12)' : 'none',
+                borderRight: i < stats.items.length - 1 ? '1px solid rgba(0,0,0,0.12)' : 'none',
                 textAlign: 'center',
               }}
             >
@@ -335,21 +332,21 @@ export default function App() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
-              ◆&nbsp;&nbsp;Ko mokome
+              ◆&nbsp;&nbsp;{styles.kicker}
             </p>
             <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
-              Pasirink savo<br /><span style={{ color: 'var(--pink-text)' }}>stilių</span>
+              {styles.title1}{styles.title2 && <><br /><span style={{ color: 'var(--pink-text)' }}>{styles.title2}</span></>}
             </h2>
           </div>
 
           {/* Tab row */}
           <div role="tablist" aria-label="Šokių stiliai" style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--line)', marginBottom: 0, flexWrap: 'wrap' }}>
-            {DANCE_STYLES.map((s, i) => (
+            {styles.items.map((s, i) => (
               <button
-                key={s.id}
+                key={i}
                 type="button"
                 role="tab"
-                aria-selected={activeStyle === i}
+                aria-selected={current === s}
                 className="style-tab"
                 onClick={() => setActiveStyle(i)}
                 style={{
@@ -375,8 +372,8 @@ export default function App() {
             {/* Image */}
             <div style={{ position: 'relative', overflow: 'hidden', minHeight: 480, backgroundColor: 'var(--surface-2)' }}>
               <img
-                src={current.image}
-                alt={current.name}
+                src={current.image.src}
+                alt={current.image.alt}
                 style={{
                   width: '100%', height: '100%', objectFit: 'cover',
                   position: 'absolute', inset: 0,
@@ -385,13 +382,13 @@ export default function App() {
               />
               <div style={{
                 position: 'absolute', inset: 0,
-                background: `linear-gradient(135deg, ${current.color}22 0%, transparent 60%)`,
+                background: 'linear-gradient(135deg, #FFB3C622 0%, transparent 60%)',
               }} />
               <div style={{
                 position: 'absolute', bottom: 24, left: 24,
                 fontFamily: "'Barlow Condensed', sans-serif",
                 fontWeight: 900, fontSize: 'clamp(36px, 4vw, 56px)',
-                color: current.color, textTransform: 'uppercase', lineHeight: 1,
+                color: '#FFB3C6', textTransform: 'uppercase', lineHeight: 1,
                 letterSpacing: 1,
               }}>
                 {current.name}
@@ -410,9 +407,9 @@ export default function App() {
                 <div style={{ marginBottom: 40 }}>
                   <p style={{ fontSize: 11, letterSpacing: 3, color: 'var(--c-555555)', textTransform: 'uppercase', marginBottom: 12 }}>Lygiai</p>
                   <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                    {current.levels.map(l => (
+                    {current.levels.map((l, i) => (
                       <span
-                        key={l}
+                        key={i}
                         style={{
                           padding: '6px 16px', fontSize: 12, fontWeight: 600,
                           letterSpacing: 1.5, textTransform: 'uppercase',
@@ -430,7 +427,7 @@ export default function App() {
                 href="#kainos"
                 style={{
                   display: 'inline-block', padding: '16px 36px',
-                  backgroundColor: current.color, color: '#080808',
+                  backgroundColor: '#FFB3C6', color: '#080808',
                   fontWeight: 800, fontSize: 13, letterSpacing: 2,
                   textTransform: 'uppercase', textDecoration: 'none',
                   alignSelf: 'flex-start', transition: 'all 0.2s',
@@ -438,7 +435,7 @@ export default function App() {
                 onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                 onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
-                Plačiau →
+                {styles.button}
               </a>
             </div>
           </div>
@@ -450,21 +447,21 @@ export default function App() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
-              ◆&nbsp;&nbsp;Kada šokam
+              ◆&nbsp;&nbsp;{schedule.kicker}
             </p>
             <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
-              Tvarkaraštis
+              {schedule.title}
             </h2>
           </div>
 
           {/* Day tabs */}
           <div role="tablist" aria-label="Savaitės dienos" style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
-            {SCHEDULE_DAYS.map((d, i) => (
+            {schedule.days.map((d, i) => (
               <button
-                key={d.day}
+                key={i}
                 type="button"
                 role="tab"
-                aria-selected={activeDay === i}
+                aria-selected={scheduleDay === d}
                 className="day-tab"
                 onClick={() => setActiveDay(i)}
                 style={{
@@ -474,7 +471,7 @@ export default function App() {
                   cursor: 'pointer',
                 }}
               >
-                <span>{d.full}</span>
+                <span>{d.day}</span>
               </button>
             ))}
           </div>
@@ -491,13 +488,13 @@ export default function App() {
                 <span key={h} style={{ fontSize: 10, letterSpacing: 3, color: 'var(--muted)', textTransform: 'uppercase', fontWeight: 700 }}>{h}</span>
               ))}
             </div>
-            {SCHEDULE_DAYS[activeDay].classes.map((cls, i) => (
+            {scheduleDay?.classes.map((cls, i) => (
               <div
                 key={i}
                 style={{
                   display: 'grid', gridTemplateColumns: '120px 1fr 110px 110px',
                   padding: '20px 24px',
-                  borderBottom: i < SCHEDULE_DAYS[activeDay].classes.length - 1 ? '1px solid var(--line-soft)' : 'none',
+                  borderBottom: i < scheduleDay.classes.length - 1 ? '1px solid var(--line-soft)' : 'none',
                   alignItems: 'center',
                   // every second row slightly lighter for easier reading across
                   backgroundColor: i % 2 === 1 ? 'var(--zebra)' : 'transparent',
@@ -525,10 +522,9 @@ export default function App() {
             ))}
           </div>
 
-          <p style={{ marginTop: 20, fontSize: 13, color: 'var(--c-9a9a9a)', fontWeight: 400 }}>
-            * Treniruotės vyksta Me Gusta salėje, Savanorių pr. 271, Kaunas. Pilną tvarkaraštį galite rasti paspaudę{' '}
-            <a href={PATHS.timetable} style={{ color: 'var(--pink-text)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
-          </p>
+          {schedule.note && (
+            <div className="rich-note" style={{ marginTop: 20, fontSize: 13, color: 'var(--c-9a9a9a)', fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: schedule.note }} />
+          )}
         </div>
       </section>
 
@@ -544,17 +540,17 @@ export default function App() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
-              ◆&nbsp;&nbsp;Komanda
+              ◆&nbsp;&nbsp;{trainers.kicker}
             </p>
             <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
-              Mūsų treneriai
+              {trainers.title}
             </h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2 }}>
-            {TRAINERS.map((t) => (
+            {trainers.items.map((t, ti) => (
               <div
-                key={t.name}
+                key={ti}
                 style={{
                   position: 'relative', overflow: 'hidden',
                   backgroundColor: 'var(--surface-2)',
@@ -575,8 +571,9 @@ export default function App() {
               >
                 <div style={{ paddingBottom: '130%', position: 'relative', overflow: 'hidden', backgroundColor: '#0a0a0a' }}>
                   <img
-                    src={t.image}
-                    alt={t.name}
+                    src={t.image.src}
+                    alt={t.image.alt}
+                    loading="lazy"
                     className="trainer-img"
                     style={{
                       position: 'absolute', inset: 0,
@@ -612,7 +609,7 @@ export default function App() {
                   </h3>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: 12, color: t.color === '#FFB3C6' ? 'var(--pink-text)' : t.color, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase' }}>{t.specialty}</span>
-                    <span style={{ fontSize: 11, color: 'var(--c-555555)', fontWeight: 500, letterSpacing: 1 }}>{t.exp}</span>
+                    <span style={{ fontSize: 11, color: 'var(--c-555555)', fontWeight: 500, letterSpacing: 1 }}>{t.experience}</span>
                   </div>
                 </div>
               </div>
@@ -624,11 +621,11 @@ export default function App() {
       {/* CTA BANNER */}
       <section data-reveal style={{ backgroundColor: '#FFB3C6', padding: '80px 24px', textAlign: 'center' }}>
         <p className="reveal reveal-1" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#333', textTransform: 'uppercase', marginBottom: 16 }}>
-          <span className="cta-shake">◆&nbsp;&nbsp;Pirmoji treniruotė nemokama</span>
+          <span className="cta-shake">◆&nbsp;&nbsp;{cta.kicker}</span>
         </p>
         <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 7vw, 100px)', textTransform: 'uppercase', color: '#080808', lineHeight: 0.95, margin: '0 0 40px', letterSpacing: '-0.01em' }}>
-          <span className="reveal reveal-2" style={{ display: 'inline-block' }}>Pradėk šokti</span><br />
-          <span className="reveal reveal-3" style={{ display: 'inline-block' }}>šiandien</span>
+          <span className="reveal reveal-2" style={{ display: 'inline-block' }}>{cta.line1}</span>
+          {cta.line2 && <><br /><span className="reveal reveal-3" style={{ display: 'inline-block' }}>{cta.line2}</span></>}
         </h2>
         <div className="reveal reveal-4">
         <a
@@ -643,7 +640,7 @@ export default function App() {
           onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#1a1a1a'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
           onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#080808'; e.currentTarget.style.transform = 'translateY(0)'; }}
         >
-          Registruotis dabar →
+          {cta.button}
         </a>
         </div>
       </section>
@@ -657,36 +654,46 @@ export default function App() {
             <div>
               <img src={logo} alt="Me Gusta" width={87} height={56} style={{ height: 56, width: 'auto', display: 'block', marginBottom: 20 }} />
               <p style={{ fontSize: 14, color: '#8c8c8c', lineHeight: 1.7, maxWidth: 260 }}>
-                Profesionali hip hop šokių studija Kaune. 20 metų patirtis, 650+ laimėjimų, 4 šokių stiliai.
+                {footer.text}
               </p>
             </div>
             <div>
               <p style={{ fontSize: 10, letterSpacing: 3, color: '#6e6e6e', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Stiliai</p>
-              {['Gatvės šokiai', 'Pop Dance', 'Lady Class', 'Breikas'].map(s => (
-                <p key={s} style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>{s}</p>
+              {styles.items.map((s, i) => (
+                <p key={i} style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>{s.name}</p>
               ))}
             </div>
             <div>
               <p style={{ fontSize: 10, letterSpacing: 3, color: '#6e6e6e', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Studija</p>
-              {['Apie mus', 'Treneriai', 'Tvarkaraštis', 'Kainos'].map(s => (
-                <p key={s} style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>{s}</p>
+              {[
+                { label: 'Apie mus' },
+                { label: 'Treneriai', href: '/#treneriai' },
+                { label: 'Tvarkaraštis', href: PATHS.timetable },
+                { label: 'Kainos', href: '/#kainos' },
+                { label: 'Naujienos', href: PATHS.news },
+              ].map(({ label, href }: { label: string; href?: string }) => (
+                <p key={label} style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>
+                  {href ? <a href={href} className="footer-link">{label}</a> : label}
+                </p>
               ))}
             </div>
             <div>
               <p style={{ fontSize: 10, letterSpacing: 3, color: '#6e6e6e', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Kontaktai</p>
-              <p style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>Savanorių pr. 271, Kaunas</p>
-              <p style={{ fontSize: 14, marginBottom: 8 }}><a href={CONTACT.phoneHref} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{CONTACT.phone}</a></p>
-              <p style={{ fontSize: 14, marginBottom: 16 }}><a href={`mailto:${CONTACT.email}`} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{CONTACT.email}</a></p>
-              <div style={{ display: 'flex', gap: 12 }}>
-                {['IG', 'FB', 'TT', 'YT'].map(s => (
-                  <span key={s} style={{ width: 36, height: 36, border: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#8c8c8c', letterSpacing: 0.5, cursor: 'pointer' }}>{s}</span>
-                ))}
-              </div>
+              <p style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>{contacts.address}</p>
+              <p style={{ fontSize: 14, marginBottom: 8 }}><a href={phoneHref(contacts.phone)} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{contacts.phone}</a></p>
+              <p style={{ fontSize: 14, marginBottom: 16 }}><a href={`mailto:${contacts.email}`} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{contacts.email}</a></p>
+              {socials.length > 0 && (
+                <div style={{ display: 'flex', gap: 12 }}>
+                  {socials.map(s => (
+                    <a key={s.key} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} className="footer-social">{s.short}</a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div style={{ borderTop: '1px solid #1c1c1c', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
             <span style={{ fontSize: 12, color: '#6e6e6e' }}>© {new Date().getFullYear()} Me Gusta. Visos teisės saugomos.</span>
-            <span style={{ fontSize: 12, color: '#6e6e6e' }}>Designed with passion for movement.</span>
+            {footer.tagline && <span style={{ fontSize: 12, color: '#6e6e6e' }}>{footer.tagline}</span>}
           </div>
         </div>
       </footer>
@@ -716,8 +723,17 @@ export default function App() {
         }
         /* Phones: keep the dancers in frame (desktop framing shows the dark left side). */
         @media (max-width: 900px) {
-          .hero-photo { background-position: 0 0, 75% 50% !important; }
+          .hero-photo { background-position: 0 0, var(--hero-mobile-pos, 75% 50%) !important; }
         }
+        .rich-note p { margin: 0; }
+        .rich-note a { color: var(--pink-text); text-decoration: underline; text-underline-offset: 3px; }
+        .footer-link { color: #8c8c8c; text-decoration: none; transition: color 0.2s; }
+        .footer-link:hover { color: #FFB3C6; }
+        .footer-social {
+          width: 36px; height: 36px; border: 1px solid #333; display: flex; align-items: center; justify-content: center;
+          font-size: 11px; font-weight: 700; color: #8c8c8c; letter-spacing: 0.5px; text-decoration: none; transition: color 0.2s, border-color 0.2s;
+        }
+        .footer-social:hover { color: #FFB3C6; border-color: #FFB3C6; }
         @media (max-width: 640px) {
           .nav-socials { display: none !important; }
           nav .wide-container > div:first-child { gap: 16px !important; }

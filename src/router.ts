@@ -1,21 +1,33 @@
 import { useSyncExternalStore } from 'react'
 
-// Path-based routing: /, /tvarkarastis, /registracija. The registration page's Informacija and
-// Kainos tabs are plain in-page tabs without addresses of their own.
-// The server sends index.html for every path (see public/.htaccess); this module turns the
-// path into a route, handles links, and keeps the old #hash addresses working.
+// Path-based routing. The server sends every unknown path to index.php (see public/.htaccess),
+// which renders the right meta tags; this module turns the path into a route, handles links,
+// and keeps the old #hash addresses working.
+//   /                      home
+//   /tvarkarastis          timetable
+//   /registracija          registration (Informacija and Kainos are in-page tabs)
+//   /naujienos, /naujienos/2 …   news list with pages
+//   /<slug>                a news post (the same addresses the old WordPress site used)
+//   /adminas               admin sign-in;  /apzvalga/…  admin dashboard
 
-export type Page = 'home' | 'registracija' | 'tvarkarastis'
+export type Page = 'home' | 'registracija' | 'tvarkarastis' | 'naujienos' | 'post' | 'notfound' | 'admin-login' | 'admin'
 export type RegTab = 'registracija' | 'informacija' | 'kainos'
 // tab: which registration tab a navigation asks for; seq changes on every navigation so a
 // page can react even when the path stays the same (e.g. "Registruotis" from the Kainos tab).
-export type Route = { page: Page; tab: RegTab; seq: number }
+export type Route = { page: Page; tab: RegTab; seq: number; slug: string; pageNum: number; adminPath: string; path: string }
 
 export const PATHS = {
   home: '/',
   timetable: '/tvarkarastis',
   registration: '/registracija',
+  news: '/naujienos',
+  adminLogin: '/adminas',
+  admin: '/apzvalga',
 } as const
+
+export const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+export const newsPagePath = (n: number) => (n > 1 ? `${PATHS.news}/${n}` : PATHS.news)
 
 // Earlier builds gave the tabs their own paths; those addresses still open the right tab.
 const OLD_TAB_PATHS: Record<string, RegTab> = {
@@ -33,13 +45,26 @@ const LEGACY_HASHES: Record<string, string> = {
 
 let seq = 0
 
-function parse(path: string): Route {
-  const p = path.replace(/\/+$/, '').toLowerCase() || '/'
-  if (p === PATHS.timetable) return { page: 'tvarkarastis', tab: 'registracija', seq }
-  if (OLD_TAB_PATHS[p]) return { page: 'registracija', tab: OLD_TAB_PATHS[p], seq }
-  if (p === PATHS.registration) return { page: 'registracija', tab: 'registracija', seq }
-  return { page: 'home', tab: 'registracija', seq }
+function parse(rawPath: string): Route {
+  let decoded = rawPath
+  try { decoded = decodeURIComponent(rawPath) } catch { /* keep as is */ }
+  const p = decoded.replace(/\/+$/, '').toLowerCase() || '/'
+  const base = { tab: 'registracija' as RegTab, seq, slug: '', pageNum: 1, adminPath: '', path: p }
+  if (p === '/') return { ...base, page: 'home' }
+  if (p === PATHS.timetable) return { ...base, page: 'tvarkarastis' }
+  if (OLD_TAB_PATHS[p]) return { ...base, page: 'registracija', tab: OLD_TAB_PATHS[p] }
+  if (p === PATHS.registration) return { ...base, page: 'registracija' }
+  if (p === PATHS.news) return { ...base, page: 'naujienos' }
+  const news = /^\/naujienos\/(\d{1,4})$/.exec(p)
+  if (news && Number(news[1]) >= 1) return { ...base, page: 'naujienos', pageNum: Number(news[1]) }
+  if (p === PATHS.adminLogin) return { ...base, page: 'admin-login' }
+  if (p === PATHS.admin || p.startsWith(PATHS.admin + '/')) return { ...base, page: 'admin', adminPath: p.slice(PATHS.admin.length) || '/' }
+  const slug = p.slice(1)
+  if (SLUG_RE.test(slug)) return { ...base, page: 'post', slug }
+  return { ...base, page: 'notfound' }
 }
+
+export const isAdminPage = (page: Page) => page === 'admin' || page === 'admin-login'
 
 // Old tab paths are shown as plain /registracija.
 function normalizeAddress() {
@@ -64,16 +89,26 @@ function scrollToHash(hash: string) {
   if (el) el.scrollIntoView()
 }
 
+// Pages with unsaved edits (the admin forms) can stop a navigation; return false to stay.
+const guards = new Set<() => boolean>()
+export function addNavigationGuard(guard: () => boolean) {
+  guards.add(guard)
+  return () => { guards.delete(guard) }
+}
+
 // Navigate to "/path" or "/path#section" without reloading.
 export function navigate(href: string, replace = false) {
-  const [path, hashPart] = href.split('#')
+  for (const guard of guards) if (!guard()) return
+  const [pathAndQuery, hashPart] = href.split('#')
+  const path = pathAndQuery.split('?')[0] || '/'
   const hash = hashPart ? '#' + hashPart : ''
-  const samePage = parse(path || '/').page === route.page && parse(path || '/').tab === route.tab
+  const next = parse(path)
+  const samePage = next.path === route.path && next.tab === route.tab
   try {
-    window.history[replace ? 'replaceState' : 'pushState'](null, '', (path || '/') + hash)
+    window.history[replace ? 'replaceState' : 'pushState'](null, '', (pathAndQuery || '/') + hash)
     memoryPath = null
   } catch {
-    memoryPath = path || '/'
+    memoryPath = path
   }
   emit()
   normalizeAddress()
@@ -108,10 +143,10 @@ export function installLinkHandling() {
     if (LEGACY_HASHES[href]) {
       e.preventDefault()
       navigate(LEGACY_HASHES[href])
-    } else if (href.startsWith('/') && !href.startsWith('//')) {
+    } else if (href.startsWith('/') && !href.startsWith('//') && !/^\/(media|api|img|assets)\//.test(href)) {
       e.preventDefault()
       navigate(href)
-    } else if (href.startsWith('#') && href.length > 1 && route.page !== 'home') {
+    } else if (href.startsWith('#') && href.length > 1 && route.page !== 'home' && !isAdminPage(route.page)) {
       e.preventDefault()
       navigate('/' + href)
     }
