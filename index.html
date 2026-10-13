@@ -3,18 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="MoveStudio — profesionali hip hop šokių studija. Gatvės šokiai, Pop Dance, Lady Class ir Breikas." />
+    <meta name="description" content="Me Gusta — hip hop šokių studija Kaune. Gatvės šokiai, Pop Dance, Lady Class ir Breikas." />
     <meta name="theme-color" content="#080808" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <script>
       // Apply the saved theme before first paint (set by the header sun/moon switch).
       try { if (localStorage.getItem('megusta-theme') === 'light') document.documentElement.dataset.theme = 'light' } catch (e) {}
     </script>
-    <title>MoveStudio — Hip Hop šokių studija</title>
+    <title>Me Gusta — Hip hop šokių studija Kaune</title>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>Šiai svetainei reikia įjungto JavaScript.</noscript>
+    <script>
+      // If a script or stylesheet fails to load, say which one instead of leaving a blank page.
+      window.addEventListener('error', function (e) {
+        var t = e.target
+        if (!t || (t.tagName !== 'SCRIPT' && t.tagName !== 'LINK')) return
+        var root = document.getElementById('root')
+        if (root && !root.childElementCount) {
+          root.innerHTML = '<p style="font:16px/1.5 system-ui,sans-serif;color:#f0f0f0;background:#080808;padding:24px;margin:0">Nepavyko įkelti failo: ' + (t.src || t.href) + '<br>Patikrinkite, ar aplankas <b>assets</b> įkeltas šalia index.html.</p>'
+        }
+      }, true)
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

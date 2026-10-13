@@ -5,8 +5,9 @@ import path from 'node:path'
 
 // Vite config — https://vitejs.dev/config/
 export default defineConfig({
-  // Set BASE_PATH (e.g. "/web/") when hosting under a sub-path such as GitHub Pages.
-  base: process.env.BASE_PATH || '/',
+  // Relative asset paths ("./assets/…") so the build works from any folder on any host
+  // (e.g. a Hostinger subdomain folder). Set BASE_PATH to force an absolute base.
+  base: process.env.BASE_PATH || './',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
