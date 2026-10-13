@@ -29,9 +29,46 @@ function post_card(array $row): array
     ];
 }
 
-function post_public(array $row): array
+function post_public(array $row, ?PDO $pdo = null): array
 {
-    return post_card($row) + ['bodyHtml' => $row['body_html'], 'updatedAt' => iso_utc($row['updated_at'])];
+    $post = post_card($row) + ['bodyHtml' => $row['body_html'], 'updatedAt' => iso_utc($row['updated_at'])];
+    if ($pdo) $post['nearby'] = post_nearby($pdo, $row);
+    return $post;
+}
+
+/**
+ * Links shown under an article so every post is reachable from other posts:
+ * the next newer and older one, plus the latest three others.
+ */
+function post_nearby(PDO $pdo, array $row): array
+{
+    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE status = 'published' AND (published_at < ? OR (published_at = ? AND id < ?))
+        ORDER BY published_at DESC, id DESC LIMIT 1");
+    $stmt->execute([$row['published_at'], $row['published_at'], $row['id']]);
+    $older = $stmt->fetch() ?: null;
+    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE status = 'published' AND (published_at > ? OR (published_at = ? AND id > ?))
+        ORDER BY published_at ASC, id ASC LIMIT 1");
+    $stmt->execute([$row['published_at'], $row['published_at'], $row['id']]);
+    $newer = $stmt->fetch() ?: null;
+
+    $skip = array_values(array_filter([(int) $row['id'], $older ? (int) $older['id'] : null, $newer ? (int) $newer['id'] : null]));
+    $marks = implode(',', array_fill(0, count($skip), '?'));
+    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE status = 'published' AND id NOT IN ($marks) ORDER BY published_at DESC, id DESC LIMIT 3");
+    $stmt->execute($skip);
+    return [
+        'newer' => $newer ? post_card($newer) : null,
+        'older' => $older ? post_card($older) : null,
+        'more' => array_map('post_card', $stmt->fetchAll()),
+    ];
+}
+
+/** Slug and title of every published post (newest first): plain links for crawlers on /naujienos. */
+function all_published_links(PDO $pdo, int $limit = 2000): array
+{
+    $stmt = $pdo->prepare("SELECT slug, title FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC, id DESC LIMIT ?");
+    $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
 }
 
 function post_admin(array $row): array
@@ -176,7 +213,7 @@ function admin_save_post(PDO $pdo, ?int $id, array $in): array
 
     if ($status === 'published') {
         if ($excerpt === '') $errors['excerpt'] = 'Prieš publikuojant įrašykite trumpą santrauką (ji rodoma naujienų sąraše).';
-        if (html_text($body) === '') $errors['bodyHtml'] = 'Prieš publikuojant parašykite naujienos tekstą.';
+        if (html_text($body) === '' && !preg_match('/data-youtube|<img /', $body)) $errors['bodyHtml'] = 'Prieš publikuojant parašykite naujienos tekstą.';
         if ($cover['src'] === '') $errors['cover.src'] = 'Prieš publikuojant įkelkite viršelio nuotrauką.';
     }
     if ($errors) {

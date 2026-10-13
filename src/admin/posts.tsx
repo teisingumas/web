@@ -158,7 +158,7 @@ function validatePost(f: Form, slugAuto: boolean, publish: boolean): Errors {
   if (len(f.seoKeywords) > 255) e.seoKeywords = 'Ne daugiau kaip 255 ženklai.'
   if (publish) {
     if (!len(f.excerpt)) e.excerpt = 'Prieš publikuojant įrašykite trumpą santrauką (ji rodoma naujienų sąraše).'
-    if (!htmlText(f.bodyHtml)) e.bodyHtml = 'Prieš publikuojant parašykite naujienos tekstą.'
+    if (!htmlText(f.bodyHtml) && !/data-youtube|<img /.test(f.bodyHtml)) e.bodyHtml = 'Prieš publikuojant parašykite naujienos tekstą.'
     if (!f.cover.src) e['cover.src'] = 'Prieš publikuojant įkelkite viršelio nuotrauką.'
   }
   return e

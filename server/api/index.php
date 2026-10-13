@@ -102,7 +102,7 @@ function route_public_post(string $slug): array
 {
     $row = db_configured() ? find_published_post(db(), $slug) : null;
     if (!$row) throw not_found('Naujiena nerasta.');
-    return post_public($row);
+    return post_public($row, db());
 }
 
 // --- admin ----------------------------------------------------------------------------------
