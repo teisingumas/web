@@ -9,7 +9,7 @@ Meniu pavadinimai Hostinger ir Clerk sistemose kartais šiek tiek pasikeičia: j
 - Tekstai, SEO ir naujienos saugomi **MySQL duomenų bazėje** Hostinger'yje.
   Nuotraukos saugomos aplanke **`megusta-data`** šalia `public_html` (ne jo viduje, todėl naujos svetainės versijos jų neištrina).
 - Išsaugoti pakeitimai svetainėje matomi **iš karto**, kai atnaujinamas puslapis. Svetainės perrinkti nereikia.
-- Kodas į Hostinger keliauja kaip ir anksčiau: `main` šaka → GitHub Actions → šaka `hostinger` → Hostinger.
+- Kodas į Hostinger keliauja kaip ir anksčiau: pagrindinė šaka `claude/figma-web-design-recreation-59n7u2` → GitHub Actions → šaka `hostinger` → Hostinger.
 - Kol nustatymai nebaigti, svetainė veikia kaip anksčiau, su tekstais iš kodo.
 
 ## Ką reikės padaryti
@@ -20,7 +20,7 @@ Meniu pavadinimai Hostinger ir Clerk sistemose kartais šiek tiek pasikeičia: j
 | 2 | Hostinger hPanel | PHP 8.2 ar naujesnę |
 | 3 | clerk.com | **Publishable key** (`pk_…`) ir kliento **User ID** (`user_…`) |
 | 4 | Hostinger File Manager | Failą `megusta-config.php` su aukščiau gautomis reikšmėmis |
-| 5 | GitHub | Naujos versijos paleidimą (merge į `main`) |
+| 5 | GitHub | Naujos versijos paleidimą (Pull Request → Merge) |
 | 6 | Naršyklė | Pirmą prisijungimą ir patikrą |
 
 > **Slaptažodžių niekam nesiųskite** (ir į pokalbį su AI ar kūrėju). Jie įrašomi tik į failą serveryje.
@@ -123,7 +123,8 @@ Aplankas `megusta-data` (nuotraukoms) susikurs pats šalia šio failo.
 
 ## 5 žingsnis. Paleiskite naują versiją (GitHub)
 
-1. GitHub saugykloje `teisingumas/web` atidarykite Pull Request iš šakos `claude/confident-euler-y1qemg` į `main` ir spauskite **Merge**.
+1. GitHub saugykloje `teisingumas/web` atidarykite Pull Request iš šakos `claude/confident-euler-y1qemg` į pagrindinę šaką
+   `claude/figma-web-design-recreation-59n7u2` (ši šaka diegiama į Hostinger) ir spauskite **Merge pull request**.
 2. **Actions** skiltyje per ~1 minutę užsibaigs „Build for Hostinger“ (žalia varnelė). Hostinger per minutę ar dvi įdiegs naują versiją.
 3. Atidarykite `https://testas.vedejasedvardas.lt/`. Svetainė turi atrodyti kaip anksčiau, o meniu atsiras **Naujienos**.
 
