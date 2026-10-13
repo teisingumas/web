@@ -92,6 +92,8 @@ if (isset($pagePaths[$path])) {
         $meta = post_meta($row, $siteName);
         $jsonLd[] = article_ld($row, $siteName, $meta);
         $prerender = post_prerender($row, $post['nearby'] ?? []);
+    } elseif ($pdo && ($moved = find_redirect_target($pdo, $m[1]))) {
+        redirect_to('/' . $moved['slug']);   // a renamed post's old address
     } elseif ($pdo || !db_configured()) {
         $status = 404;
         $meta = not_found_meta();

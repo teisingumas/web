@@ -37,10 +37,13 @@ export type AdminPost = {
   seoDescription: string
   seoKeywords: string
   publishedAt: string | null
+  /** published, but its publishing time is still ahead */
+  scheduled: boolean
   createdAt: string
   updatedAt: string
 }
-export type PostInput = Omit<AdminPost, 'id' | 'publishedAt' | 'createdAt' | 'updatedAt'> & { slugAuto?: boolean }
+// publishedAt: "YYYY-MM-DDTHH:MM" in Lithuanian time, or '' for automatic
+export type PostInput = Omit<AdminPost, 'id' | 'publishedAt' | 'scheduled' | 'createdAt' | 'updatedAt'> & { slugAuto?: boolean; publishedAt: string }
 export type PostList = {
   items: Omit<AdminPost, 'bodyHtml'>[]
   total: number

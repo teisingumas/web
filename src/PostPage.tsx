@@ -29,7 +29,12 @@ export default function PostPage({ slug }: { slug: string }) {
     let cancelled = false
     setState({ status: 'loading' })
     fetchPost(slug)
-      .then(post => { if (!cancelled) setState({ status: 'ready', post }) })
+      .then(post => {
+        if (cancelled) return
+        // opened through an old address: show the current one
+        if (post.slug !== slug) { try { window.history.replaceState(null, '', `/${post.slug}`) } catch { /* preview frames */ } }
+        setState({ status: 'ready', post })
+      })
       .catch(err => { if (!cancelled) setState({ status: err instanceof NotFoundError ? 'missing' : 'error' }) })
     return () => { cancelled = true }
   }, [slug, attempt])
