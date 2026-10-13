@@ -12,7 +12,7 @@ try {
     if (db_configured()) {
         $pdo = db();
         $seo = load_seo($pdo);
-        $posts = $pdo->query("SELECT slug, updated_at FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC")->fetchAll();
+        $posts = $pdo->query("SELECT slug, updated_at FROM blog_posts WHERE " . PUBLIC_POST . " ORDER BY published_at DESC")->fetchAll();
     }
 } catch (Throwable $e) {
     log_error('Sitemap without database', $e);

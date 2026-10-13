@@ -52,6 +52,14 @@ const MEGUSTA_TABLES = [
         UNIQUE KEY uq_post_slug (slug),
         KEY idx_post_status (status, published_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+    // Old addresses of renamed posts: they answer with a 301 to the post's current address.
+    "CREATE TABLE IF NOT EXISTS post_redirects (
+        old_slug VARCHAR(120) NOT NULL PRIMARY KEY,
+        post_id INT UNSIGNED NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        KEY idx_redirect_post (post_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
 ];
 
 function db_configured(): bool

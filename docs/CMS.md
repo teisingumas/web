@@ -171,6 +171,8 @@ Kai svetainė persikels iš `testas.vedejasedvardas.lt` į tikrą domeną (pvz. 
 - **Hero nuotrauka**: paspauskite ant nuotraukos ten, kur svarbiausia vieta. Ji liks matoma ir telefonuose.
 - **Naujienos**: galite išsaugoti **juodraštį** (svetainėje nesimato) ir publikuoti vėliau. Peržiūra rodo, kaip naujiena atrodys.
   **Adresą** sistema sukuria iš pavadinimo; jį galite pakeisti, pvz. kad sutaptų su sena WordPress nuoroda.
+  **Publikavimo data ir laikas** (šoninė juosta): palikus tuščią, naujiena skelbiama iš karto. Įrašius **praeities** datą, naujiena rodoma su ta data ir išsirikiuoja pagal ją (tinka perkeliant senas naujienas). Įrašius **ateities** datą ir paspaudus „Suplanuoti“, naujiena pasirodys pati nurodytu Lietuvos laiku (sąraše ji pažymėta „Suplanuota“).
+  Jei publikuotos naujienos **adresą pakeisite**, senas adresas automatiškai nukreips į naują (301), todėl pasidalintos nuorodos ir Google rezultatai neužlūš.
 - **Naujienos tekstas**: įrankių juostoje yra lygiavimas (kairė / centras / dešinė / abiejuose kraštuose), **▦ Galerija** (pažymėkite kelias nuotraukas iš bibliotekos arba įkelkite naujas; paspaudus galerijoje, galima pridėti ar pašalinti nuotraukų) ir **▶ YouTube** (įklijuokite nuorodą: vaizdo įrašas rodomas iki 1200 px pločio ir prisitaiko prie telefono). Paspaudus nuotrauką naujienoje, ji atsidaro didelė (galerijoje galima vartyti rodyklėmis ar braukiant).
 - **SEO**: kiekvieno puslapio skirtuke **SEO** ir prie kiekvienos naujienos: pavadinimas, aprašymas, raktažodžiai, nuotrauka dalinantis.
   Peržiūra rodo, kaip puslapis atrodys Google paieškoje.

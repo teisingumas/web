@@ -5,6 +5,9 @@ declare(strict_types=1);
 
 const NEWS_PER_PAGE = 6;
 const SLUG_PATTERN = '/^[a-z0-9]+(?:-[a-z0-9]+)*$/';
+// A post is public once it is published and its publishing time has come (a later time = scheduled).
+const PUBLIC_POST = "status = 'published' AND published_at <= UTC_TIMESTAMP()";
+const POST_TIMEZONE = 'Europe/Vilnius';
 
 function slugify(string $s): string
 {
@@ -42,18 +45,18 @@ function post_public(array $row, ?PDO $pdo = null): array
  */
 function post_nearby(PDO $pdo, array $row): array
 {
-    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE status = 'published' AND (published_at < ? OR (published_at = ? AND id < ?))
+    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE " . PUBLIC_POST . " AND (published_at < ? OR (published_at = ? AND id < ?))
         ORDER BY published_at DESC, id DESC LIMIT 1");
     $stmt->execute([$row['published_at'], $row['published_at'], $row['id']]);
     $older = $stmt->fetch() ?: null;
-    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE status = 'published' AND (published_at > ? OR (published_at = ? AND id > ?))
+    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE " . PUBLIC_POST . " AND (published_at > ? OR (published_at = ? AND id > ?))
         ORDER BY published_at ASC, id ASC LIMIT 1");
     $stmt->execute([$row['published_at'], $row['published_at'], $row['id']]);
     $newer = $stmt->fetch() ?: null;
 
     $skip = array_values(array_filter([(int) $row['id'], $older ? (int) $older['id'] : null, $newer ? (int) $newer['id'] : null]));
     $marks = implode(',', array_fill(0, count($skip), '?'));
-    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE status = 'published' AND id NOT IN ($marks) ORDER BY published_at DESC, id DESC LIMIT 3");
+    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE " . PUBLIC_POST . " AND id NOT IN ($marks) ORDER BY published_at DESC, id DESC LIMIT 3");
     $stmt->execute($skip);
     return [
         'newer' => $newer ? post_card($newer) : null,
@@ -65,7 +68,7 @@ function post_nearby(PDO $pdo, array $row): array
 /** Slug and title of every published post (newest first): plain links for crawlers on /naujienos. */
 function all_published_links(PDO $pdo, int $limit = 2000): array
 {
-    $stmt = $pdo->prepare("SELECT slug, title FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC, id DESC LIMIT ?");
+    $stmt = $pdo->prepare("SELECT slug, title FROM blog_posts WHERE " . PUBLIC_POST . " ORDER BY published_at DESC, id DESC LIMIT ?");
     $stmt->bindValue(1, $limit, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll();
@@ -85,6 +88,7 @@ function post_admin(array $row): array
         'seoDescription' => $row['seo_description'],
         'seoKeywords' => $row['seo_keywords'],
         'publishedAt' => iso_utc($row['published_at']),
+        'scheduled' => $row['status'] === 'published' && $row['published_at'] !== null && $row['published_at'] > now_utc(),
         'createdAt' => iso_utc($row['created_at']),
         'updatedAt' => iso_utc($row['updated_at']),
     ];
@@ -93,10 +97,10 @@ function post_admin(array $row): array
 /** One page of published posts for /naujienos. */
 function public_posts_page(PDO $pdo, int $page): array
 {
-    $total = (int) $pdo->query("SELECT COUNT(*) FROM blog_posts WHERE status = 'published'")->fetchColumn();
+    $total = (int) $pdo->query('SELECT COUNT(*) FROM blog_posts WHERE ' . PUBLIC_POST)->fetchColumn();
     $pages = max(1, (int) ceil($total / NEWS_PER_PAGE));
     $page = max(1, $page);
-    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC, id DESC LIMIT ? OFFSET ?");
+    $stmt = $pdo->prepare('SELECT * FROM blog_posts WHERE ' . PUBLIC_POST . ' ORDER BY published_at DESC, id DESC LIMIT ? OFFSET ?');
     $stmt->execute([NEWS_PER_PAGE, ($page - 1) * NEWS_PER_PAGE]);
     return ['items' => array_map('post_card', $stmt->fetchAll()), 'page' => $page, 'pages' => $pages, 'total' => $total];
 }
@@ -104,7 +108,16 @@ function public_posts_page(PDO $pdo, int $page): array
 function find_published_post(PDO $pdo, string $slug): ?array
 {
     if (!preg_match(SLUG_PATTERN, $slug)) return null;
-    $stmt = $pdo->prepare("SELECT * FROM blog_posts WHERE slug = ? AND status = 'published'");
+    $stmt = $pdo->prepare('SELECT * FROM blog_posts WHERE slug = ? AND ' . PUBLIC_POST);
+    $stmt->execute([$slug]);
+    return $stmt->fetch() ?: null;
+}
+
+/** The public post a renamed post's old address now belongs to, or null. */
+function find_redirect_target(PDO $pdo, string $slug): ?array
+{
+    if (!preg_match(SLUG_PATTERN, $slug)) return null;
+    $stmt = $pdo->prepare("SELECT p.* FROM post_redirects r JOIN blog_posts p ON p.id = r.post_id WHERE r.old_slug = ? AND p.status = 'published' AND p.published_at <= UTC_TIMESTAMP()");
     $stmt->execute([$slug]);
     return $stmt->fetch() ?: null;
 }
@@ -205,6 +218,13 @@ function admin_save_post(PDO $pdo, ?int $id, array $in): array
 
     $cover = validate_image(['alt' => 'required'], $in['cover'] ?? [], 'cover', $errors);
 
+    // "YYYY-MM-DDTHH:MM" in Lithuanian time (or empty = automatic)
+    $chosenAt = null;
+    if (array_key_exists('publishedAt', $in) && trim((string) $in['publishedAt']) !== '') {
+        $chosenAt = parse_local_datetime((string) $in['publishedAt']);
+        if ($chosenAt === null) $errors['publishedAt'] = 'Neteisinga publikavimo data.';
+    }
+
     $seo = [];
     foreach (['seoTitle' => 70, 'seoDescription' => 160, 'seoKeywords' => 255] as $key => $max) {
         $seo[$key] = clean_line($in[$key] ?? '', false);
@@ -220,10 +240,14 @@ function admin_save_post(PDO $pdo, ?int $id, array $in): array
         throw validation_error($errors, $status === 'published' && !$existing ? 'Kad publikuotumėte, užpildykite pažymėtus laukus.' : 'Patikrinkite pažymėtus laukus.');
     }
 
+    // Publishing time: the chosen one (past = backdated, future = scheduled), else the current one, else now.
     $publishedAt = $existing['published_at'] ?? null;
+    // (the form works in whole minutes: an unchanged time keeps its seconds)
+    if ($chosenAt !== null && !($publishedAt && substr($publishedAt, 0, 16) === substr($chosenAt, 0, 16))) $publishedAt = $chosenAt;
     if ($status === 'published' && !$publishedAt) $publishedAt = now_utc();
 
     $values = [$slug, $status, $title, $excerpt, $body, $cover['src'], $cover['alt'], $seo['seoTitle'], $seo['seoDescription'], $seo['seoKeywords'], $publishedAt];
+    $wasPublic = $existing && $existing['status'] === 'published' && $existing['published_at'] !== null && $existing['published_at'] <= now_utc();
     try {
         if ($existing) {
             $pdo->prepare('UPDATE blog_posts SET slug = ?, status = ?, title = ?, excerpt = ?, body_html = ?, cover_image = ?, cover_alt = ?,
@@ -238,11 +262,28 @@ function admin_save_post(PDO $pdo, ?int $id, array $in): array
         if ($e->getCode() === '23000') throw validation_error(['slug' => 'Šis adresas ką tik buvo panaudotas kitai naujienai. Pasirinkite kitą.']);
         throw $e;
     }
+    // The address is now this post's: no old redirect may point away from it, and the old address of a
+    // renamed public post keeps working through a 301.
+    $pdo->prepare('DELETE FROM post_redirects WHERE old_slug = ?')->execute([$slug]);
+    if ($wasPublic && $existing['slug'] !== $slug) {
+        $pdo->prepare('REPLACE INTO post_redirects (old_slug, post_id) VALUES (?, ?)')->execute([$existing['slug'], $id]);
+    }
     return post_admin(find_post($pdo, $id));
+}
+
+/** "2026-10-14T09:30" (Lithuanian time) to a UTC database datetime, or null when it is not a real date. */
+function parse_local_datetime(string $value): ?string
+{
+    if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})$/', trim($value), $m)) return null;
+    [, $y, $mo, $d, $h, $mi] = array_map('intval', $m);
+    if ($y < 2000 || $y > 2100 || !checkdate($mo, $d, $y) || $h > 23 || $mi > 59) return null;
+    $local = new DateTimeImmutable(sprintf('%04d-%02d-%02d %02d:%02d:00', $y, $mo, $d, $h, $mi), new DateTimeZone(POST_TIMEZONE));
+    return $local->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
 }
 
 function admin_delete_post(PDO $pdo, int $id): void
 {
     find_post($pdo, $id);
+    $pdo->prepare('DELETE FROM post_redirects WHERE post_id = ?')->execute([$id]);
     $pdo->prepare('DELETE FROM blog_posts WHERE id = ?')->execute([$id]);
 }

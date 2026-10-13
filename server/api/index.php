@@ -100,7 +100,7 @@ function route_public_posts(): array
 
 function route_public_post(string $slug): array
 {
-    $row = db_configured() ? find_published_post(db(), $slug) : null;
+    $row = db_configured() ? (find_published_post(db(), $slug) ?? find_redirect_target(db(), $slug)) : null;
     if (!$row) throw not_found('Naujiena nerasta.');
     return post_public($row, db());
 }

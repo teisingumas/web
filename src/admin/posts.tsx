@@ -17,7 +17,32 @@ export function slugify(s: string) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120).replace(/-+$/, '')
 }
 
-const statusLabel = (s: AdminPost['status']) => (s === 'published' ? 'Publikuota' : 'Juodraštis')
+const statusKey = (p: Pick<AdminPost, 'status' | 'scheduled'>) => (p.scheduled ? 'scheduled' : p.status)
+const statusLabel = (p: Pick<AdminPost, 'status' | 'scheduled'>) => ({ published: 'Publikuota', draft: 'Juodraštis', scheduled: 'Suplanuota' })[statusKey(p)]
+
+// Publishing times are typed in Lithuanian time whatever the browser's time zone is.
+const TZ = 'Europe/Vilnius'
+const tzParts = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+const partsOf = (ms: number) => Object.fromEntries(tzParts.formatToParts(new Date(ms)).map(p => [p.type, p.value])) as Record<string, string>
+
+/** ISO instant to "YYYY-MM-DDTHH:MM" in Lithuanian time. */
+export function toVilniusLocal(iso: string | null | undefined) {
+  const ms = iso ? new Date(iso).getTime() : NaN
+  if (Number.isNaN(ms)) return ''
+  const p = partsOf(ms)
+  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`
+}
+
+/** "YYYY-MM-DDTHH:MM" in Lithuanian time to the instant it names. */
+export function fromVilniusLocal(local: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(local)
+  if (!m) return null
+  const asUtc = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5])
+  const offset = (t: number) => { const p = partsOf(t); return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute) - t }
+  let t = asUtc - offset(asUtc)
+  t = asUtc - offset(t)
+  return new Date(t)
+}
 
 // --- /apzvalga/naujienos ----------------------------------------------------------------------
 
@@ -102,7 +127,10 @@ function PostsList() {
                   <a className="adm-table__title" href={`${ADMIN}/naujienos/${p.id}`}>{p.title || 'Be pavadinimo'}</a>
                   <span className="adm-table__slug">/{p.slug}</span>
                 </div>
-                <span><span className={`adm-chip adm-chip--${p.status}`}>{statusLabel(p.status)}</span></span>
+                <span>
+                  <span className={`adm-chip adm-chip--${statusKey(p)}`}>{statusLabel(p)}</span>
+                  {p.scheduled && <span className="adm-table__slug">pasirodys {formatDateTime(p.publishedAt)}</span>}
+                </span>
                 <span className="adm-table__date">{formatDateTime(p.updatedAt)}</span>
                 <div className="adm-table__actions">
                   <a className="adm-btn adm-btn--small adm-btn--ghost" href={`${ADMIN}/naujienos/${p.id}`}>Redaguoti</a>
@@ -129,13 +157,15 @@ function PostsList() {
 type Form = {
   title: string; slug: string; excerpt: string; bodyHtml: string; cover: Img
   seoTitle: string; seoDescription: string; seoKeywords: string
+  publishedAt: string   // Lithuanian time, '' = automatic (now)
 }
-const EMPTY: Form = { title: '', slug: '', excerpt: '', bodyHtml: '', cover: { src: '', alt: '' }, seoTitle: '', seoDescription: '', seoKeywords: '' }
+const EMPTY: Form = { title: '', slug: '', excerpt: '', bodyHtml: '', cover: { src: '', alt: '' }, seoTitle: '', seoDescription: '', seoKeywords: '', publishedAt: '' }
 const COVER_FIELD: ImageField = { key: 'cover', type: 'image', label: 'Viršelio nuotrauka', required: true, help: 'Rodoma naujienų sąraše, naujienos viršuje ir dalinantis Facebook. Geriausia plati, pvz. 1600 × 1000 px.' }
 
 const fromPost = (p: AdminPost): Form => ({
   title: p.title, slug: p.slug, excerpt: p.excerpt, bodyHtml: p.bodyHtml, cover: p.cover,
   seoTitle: p.seoTitle, seoDescription: p.seoDescription, seoKeywords: p.seoKeywords,
+  publishedAt: toVilniusLocal(p.publishedAt),
 })
 
 function slugProblem(slug: string) {
@@ -218,6 +248,10 @@ export function PostEditor({ id }: { id: number | 'new' }) {
 
   const status = post?.status ?? 'draft'
   const isPublished = status === 'published'
+  const chosenAt = form.publishedAt ? fromVilniusLocal(form.publishedAt) : null
+  const willSchedule = !!chosenAt && chosenAt.getTime() > Date.now()
+  const isScheduled = !!post?.scheduled
+  const dateLabel = formatDateTime(chosenAt?.toISOString())
 
   const focusFirstError = () => window.setTimeout(() => {
     const el = document.querySelector<HTMLElement>('.adm-post [aria-invalid="true"]')
@@ -234,10 +268,10 @@ export function PostEditor({ id }: { id: number | 'new' }) {
       focusFirstError()
       return
     }
-    if (isPublished && post && !slugAuto && form.slug !== post.slug) {
+    if (isPublished && !isScheduled && post && !slugAuto && form.slug !== post.slug) {
       const ok = await confirm({
         title: 'Pakeisti adresą?',
-        text: <>Naujiena persikels iš <span className="adm-code">/{post.slug}</span> į <span className="adm-code">/{form.slug}</span>. Senos nuorodos (pvz. pasidalintos Facebook) nebeveiks.</>,
+        text: <>Naujiena persikels iš <span className="adm-code">/{post.slug}</span> į <span className="adm-code">/{form.slug}</span>. Sena nuoroda automatiškai nukreips į naują, todėl pasidalintos nuorodos (pvz. Facebook) ir Google rezultatai toliau veiks.</>,
         confirm: 'Keisti adresą',
       })
       if (!ok) return
@@ -259,7 +293,9 @@ export function PostEditor({ id }: { id: number | 'new' }) {
       toast.success(
         next === 'draft'
           ? (isPublished ? 'Naujiena grąžinta į juodraščius ir nebematoma svetainėje.' : 'Juodraštis išsaugotas.')
-          : (isPublished ? 'Pakeitimai paskelbti svetainėje.' : 'Naujiena paskelbta! Ji jau matoma svetainėje.'),
+          : saved.scheduled
+            ? `Naujiena suplanuota: svetainėje ji pasirodys ${formatDateTime(saved.publishedAt)}.`
+            : (isPublished ? 'Pakeitimai paskelbti svetainėje.' : 'Naujiena paskelbta! Ji jau matoma svetainėje.'),
       )
       if (id === 'new') {
         markClean()
@@ -355,16 +391,32 @@ export function PostEditor({ id }: { id: number | 'new' }) {
           <div className="adm-panel">
             <span className="adm-panel__title">Publikavimas</span>
             <dl className="adm-meta">
-              <dt>Būsena</dt><dd><span className={`adm-chip adm-chip--${status}`}>{statusLabel(status)}</span>{dirty && <span className="adm-badge" style={{ marginLeft: 8 }}>Neišsaugota</span>}</dd>
-              {post?.publishedAt && <><dt>Paskelbta</dt><dd>{formatDateTime(post.publishedAt)}</dd></>}
+              <dt>Būsena</dt><dd><span className={`adm-chip adm-chip--${post ? statusKey(post) : 'draft'}`}>{post ? statusLabel(post) : 'Juodraštis'}</span>{dirty && <span className="adm-badge" style={{ marginLeft: 8 }}>Neišsaugota</span>}</dd>
+              {post?.publishedAt && <><dt>{isScheduled ? 'Pasirodys' : 'Paskelbta'}</dt><dd>{formatDateTime(post.publishedAt)}</dd></>}
               {post && <><dt>Atnaujinta</dt><dd>{formatDateTime(post.updatedAt)}</dd></>}
             </dl>
+            <div className="adm-field">
+              <label htmlFor="post-date" className="adm-label"><span>Publikavimo data ir laikas</span></label>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <input id="post-date" type="datetime-local" className="adm-input" value={form.publishedAt} aria-invalid={!!shownErrors.publishedAt}
+                  onChange={e => set(['publishedAt'], e.target.value)} />
+                {form.publishedAt && !isPublished && <button type="button" className="adm-btn adm-btn--small adm-btn--ghost" onClick={() => set(['publishedAt'], '')}>Išvalyti</button>}
+              </div>
+              {shownErrors.publishedAt && <p className="adm-error">{shownErrors.publishedAt}</p>}
+              <p className="adm-help">
+                {willSchedule
+                  ? <>Naujiena svetainėje pasirodys automatiškai {dateLabel} (Lietuvos laiku).</>
+                  : chosenAt && !isPublished ? <>Bus rodoma su data {dateLabel}: tinka senoms naujienoms, kad jos išsirikiuotų pagal tikrą datą.</>
+                  : isPublished ? 'Pakeitus datą, pasikeis ir naujienos vieta sąraše.'
+                  : 'Palikus tuščią, naujiena bus paskelbta iš karto, kai spausite „Publikuoti“.'}
+              </p>
+            </div>
             {isPublished ? (
               <>
                 <button type="button" className="adm-btn adm-btn--block" disabled={busy || !dirty} onClick={() => save('published')}>
-                  {saving === 'published' ? <><Spinner /> Skelbiama…</> : 'Atnaujinti'}
+                  {saving === 'published' ? <><Spinner /> Skelbiama…</> : isScheduled && !willSchedule ? 'Publikuoti dabar' : 'Atnaujinti'}
                 </button>
-                <a className="adm-btn adm-btn--ghost adm-btn--block" href={`/${post!.slug}`} target="_blank" rel="noreferrer">Žiūrėti svetainėje ↗</a>
+                {!isScheduled && <a className="adm-btn adm-btn--ghost adm-btn--block" href={`/${post!.slug}`} target="_blank" rel="noreferrer">Žiūrėti svetainėje ↗</a>}
                 <button type="button" className="adm-btn adm-btn--ghost adm-btn--block" disabled={busy} onClick={() => save('draft')}>
                   {saving === 'draft' ? <><Spinner /> Saugoma…</> : 'Grąžinti į juodraščius'}
                 </button>
@@ -372,7 +424,7 @@ export function PostEditor({ id }: { id: number | 'new' }) {
             ) : (
               <>
                 <button type="button" className="adm-btn adm-btn--block" disabled={busy} onClick={() => save('published')}>
-                  {saving === 'published' ? <><Spinner /> Skelbiama…</> : 'Publikuoti'}
+                  {saving === 'published' ? <><Spinner /> Skelbiama…</> : willSchedule ? 'Suplanuoti' : 'Publikuoti'}
                 </button>
                 <button type="button" className="adm-btn adm-btn--ghost adm-btn--block" disabled={busy || (!dirty && !!post)} onClick={() => save('draft')}>
                   {saving === 'draft' ? <><Spinner /> Saugoma…</> : 'Išsaugoti juodraštį'}
@@ -416,7 +468,7 @@ export function PostEditor({ id }: { id: number | 'new' }) {
       {previewOpen && (
         <Modal title="Peržiūra" size="full" onClose={() => setPreviewOpen(false)}>
           <div className="adm-preview" style={{ margin: -20 }}>
-            <PostView preview post={{ title: form.title || 'Be pavadinimo', cover: form.cover, bodyHtml: form.bodyHtml, publishedAt: post?.publishedAt ?? null }} />
+            <PostView preview post={{ title: form.title || 'Be pavadinimo', cover: form.cover, bodyHtml: form.bodyHtml, publishedAt: chosenAt?.toISOString() ?? post?.publishedAt ?? null }} />
           </div>
         </Modal>
       )}
