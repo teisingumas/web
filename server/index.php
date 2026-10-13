@@ -23,9 +23,10 @@ if ($template === false) {
 }
 
 $rawPath = rawurldecode((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH));
-// One address per page: /naujiena/ (the old WordPress form) and /naujienos/1 redirect.
+// One address per page: /naujiena/ (the old WordPress form) and /naujienos/2, /naujienos/3 ... redirect
+// (the news pager swaps the posts in place; every post is listed in sitemap.xml).
 if ($rawPath !== '/' && str_ends_with($rawPath, '/') && trim($rawPath, '/') !== '') redirect_to(rtrim($rawPath, '/'));
-if ($rawPath === '/naujienos/1') redirect_to('/naujienos');
+if (preg_match('#^/naujienos/\d{1,4}$#i', $rawPath)) redirect_to('/naujienos');
 $path = strtolower($rawPath) ?: '/';
 
 $pdo = null;
@@ -63,10 +64,9 @@ if (isset($pagePaths[$path])) {
     $key = $pagePaths[$path];
     $meta = page_meta($seoPages[$key], page_def($key)['path']);
     if ($key === 'home') $jsonLd[] = local_business_ld($siteName, $contacts, $sections['global.socials'] ?? [], $meta['image']);
-} elseif ($path === '/naujienos' || preg_match('#^/naujienos/(\d{1,4})$#', $path, $m)) {
-    $n = isset($m[1]) ? (int) $m[1] : 1;
-    $meta = page_meta($seoPages['naujienos'], $n > 1 ? "/naujienos/$n" : '/naujienos');
-    if ($n > 1) $meta['title'] .= " · $n psl.";
+} elseif ($path === '/naujienos') {
+    $n = 1;
+    $meta = page_meta($seoPages['naujienos'], '/naujienos');
     if ($pdo || !db_configured()) {
         // before the database is set up there are simply no posts yet
         $data = $pdo ? public_posts_page($pdo, $n) : ['items' => [], 'page' => 1, 'pages' => 1, 'total' => 0];
@@ -268,7 +268,5 @@ function news_prerender(array $data, string $title): string
     foreach ($data['items'] as $post) {
         $items .= '<li><a href="/' . e($post['slug']) . '">' . e($post['title']) . '</a>' . ($post['excerpt'] !== '' ? '<p>' . e($post['excerpt']) . '</p>' : '') . '</li>';
     }
-    $pages = '';
-    for ($i = 1; $i <= $data['pages'] && $data['pages'] > 1; $i++) $pages .= ' <a href="' . ($i > 1 ? "/naujienos/$i" : '/naujienos') . '">' . $i . '</a>';
-    return '<div data-prerender style="' . PRERENDER_STYLE . '"><h1>' . e($title) . '</h1><ul>' . $items . '</ul>' . ($pages !== '' ? "<nav>$pages</nav>" : '') . '</div>';
+    return '<div data-prerender style="' . PRERENDER_STYLE . '"><h1>' . e($title) . '</h1><ul>' . $items . '</ul></div>';
 }
