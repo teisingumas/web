@@ -225,7 +225,7 @@ export default function App() {
 
         <div className="hero-content" style={{ position: 'relative', paddingTop: 144, paddingBottom: 80, width: '100%' }}>
           <div style={{ maxWidth: 720 }}>
-            <p data-edit="Hero: Kaunas · Nuo 2006" className="hero-in hero-in-1" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: '#FFB3C6', marginBottom: 24, textTransform: 'uppercase' }}>
+            <p data-edit="Hero: Kaunas · Nuo 2006" className="hero-in hero-in-1" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 5, color: 'var(--pink-text)', marginBottom: 24, textTransform: 'uppercase' }}>
               ◆&nbsp;&nbsp;Kaunas · Nuo 2006
             </p>
             <h1 data-edit="Hero: antraštė" style={{
@@ -236,7 +236,7 @@ export default function App() {
               letterSpacing: '-0.01em',
             }}>
               <span className="hero-in hero-in-2">TAVO</span><br />
-              <span className="hero-in hero-in-3" style={{ color: '#FFB3C6', WebkitTextStroke: '0px' }}><span className="hero-shake">JUDESIO</span></span><br />
+              <span className="hero-in hero-in-3" style={{ color: 'var(--pink-text)', WebkitTextStroke: '0px' }}><span className="hero-shake">JUDESIO</span></span><br />
               <span className="hero-in hero-in-4">NAMAI</span>
             </h1>
             <p data-edit="Hero: aprašymas" className="hero-in hero-in-5" style={{ fontSize: 18, color: 'var(--c-aaaaaa)', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
@@ -266,7 +266,7 @@ export default function App() {
                   textDecoration: 'none', display: 'inline-block',
                   transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB3C6'; e.currentTarget.style.color = '#FFB3C6'; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB3C6'; e.currentTarget.style.color = 'var(--pink-text)'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line-strong)'; e.currentTarget.style.color = 'var(--text)'; }}
               >
                 Tvarkaraštis
@@ -327,11 +327,11 @@ export default function App() {
       <section id="stiliai" style={{ padding: '120px 0', backgroundColor: 'var(--bg)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
-            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
+            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;Ko mokome
             </p>
             <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
-              Pasirink savo<br /><span style={{ color: '#FFB3C6' }}>stilių</span>
+              Pasirink savo<br /><span style={{ color: 'var(--pink-text)' }}>stilių</span>
             </h2>
           </div>
 
@@ -394,7 +394,7 @@ export default function App() {
             {/* Info */}
             <div style={{ padding: '56px 48px', backgroundColor: 'var(--surface)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <p style={{ fontSize: 13, letterSpacing: 3, color: current.color, textTransform: 'uppercase', fontWeight: 600, marginBottom: 20 }}>
+                <p style={{ fontSize: 13, letterSpacing: 3, color: 'var(--pink-text)', textTransform: 'uppercase', fontWeight: 600, marginBottom: 20 }}>
                   {current.tagline}
                 </p>
                 <p style={{ fontSize: 17, color: 'var(--c-cccccc)', lineHeight: 1.75, fontWeight: 300, marginBottom: 40 }}>
@@ -409,8 +409,8 @@ export default function App() {
                         style={{
                           padding: '6px 16px', fontSize: 12, fontWeight: 600,
                           letterSpacing: 1.5, textTransform: 'uppercase',
-                          border: `1px solid ${current.color}44`,
-                          color: current.color,
+                          border: '1px solid color-mix(in srgb, var(--pink-text) 27%, transparent)',
+                          color: 'var(--pink-text)',
                         }}
                       >
                         {l}
@@ -442,7 +442,7 @@ export default function App() {
       <section id="tvarkarastis" style={{ padding: '120px 0', backgroundColor: 'var(--bg-alt)', borderTop: '1px solid var(--c-111111)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
-            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
+            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;Kada šokam
             </p>
             <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
@@ -496,20 +496,20 @@ export default function App() {
                   backgroundColor: i % 2 === 1 ? 'var(--zebra)' : 'transparent',
                 }}
               >
-                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: 22, color: '#FFB3C6', letterSpacing: 1 }}>
+                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: 22, color: 'var(--pink-text)', letterSpacing: 1 }}>
                   {cls.time.split(':')[0]}<span className="time-colon">:</span>{cls.time.split(':')[1]}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: cls.color, flexShrink: 0, display: 'inline-block' }} />
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--pink-text)', flexShrink: 0, display: 'inline-block' }} />
                   <span style={{ fontWeight: 600, fontSize: 16, color: 'var(--text)' }}>{cls.style}</span>
                 </div>
                 <span style={{ fontSize: 14, color: 'var(--text-2)', fontWeight: 400 }}>{cls.duration}</span>
                 <span style={{
                   fontSize: 11, letterSpacing: 1.5, fontWeight: 600,
-                  color: cls.color, textTransform: 'uppercase',
+                  color: 'var(--pink-text)', textTransform: 'uppercase',
                   // equal space on every side; the right side is 1.5px less to
                   // offset the letter-spacing after the last character
-                  padding: '10px 8.5px 10px 10px', lineHeight: 1, border: `1px solid ${cls.color}66`,
+                  padding: '10px 8.5px 10px 10px', lineHeight: 1, border: '1px solid color-mix(in srgb, var(--pink-text) 40%, transparent)',
                   display: 'inline-block', justifySelf: 'start',
                 }}>
                   {cls.age}
@@ -521,7 +521,7 @@ export default function App() {
           <p style={{ marginTop: 20, fontSize: 13, color: 'var(--c-9a9a9a)', fontWeight: 400 }}>
             * Treniruotės vyksta Me Gusta salėje, Savanorių pr. 271, Kaunas. Pilną tvarkaraštį galite rasti paspaudę{' '}
             {/* TODO: link to the timetable page once it exists */}
-            <a href="#" style={{ color: '#FFB3C6', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
+            <a href="#" style={{ color: 'var(--pink-text)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Tvarkaraštis</a>.
           </p>
         </div>
       </section>
@@ -537,7 +537,7 @@ export default function App() {
       <section id="treneriai" style={{ padding: '120px 0', backgroundColor: 'var(--bg-alt)', borderTop: '1px solid var(--c-111111)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ marginBottom: 64 }}>
-            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
+            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;Komanda
             </p>
             <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0 }}>
@@ -605,7 +605,7 @@ export default function App() {
                     {t.name}
                   </h3>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 12, color: t.color, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase' }}>{t.specialty}</span>
+                    <span style={{ fontSize: 12, color: t.color === '#FFB3C6' ? 'var(--pink-text)' : t.color, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase' }}>{t.specialty}</span>
                     <span style={{ fontSize: 11, color: 'var(--c-555555)', fontWeight: 500, letterSpacing: 1 }}>{t.exp}</span>
                   </div>
                 </div>
@@ -753,7 +753,7 @@ export default function App() {
         /* Style tabs: brighter idle state, underline grows in on hover, stays on the active tab. */
         .style-tab { color: var(--c-707070); transition: color 180ms cubic-bezier(0.23, 1, 0.32, 1); }
         .style-tab:hover, .style-tab:focus-visible { color: var(--c-b0b0b0); }
-        .style-tab[aria-selected="true"] { color: #FFB3C6; }
+        .style-tab[aria-selected="true"] { color: var(--pink-text); }
         .style-tab::after {
           content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px;
           background: #FFB3C6; transform: scaleX(0); transform-origin: center;

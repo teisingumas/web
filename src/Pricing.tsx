@@ -5,7 +5,7 @@ export default function Pricing({ centered = false, heading = true }: { centered
   return (
     <>
     <div style={{ marginBottom: heading ? 64 : 40, textAlign: centered ? 'center' : undefined }}>
-      <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#FFB3C6', textTransform: 'uppercase', marginBottom: 12 }}>
+      <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
         ◆&nbsp;&nbsp;Prisijunk prie mūsų
       </p>
       {heading && (
@@ -57,7 +57,7 @@ export default function Pricing({ centered = false, heading = true }: { centered
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 40px', display: 'flex', flexDirection: 'column', gap: 12 }}>
               {plan.features.map(f => (
                 <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 15, color: plan.highlight ? '#111' : 'var(--c-aaaaaa)', fontWeight: 400 }}>
-                  <span style={{ color: plan.highlight ? '#080808' : '#FFB3C6', fontWeight: 700, fontSize: 16, lineHeight: 1 }}>✓</span>
+                  <span style={{ color: plan.highlight ? '#080808' : 'var(--pink-text)', fontWeight: 700, fontSize: 16, lineHeight: 1 }}>✓</span>
                   {f}
                 </li>
               ))}

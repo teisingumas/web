@@ -60,6 +60,7 @@
   --photo-edge: #020202;
   --photo-edge-rgb: 2, 2, 2;
   --scheme: dark;
+  --pink-text: #FFB3C6;
   /* exact greys of the original dark design (one token per grey) */
   --c-111111: #111111;
   --c-1e1e1e: #1e1e1e;
@@ -99,6 +100,7 @@
   --photo-edge: #fefefe;
   --photo-edge-rgb: 254, 254, 254;
   --scheme: light;
+  --pink-text: #d02f68;
   --c-111111: #ececec;
   --c-1e1e1e: #e4e4e4;
   --c-1f1f1f: #e4e4e4;
@@ -119,6 +121,7 @@
 
 :root[data-theme="light"] .site-header,
 :root[data-theme="light"] footer {
+  --pink-text: #FFB3C6;
   --bg: #080808;
   --bg-rgb: 8, 8, 8;
   --surface: #0d0d0d;

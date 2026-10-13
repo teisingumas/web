@@ -9,6 +9,8 @@ import Pricing from './Pricing'
 const ENDPOINT = import.meta.env.VITE_REGISTRATION_ENDPOINT as string | undefined
 
 const PINK = '#FFB3C6'
+// pink for text and small marks: darker in the light theme so it reads on white
+const PINK_TEXT = 'var(--pink-text)'
 const ERROR = '#ff8a8a'
 const display = "'Barlow Condensed', sans-serif"
 const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Savanorių pr. 271, Kaunas')
@@ -154,7 +156,7 @@ export default function Registration() {
     <section id="registracija" style={{ padding: '168px 0 120px', backgroundColor: 'var(--bg)' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ marginBottom: 56 }}>
-          <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: PINK, textTransform: 'uppercase', marginBottom: 12 }}>
+          <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: PINK_TEXT, textTransform: 'uppercase', marginBottom: 12 }}>
             ◆&nbsp;&nbsp;Pradėk šokti šiandien
           </p>
           <h1 className="sr-only">Registracija</h1>
@@ -167,7 +169,7 @@ export default function Registration() {
           </nav>
           {tab === 'registracija' && (
             <p style={{ marginTop: 24, fontSize: 17, color: 'var(--c-b0b0b0)', lineHeight: 1.6, maxWidth: 560, fontWeight: 300 }}>
-              Užpildykite formą, o mes el. paštu atsiųsime visą informaciją apie pirmąją, <span style={{ color: PINK, fontWeight: 500 }}>nemokamą</span> šokių pamoką.
+              Užpildykite formą, o mes el. paštu atsiųsime visą informaciją apie pirmąją, <span style={{ color: PINK_TEXT, fontWeight: 500 }}>nemokamą</span> šokių pamoką.
             </p>
           )}
           {tab === 'informacija' && (
@@ -181,7 +183,7 @@ export default function Registration() {
         <div className="reg-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: 40, alignItems: 'start' }}>
           {tab === 'informacija' ? <Faq /> : status === 'sent' ? (
             <div role="status" style={{ border: `1px solid ${PINK}`, padding: '48px 40px', backgroundColor: 'var(--surface)' }}>
-              <p style={{ fontFamily: display, fontWeight: 900, fontSize: 40, textTransform: 'uppercase', color: PINK, margin: '0 0 16px' }}>Ačiū!</p>
+              <p style={{ fontFamily: display, fontWeight: 900, fontSize: 40, textTransform: 'uppercase', color: PINK_TEXT, margin: '0 0 16px' }}>Ačiū!</p>
               <p style={{ fontSize: 17, color: 'var(--c-d0d0d0)', lineHeight: 1.6, margin: '0 0 24px' }}>
                 Registracija gauta: <b style={{ color: 'var(--text)' }}>{form.dancer}</b>.
                 Artimiausiu metu informaciją apie pirmąją pamoką atsiųsime el. paštu {form.email}.
@@ -290,7 +292,7 @@ export default function Registration() {
                   'Atvykstate į pirmąją treniruotę, ji nemokama.',
                 ].map((t, i) => (
                   <li key={t} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 8, fontSize: 15, color: 'var(--text-2)', lineHeight: 1.5 }}>
-                    <span style={{ fontFamily: display, fontWeight: 900, fontSize: 20, color: PINK, lineHeight: 1.2 }}>{i + 1}</span>
+                    <span style={{ fontFamily: display, fontWeight: 900, fontSize: 20, color: PINK_TEXT, lineHeight: 1.2 }}>{i + 1}</span>
                     {t}
                   </li>
                 ))}
@@ -301,7 +303,7 @@ export default function Registration() {
               <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 20, rowGap: 8, margin: 0, fontSize: 15, fontVariantNumeric: 'tabular-nums' }}>
                 {[['I–IV', '16:00–20:30'], ['V', '16:00–19:00']].map(([days, hours]) => (
                   <div key={days} style={{ display: 'contents' }}>
-                    <dt style={{ color: PINK, fontFamily: display, fontWeight: 800, fontSize: 17, letterSpacing: 1 }}>{days}</dt>
+                    <dt style={{ color: PINK_TEXT, fontFamily: display, fontWeight: 800, fontSize: 17, letterSpacing: 1 }}>{days}</dt>
                     <dd style={{ margin: 0, color: 'var(--text)' }}>{hours}</dd>
                   </div>
                 ))}
@@ -312,19 +314,19 @@ export default function Registration() {
               {/* Icons: Material Symbols "call", "mail", "location_on" (Google Fonts, Apache 2.0) */}
               <a href={CONTACT.phoneHref} className="reg-maps">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
-                  <path fill={PINK} d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.98.98 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
+                  <path fill={PINK_TEXT} d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.98.98 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
                 </svg>
                 {CONTACT.phone}
               </a>
               <a href={`mailto:${CONTACT.email}`} className="reg-maps">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
-                  <path fill={PINK} d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+                  <path fill={PINK_TEXT} d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
                 </svg>
                 {CONTACT.email}
               </a>
               <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="reg-maps" aria-label="Savanorių pr. 271, Kaunas (atidaryti Google Maps)">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
-                  <path fill={PINK} d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+                  <path fill={PINK_TEXT} d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
                 </svg>
                 Savanorių pr. 271, Kaunas
               </a>
@@ -344,7 +346,7 @@ export default function Registration() {
           font-size: clamp(22px, 2.6vw, 36px); color: var(--c-6e6e6e);
           transition: font-size 320ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .page-tab:hover, .page-tab:focus-visible { color: ${PINK}; }
+        .page-tab:hover, .page-tab:focus-visible { color: ${PINK_TEXT}; }
         .page-tab[aria-selected="true"] { font-size: clamp(40px, 4.2vw, 60px); color: var(--text); }
         .page-tab::after {
           content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: ${PINK};
@@ -353,18 +355,18 @@ export default function Registration() {
         .page-tab[aria-selected="true"]::after { transform: scaleX(1); }
         .page-tab:focus-visible { outline: none; }
         .reg-maps { display: inline-flex; align-items: center; gap: 8px; color: var(--text); text-decoration: none; transition: color 160ms; }
-        .reg-maps:hover { color: ${PINK}; }
-        .faq-link { color: ${PINK}; text-decoration: underline; text-underline-offset: 3px; }
+        .reg-maps:hover { color: ${PINK_TEXT}; }
+        .faq-link { color: ${PINK_TEXT}; text-decoration: underline; text-underline-offset: 3px; }
         .faq-link:hover { color: var(--c-ffffff); }
         .faq-q {
           width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px;
           background: none; border: none; cursor: pointer; text-align: left; padding: 22px 4px;
           font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.4;
         }
-        .faq-q:hover { color: ${PINK}; }
+        .faq-q:hover { color: ${PINK_TEXT}; }
         .faq-q:focus-visible { outline: 2px solid ${PINK}; outline-offset: 2px; }
         .faq-plus { position: relative; width: 18px; height: 18px; flex-shrink: 0; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1); }
-        .faq-plus::before, .faq-plus::after { content: ''; position: absolute; left: 50%; top: 50%; background: ${PINK}; transform: translate(-50%, -50%); }
+        .faq-plus::before, .faq-plus::after { content: ''; position: absolute; left: 50%; top: 50%; background: ${PINK_TEXT}; transform: translate(-50%, -50%); }
         .faq-plus::before { width: 18px; height: 2px; }
         .faq-plus::after { width: 2px; height: 18px; }
         .faq-q[aria-expanded="true"] .faq-plus { transform: rotate(45deg); }
@@ -380,7 +382,7 @@ export default function Registration() {
         .reg-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         .reg-fieldset { border: none; margin: 0; padding: 0; min-width: 0; }
         .reg-label { font-size: 14px; font-weight: 600; color: var(--c-d0d0d0); padding: 0; margin-bottom: 10px; }
-        .reg-req { color: ${PINK}; }
+        .reg-req { color: ${PINK_TEXT}; }
         .reg-input {
           width: 100%; min-height: 48px; padding: 0 14px;
           background: var(--surface); border: 1px solid var(--c-262626); color: var(--text);
@@ -419,7 +421,7 @@ export default function Registration() {
         }
         .reg-btn:hover { background: var(--btn-hover); transform: translateY(-2px); }
         .reg-btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
-        .reg-btn--ghost { background: transparent; color: ${PINK}; }
+        .reg-btn--ghost { background: transparent; color: ${PINK_TEXT}; }
         .reg-btn--ghost:hover { background: ${PINK}; color: #080808; }
         .reg-btn:focus-visible { outline: 2px solid ${PINK}; outline-offset: 3px; }
         @media (max-width: 1100px) { .reg-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
