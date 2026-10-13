@@ -49,7 +49,9 @@ export type PageSeo = { title: string; description: string; keywords: string; og
 
 // A published post as the public pages show it.
 export type PostCard = { slug: string; title: string; excerpt: string; cover: Img; publishedAt: string | null }
-export type Post = PostCard & { bodyHtml: string; updatedAt?: string }
+// Links under an article: the next newer / older post and the latest others.
+export type PostNearby = { newer: PostCard | null; older: PostCard | null; more: PostCard[] }
+export type Post = PostCard & { bodyHtml: string; updatedAt?: string; nearby?: PostNearby }
 export type PostPage = { items: PostCard[]; page: number; pages: number; total: number }
 
 // What index.php puts on the page (window.__MEGUSTA__).

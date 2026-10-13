@@ -76,7 +76,7 @@ if (isset($pagePaths[$path])) {
             $inline['view'] = ['type' => 'notfound', 'path' => $path];
         } else {
             $inline['view'] = ['type' => 'news', 'page' => $n, 'data' => $data];
-            $prerender = news_prerender($data, $sections['news']['title'] ?? 'Naujienos');
+            $prerender = news_prerender($data, $sections['news']['title'] ?? 'Naujienos', $pdo ? all_published_links($pdo) : []);
         }
     }
 } elseif ($path === '/adminas' || $path === '/apzvalga' || str_starts_with($path, '/apzvalga/')) {
@@ -87,11 +87,11 @@ if (isset($pagePaths[$path])) {
 } elseif (preg_match('#^/([a-z0-9]+(?:-[a-z0-9]+)*)$#', $path, $m) && strlen($m[1]) <= 120) {
     $row = $pdo ? find_published_post($pdo, $m[1]) : null;
     if ($row) {
-        $post = post_public($row);
+        $post = post_public($row, $pdo);
         $inline['view'] = ['type' => 'post', 'slug' => $row['slug'], 'post' => $post];
         $meta = post_meta($row, $siteName);
         $jsonLd[] = article_ld($row, $siteName, $meta);
-        $prerender = post_prerender($row);
+        $prerender = post_prerender($row, $post['nearby'] ?? []);
     } elseif ($pdo || !db_configured()) {
         $status = 404;
         $meta = not_found_meta();
@@ -254,19 +254,36 @@ function article_ld(array $row, string $siteName, array $meta): array
 }
 
 // Plain HTML copies for crawlers; the app replaces them as soon as it starts.
-function post_prerender(array $row): string
+function post_prerender(array $row, array $nearby = []): string
 {
     $date = $row['published_at'] ? '<p><time datetime="' . e((string) iso_utc($row['published_at'])) . '">' . e(substr($row['published_at'], 0, 10)) . '</time></p>' : '';
     $cover = $row['cover_image'] !== '' ? '<img src="' . e($row['cover_image']) . '" alt="' . e($row['cover_alt']) . '" style="max-width:100%;height:auto">' : '';
     return '<div data-prerender style="' . PRERENDER_STYLE . '"><article><h1>' . e($row['title']) . '</h1>' . $date . $cover . $row['body_html']
-        . '</article><p><a href="/naujienos">← Visos naujienos</a></p></div>';
+        . '</article>' . nearby_prerender($nearby) . '<p><a href="/naujienos">← Visos naujienos</a></p></div>';
 }
 
-function news_prerender(array $data, string $title): string
+function nearby_prerender(array $nearby): string
+{
+    $links = [];
+    foreach (['newer', 'older'] as $key) if (!empty($nearby[$key])) $links[] = $nearby[$key];
+    foreach ($nearby['more'] ?? [] as $card) $links[] = $card;
+    if (!$links) return '';
+    $li = '';
+    foreach ($links as $card) $li .= '<li><a href="/' . e($card['slug']) . '">' . e($card['title']) . '</a></li>';
+    return '<nav aria-label="Kitos naujienos"><ul>' . $li . '</ul></nav>';
+}
+
+// $all lists every published post, so crawlers reach each one from /naujienos (the visible pager swaps posts in place).
+function news_prerender(array $data, string $title, array $all = []): string
 {
     $items = '';
+    $shown = [];
     foreach ($data['items'] as $post) {
+        $shown[$post['slug']] = true;
         $items .= '<li><a href="/' . e($post['slug']) . '">' . e($post['title']) . '</a>' . ($post['excerpt'] !== '' ? '<p>' . e($post['excerpt']) . '</p>' : '') . '</li>';
+    }
+    foreach ($all as $post) {
+        if (!isset($shown[$post['slug']])) $items .= '<li><a href="/' . e($post['slug']) . '">' . e($post['title']) . '</a></li>';
     }
     return '<div data-prerender style="' . PRERENDER_STYLE . '"><h1>' . e($title) . '</h1><ul>' . $items . '</ul></div>';
 }
