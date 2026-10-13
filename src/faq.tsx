@@ -1,4 +1,5 @@
 import type React from 'react'
+import { showRegistrationTab } from './router'
 
 // D.U.K. content for the "Informacija" tab, transcribed from the studio's current site.
 // Links point to pages that exist here; "kalendoriuje" stays plain until a calendar page exists.
@@ -7,6 +8,15 @@ const ADMIN_EMAIL = 'admin@megusta.lt'
 
 function L({ href, children }: { href: string; children: React.ReactNode }) {
   return <a href={href} className="faq-link">{children}</a>
+}
+
+// Opens the Kainos tab on this page (tabs have no address of their own).
+function PricesTab({ children }: { children: React.ReactNode }) {
+  return (
+    <button type="button" className="faq-link" onClick={() => showRegistrationTab('kainos')} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer' }}>
+      {children}
+    </button>
+  )
 }
 
 const B = ({ children }: { children: React.ReactNode }) => <strong style={{ color: 'var(--text)', fontWeight: 600 }}>{children}</strong>
@@ -90,7 +100,7 @@ export const FAQ: FaqGroup[] = [
         a: (
           <p>
             Taip! Me Gustoje galite lankyti net kelis stilius. Šokant kelis stilius reikalingas papildomas PRO nario abonementas.{' '}
-            <L href="/registracija/kainos">Kainos</L>
+            <PricesTab>Kainos</PricesTab>
           </p>
         ),
       },
@@ -119,7 +129,7 @@ export const FAQ: FaqGroup[] = [
         ),
       },
       { q: 'Ar Me Gustoje pritaikomas NVŠ krepšelis (15 eur)?', a: NVS },
-      { q: 'Kiek kainuoja šokti Me Gustoje?', a: <p>Šokių pamokų <L href="/registracija/kainos">kainos</L>.</p> },
+      { q: 'Kiek kainuoja šokti Me Gustoje?', a: <p>Šokių pamokų <PricesTab>kainos</PricesTab>.</p> },
       { q: 'Kokia apmokėjimo tvarka Me Gustoje už šokių pamokas?', a: <p>Už šokių pamokas yra mokama už einamąjį mėnesį. Nario mokestis mokamas mėnesio pradžioje.</p> },
       { q: 'Ką daryti, jei susirgau?', a: <p>Apie ligą <B>privaloma informuoti administratorę el. paštu</B> <Admin /> iš karto, kai tik liga pasireiškia.</p> },
       { q: 'Ką daryti, jei išvykstu atostogų?', a: <p>Ketinant praleisti daugiau nei savaitę atostogaujant, reikia <B>pranešti apie išvykimą studijos administratorei</B> el. paštu <Admin />.</p> },

@@ -214,7 +214,7 @@ export default function App() {
         </div>
       </nav>
 
-      {page === 'registracija' ? <Registration tab={route.tab} /> : page === 'tvarkarastis' ? <Timetable /> : (<>
+      {page === 'registracija' ? <Registration route={route} /> : page === 'tvarkarastis' ? <Timetable /> : (<>
       {/* HERO */}
       <section id="hero" style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         {/* bg image */}

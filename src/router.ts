@@ -1,36 +1,50 @@
 import { useSyncExternalStore } from 'react'
 
-// Path-based routing: /, /tvarkarastis, /registracija, /registracija/informacija, /registracija/kainos.
+// Path-based routing: /, /tvarkarastis, /registracija. The registration page's Informacija and
+// Kainos tabs are plain in-page tabs without addresses of their own.
 // The server sends index.html for every path (see public/.htaccess); this module turns the
 // path into a route, handles links, and keeps the old #hash addresses working.
 
 export type Page = 'home' | 'registracija' | 'tvarkarastis'
 export type RegTab = 'registracija' | 'informacija' | 'kainos'
-export type Route = { page: Page; tab: RegTab }
+// tab: which registration tab a navigation asks for; seq changes on every navigation so a
+// page can react even when the path stays the same (e.g. "Registruotis" from the Kainos tab).
+export type Route = { page: Page; tab: RegTab; seq: number }
 
 export const PATHS = {
   home: '/',
   timetable: '/tvarkarastis',
   registration: '/registracija',
-  info: '/registracija/informacija',
-  prices: '/registracija/kainos',
 } as const
+
+// Earlier builds gave the tabs their own paths; those addresses still open the right tab.
+const OLD_TAB_PATHS: Record<string, RegTab> = {
+  '/registracija/informacija': 'informacija',
+  '/registracija/kainos': 'kainos',
+}
 
 // Old hash addresses from earlier builds and bookmarks.
 const LEGACY_HASHES: Record<string, string> = {
   '#tvarkarastis-pilnas': PATHS.timetable,
   '#registracija': PATHS.registration,
-  '#registracija-informacija': PATHS.info,
-  '#registracija-kainos': PATHS.prices,
+  '#registracija-informacija': '/registracija/informacija',
+  '#registracija-kainos': '/registracija/kainos',
 }
+
+let seq = 0
 
 function parse(path: string): Route {
   const p = path.replace(/\/+$/, '').toLowerCase() || '/'
-  if (p === PATHS.timetable) return { page: 'tvarkarastis', tab: 'registracija' }
-  if (p === PATHS.info) return { page: 'registracija', tab: 'informacija' }
-  if (p === PATHS.prices) return { page: 'registracija', tab: 'kainos' }
-  if (p === PATHS.registration) return { page: 'registracija', tab: 'registracija' }
-  return { page: 'home', tab: 'registracija' }
+  if (p === PATHS.timetable) return { page: 'tvarkarastis', tab: 'registracija', seq }
+  if (OLD_TAB_PATHS[p]) return { page: 'registracija', tab: OLD_TAB_PATHS[p], seq }
+  if (p === PATHS.registration) return { page: 'registracija', tab: 'registracija', seq }
+  return { page: 'home', tab: 'registracija', seq }
+}
+
+// Old tab paths are shown as plain /registracija.
+function normalizeAddress() {
+  if (!OLD_TAB_PATHS[window.location.pathname.replace(/\/+$/, '').toLowerCase()]) return
+  try { window.history.replaceState(null, '', PATHS.registration) } catch { /* preview frames */ }
 }
 
 // Inside some embedded previews the URL cannot be changed; then the route lives in memory only.
@@ -40,6 +54,7 @@ const currentPath = () => memoryPath ?? window.location.pathname
 let route = parse(currentPath())
 
 function emit() {
+  seq += 1
   route = parse(currentPath())
   listeners.forEach(l => l())
 }
@@ -61,6 +76,7 @@ export function navigate(href: string, replace = false) {
     memoryPath = path || '/'
   }
   emit()
+  normalizeAddress()
   if (samePage && hash) scrollToHash(hash)
   else if (!hash) window.scrollTo({ top: 0, behavior: 'instant' })
   // a different page with a #section scrolls once it has rendered (see App)
@@ -81,6 +97,7 @@ export function useRoute(): Route {
 export function installLinkHandling() {
   const legacy = LEGACY_HASHES[window.location.hash]
   if (legacy) navigate(legacy, true)
+  else normalizeAddress()
 
   const onClick = (e: MouseEvent) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
@@ -112,4 +129,10 @@ export function installLinkHandling() {
     window.removeEventListener('popstate', onPop)
     window.removeEventListener('hashchange', onHash)
   }
+}
+
+// Switch the registration page's tab from a link inside it (FAQ "kainos" links).
+export const TAB_EVENT = 'megusta:registration-tab'
+export function showRegistrationTab(tab: RegTab) {
+  window.dispatchEvent(new CustomEvent<RegTab>(TAB_EVENT, { detail: tab }))
 }

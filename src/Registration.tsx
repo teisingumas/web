@@ -2,7 +2,7 @@ import { cloneElement, useEffect, useState } from 'react'
 import type React from 'react'
 import { CONTACT } from './data'
 import { FAQ } from './faq'
-import { PATHS, type RegTab } from './router'
+import { TAB_EVENT, type RegTab, type Route } from './router'
 import Pricing from './Pricing'
 
 // Where submissions are POSTed as JSON (e.g. a Formspree / Web3Forms / own API URL).
@@ -95,14 +95,32 @@ function validate(f: Form) {
 
 const fullPhone = (p: Phone) => (p.number ? `${COUNTRIES.find(c => c.code === p.country)!.dial} ${p.number}` : '')
 
-// Each tab has its own address, so links (and the FAQ) can open a specific tab.
+// In-page tabs (no addresses of their own). Links inside the page switch tabs with
+// showRegistrationTab(); navigating to /registracija opens the tab the link asked for.
 const TABS = [
-  { id: 'registracija', label: 'Registracija', href: PATHS.registration },
-  { id: 'informacija', label: 'Informacija', href: PATHS.info },
-  { id: 'kainos', label: 'Kainos', href: PATHS.prices },
+  { id: 'registracija', label: 'Registracija' },
+  { id: 'informacija', label: 'Informacija' },
+  { id: 'kainos', label: 'Kainos' },
 ] as const
 
-export default function Registration({ tab }: { tab: RegTab }) {
+export default function Registration({ route }: { route: Route }) {
+  const [tab, setTab] = useState<RegTab>(route.tab)
+
+  // a new navigation (e.g. "Rinktis Standart" on the Kainos tab) opens the tab it asked for
+  useEffect(() => {
+    setTab(route.tab)
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [route.seq, route.tab])
+
+  useEffect(() => {
+    const onTab = (e: Event) => {
+      setTab((e as CustomEvent<RegTab>).detail)
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    }
+    window.addEventListener(TAB_EVENT, onTab)
+    return () => window.removeEventListener(TAB_EVENT, onTab)
+  }, [])
+
   const [form, setForm] = useState<Form>(EMPTY)
   const [touched, setTouched] = useState(false)
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -150,9 +168,9 @@ export default function Registration({ tab }: { tab: RegTab }) {
           <h1 className="sr-only">Registracija</h1>
           <nav role="tablist" aria-label="Registracijos skiltys" className="page-tabs">
             {TABS.map(t => (
-              <a key={t.id} href={t.href} role="tab" aria-selected={tab === t.id} className="page-tab">
+              <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className="page-tab" onClick={() => setTab(t.id)}>
                 {t.label}
-              </a>
+              </button>
             ))}
           </nav>
           {tab === 'registracija' && (
@@ -329,7 +347,7 @@ export default function Registration({ tab }: { tab: RegTab }) {
         /* Page tabs: the active one is heading-sized with a pink underline; the rest are smaller and light up on hover. */
         .page-tabs { display: flex; align-items: flex-end; flex-wrap: wrap; column-gap: 40px; row-gap: 8px; border-bottom: 1px solid var(--c-1f1f1f); }
         .page-tab {
-          position: relative; padding-bottom: 12px; text-decoration: none;
+          position: relative; padding: 0 0 12px; text-decoration: none; background: none; border: none; cursor: pointer;
           font-family: ${display}; font-weight: 900; text-transform: uppercase; line-height: 0.95;
           font-size: clamp(22px, 2.6vw, 36px); color: var(--c-6e6e6e);
           transition: font-size 320ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
