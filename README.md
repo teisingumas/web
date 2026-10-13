@@ -39,3 +39,14 @@ Pridėkite `#redaguoti` prie adreso (pvz. `http://localhost:5173/#redaguoti`) ar
 `VITE_EDITOR=1`. Pažymėtus elementus galima tempti pele, tuščią hero vietą tempiant juda nuotrauka.
 Panelėje matomos reikšmės, kurias galima nukopijuoti ir perkelti į kodą. Redaktorius pažymi tik
 elementus su `data-edit` atributu; paprastiems lankytojams jis nerodomas.
+
+## Talpinimas (Hostinger) ir automatinis atnaujinimas
+
+- Kiekvienas `push` į pagrindinę šaką paleidžia GitHub Actions procesą
+  `.github/workflows/deploy-hostinger.yml`: jis surenka svetainę (`npm run build`) ir paruoštus
+  failus (`dist/`, kartu su `.htaccess`) įdeda į šaką **`hostinger`**.
+- Hostinger (hPanel → Advanced → Git) iš šakos `hostinger` diegia failus į
+  `domains/testas.vedejasedvardas.lt/public_html`. Auto Deployment webhook'as GitHub'e
+  (Settings → Webhooks) praneša Hostinger'iui apie kiekvieną naują versiją.
+- Puslapiai turi tikrus adresus (`/tvarkarastis`, `/registracija`); `.htaccess` visus kitus
+  adresus nukreipia į `index.html`, todėl svetainė turi būti domeno šaknyje.

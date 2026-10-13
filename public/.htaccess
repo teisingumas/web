@@ -1,6 +1,9 @@
 # Me Gusta static site (Hostinger / Apache)
 
 Options -Indexes
+
+# Hostinger Git deployment keeps a .git folder here: never serve it.
+RedirectMatch 404 /\.git
 DirectoryIndex index.html
 
 # Pages have real paths (/tvarkarastis, /registracija/kainos ...): any address that is not
