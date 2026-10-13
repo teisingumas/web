@@ -239,6 +239,11 @@ select.adm-input { cursor: pointer; }
 .adm-rte .ProseMirror blockquote { margin: 20px 0; padding-left: 20px; border-left: 4px solid var(--pink); font-family: var(--display); font-weight: 700; font-size: 22px; text-transform: uppercase; color: var(--text); }
 .adm-rte .ProseMirror img { max-width: 100%; height: auto; display: block; margin: 16px 0; }
 .adm-rte .ProseMirror img.ProseMirror-selectednode { outline: 3px solid var(--pink); }
+.adm-rte .ProseMirror .yt-embed { position: relative; aspect-ratio: 16 / 9; max-width: 1200px; margin: 20px 0; background: #000; border: 1px solid var(--line); }
+.adm-rte .ProseMirror .yt-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; }
+.adm-rte .ProseMirror .yt-embed.ProseMirror-selectednode { outline: 3px solid var(--pink); }
+.adm-rte .ProseMirror .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 20px 0; padding: 8px; border: 1px dashed var(--line-strong); }
+.adm-rte .ProseMirror .gallery img { margin: 0; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .adm-rte .ProseMirror hr { border: none; border-top: 1px solid var(--line-strong); margin: 24px 0; }
 .adm-rte .ProseMirror p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--placeholder); float: left; height: 0; pointer-events: none; }
 .adm-rte__uploading { padding: 8px 12px; font-size: 13px; color: var(--text-2); border-top: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
@@ -308,6 +313,8 @@ a.adm-tile:hover { border-color: var(--pink); transform: translateY(-3px); }
 .adm-media { border: 1px solid var(--line); background: var(--surface); display: flex; flex-direction: column; min-width: 0; }
 .adm-media__img { aspect-ratio: 4 / 3; background: var(--surface-2); display: block; width: 100%; border: none; padding: 0; cursor: pointer; position: relative; }
 .adm-media__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-media--picked { border-color: var(--pink); }
+.adm-media__num { position: absolute; top: 8px; right: 8px; min-width: 26px; height: 26px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; background: var(--pink); color: #080808; font-weight: 800; font-size: 13px; }
 .adm-media__img:focus-visible { outline: 2px solid var(--pink); outline-offset: -2px; }
 .adm-media[data-selected="true"] { border-color: var(--pink); box-shadow: 0 0 0 1px var(--pink); }
 .adm-media__body { padding: 10px; display: flex; flex-direction: column; gap: 8px; }

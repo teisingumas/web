@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { inlineData } from './content'
 import type { Post, PostCard } from './content/types'
 import NotFound from './NotFound'
@@ -71,6 +71,31 @@ function initial(slug: string): State {
 
 // The article itself; the admin uses it for the draft preview too (preview: less top space, inert links).
 export function PostView({ post, preview = false }: { post: Pick<Post, 'title' | 'cover' | 'bodyHtml' | 'publishedAt' | 'nearby'>; preview?: boolean }) {
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null)
+
+  // Pictures in the text open in a lightbox (gallery pictures can be paged through).
+  const imagesAround = useCallback((img: HTMLImageElement) => {
+    const group = img.closest('.gallery')
+    const list = group ? Array.from(group.querySelectorAll('img')) : [img]
+    return { images: list.map(i => ({ src: i.currentSrc || i.src, alt: i.alt })), index: Math.max(0, list.indexOf(img)) }
+  }, [])
+  useEffect(() => {
+    if (preview) return
+    bodyRef.current?.querySelectorAll('img').forEach(img => {
+      if (img.closest('a')) return
+      img.setAttribute('tabindex', '0')
+      img.setAttribute('role', 'button')
+      img.setAttribute('aria-label', img.alt ? `Didinti nuotrauką: ${img.alt}` : 'Didinti nuotrauką')
+    })
+  }, [post.bodyHtml, preview])
+  const openFrom = (target: EventTarget | null) => {
+    const img = (target as HTMLElement | null)?.closest?.('img')
+    if (!img || preview || img.closest('a') || !bodyRef.current?.contains(img)) return false
+    setLightbox(imagesAround(img))
+    return true
+  }
+
   return (
     <article className="post" style={{ padding: preview ? '48px 0 64px' : '168px 0 120px', backgroundColor: 'var(--bg)' }} inert={preview || undefined}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
@@ -88,7 +113,12 @@ export function PostView({ post, preview = false }: { post: Pick<Post, 'title' |
             <img src={post.cover.src} alt={post.cover.alt} style={{ display: 'block', width: '100%', maxHeight: 620, objectFit: 'cover' }} />
           </figure>
         )}
-        <div className="post-body" dangerouslySetInnerHTML={{ __html: post.bodyHtml }} />
+        <div
+          ref={bodyRef} className="post-body" dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+          onClick={e => { openFrom(e.target) }}
+          onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && openFrom(e.target)) e.preventDefault() }}
+        />
+        {lightbox && <Lightbox images={lightbox.images} start={lightbox.index} onClose={() => setLightbox(null)} />}
         <Nearby nearby={post.nearby} />
         <div style={{ maxWidth: 760, marginTop: 64, paddingTop: 32, borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
           <a href={PATHS.news} className="post-back">← Visos naujienos</a>
@@ -121,8 +151,17 @@ export function PostView({ post, preview = false }: { post: Pick<Post, 'title' |
         .post-more h3 { margin: 0; font-family: ${display}; font-weight: 900; font-size: 22px; line-height: 1.05; text-transform: uppercase; color: var(--text); }
         @media (max-width: 1024px) { .post-more { grid-template-columns: 1fr; } }
         @media (max-width: 640px) { .post-step { grid-template-columns: 1fr; } .post-step a:last-child:not(:first-child) { text-align: left; } }
-        .post-body { max-width: 760px; font-size: 18px; line-height: 1.75; font-weight: 300; color: var(--c-cccccc); overflow-wrap: break-word; }
+        .post-body { font-size: 18px; line-height: 1.75; font-weight: 300; color: var(--c-cccccc); overflow-wrap: break-word; }
         .post-body > :first-child { margin-top: 0; }
+        /* text keeps a comfortable reading width; videos and galleries use the full width (up to 1200px) */
+        .post-body > :not(.yt-embed):not(.gallery) { max-width: 760px; }
+        .post-body .yt-embed { position: relative; width: 100%; max-width: 1200px; aspect-ratio: 16 / 9; margin: 48px 0; background: #000; }
+        .post-body .yt-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .post-body .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; max-width: 1200px; margin: 48px 0; overflow: hidden; }
+        .post-body .gallery img { margin: 0; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: filter 300ms; }
+        .post-body .gallery img:hover { filter: brightness(1.08); }
+        .post-body img[role="button"] { cursor: zoom-in; }
+        .post-body img[role="button"]:focus-visible { outline: 3px solid #FFB3C6; outline-offset: 2px; }
         .post-body p { margin: 0 0 24px; }
         .post-body h2, .post-body h3 { font-family: ${display}; font-weight: 900; text-transform: uppercase; color: var(--text); line-height: 1; letter-spacing: 0.5px; }
         .post-body h2 { font-size: 40px; margin: 56px 0 20px; }
@@ -181,5 +220,89 @@ function Nearby({ nearby }: { nearby?: Post['nearby'] }) {
         </>
       )}
     </nav>
+  )
+}
+
+// --- lightbox -----------------------------------------------------------------------------------
+
+type LightboxImage = { src: string; alt: string }
+
+function Lightbox({ images, start, onClose }: { images: LightboxImage[]; start: number; onClose: () => void }) {
+  const [index, setIndex] = useState(start)
+  const closeBtn = useRef<HTMLButtonElement>(null)
+  const touchX = useRef<number | null>(null)
+  const many = images.length > 1
+  const step = useCallback((d: number) => setIndex(i => (i + d + images.length) % images.length), [images.length])
+
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      else if (e.key === 'ArrowRight') step(1)
+      else if (e.key === 'ArrowLeft') step(-1)
+      else if (e.key === 'Tab') { e.preventDefault(); closeBtn.current?.focus() }
+    }
+    document.addEventListener('keydown', onKey)
+    const overflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    closeBtn.current?.focus()
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = overflow
+      previous?.focus?.()
+    }
+  }, [onClose, step])
+
+  const image = images[index]
+  return (
+    <div
+      className="lb" role="dialog" aria-modal="true" aria-label="Nuotraukų peržiūra"
+      onClick={e => { if (e.target === e.currentTarget || (e.target as HTMLElement).classList.contains('lb__stage')) onClose() }}
+      onTouchStart={e => { touchX.current = e.touches[0].clientX }}
+      onTouchEnd={e => {
+        if (touchX.current === null || !many) return
+        const dx = e.changedTouches[0].clientX - touchX.current
+        touchX.current = null
+        if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1)
+      }}
+    >
+      <div className="lb__stage">
+        <img key={image.src} className="lb__img" src={image.src} alt={image.alt} />
+      </div>
+      {image.alt && <p className="lb__caption">{image.alt}</p>}
+      <button ref={closeBtn} type="button" className="lb__btn lb__close" aria-label="Uždaryti" onClick={onClose}>×</button>
+      {many && (
+        <>
+          <button type="button" className="lb__btn lb__prev" aria-label="Ankstesnė nuotrauka" onClick={() => step(-1)}>←</button>
+          <button type="button" className="lb__btn lb__next" aria-label="Kita nuotrauka" onClick={() => step(1)}>→</button>
+          <span className="lb__count" aria-live="polite">{index + 1} / {images.length}</span>
+        </>
+      )}
+      <style>{`
+        .lb { position: fixed; inset: 0; z-index: 1000; background: rgba(8, 8, 8, 0.94); display: flex; flex-direction: column; align-items: center; justify-content: center; animation: lbIn 200ms ease-out; }
+        .lb__stage { flex: 1; width: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 64px 72px 8px; }
+        .lb__img { max-width: 100%; max-height: 100%; object-fit: contain; animation: lbImg 260ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .lb__caption { margin: 0; padding: 8px 72px 56px; max-width: 900px; text-align: center; font-size: 15px; line-height: 1.5; color: #ccc; }
+        .lb__btn {
+          position: absolute; width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center;
+          background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer;
+          font-size: 24px; line-height: 1; transition: background-color 0.2s, color 0.2s;
+        }
+        .lb__btn:hover, .lb__btn:focus-visible { background: #FFB3C6; color: #080808; outline: none; }
+        .lb__close { top: 16px; right: 16px; font-size: 30px; }
+        .lb__prev { left: 16px; top: 50%; transform: translateY(-50%); }
+        .lb__next { right: 16px; top: 50%; transform: translateY(-50%); }
+        .lb__count { position: absolute; top: 28px; left: 24px; font-size: 13px; font-weight: 700; letter-spacing: 3px; color: #ccc; }
+        @keyframes lbIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes lbImg { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: none; } }
+        @media (max-width: 640px) {
+          .lb__stage { padding: 64px 8px 8px; }
+          .lb__caption { padding: 8px 16px 24px; }
+          .lb__prev, .lb__next { top: auto; bottom: 16px; transform: none; }
+          .lb__prev { left: 16px; } .lb__next { right: 16px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .lb, .lb__img { animation: none; } }
+      `}</style>
+    </div>
   )
 }

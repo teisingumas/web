@@ -213,7 +213,7 @@ function admin_save_post(PDO $pdo, ?int $id, array $in): array
 
     if ($status === 'published') {
         if ($excerpt === '') $errors['excerpt'] = 'Prieš publikuojant įrašykite trumpą santrauką (ji rodoma naujienų sąraše).';
-        if (html_text($body) === '') $errors['bodyHtml'] = 'Prieš publikuojant parašykite naujienos tekstą.';
+        if (html_text($body) === '' && !preg_match('/data-youtube|<img /', $body)) $errors['bodyHtml'] = 'Prieš publikuojant parašykite naujienos tekstą.';
         if ($cover['src'] === '') $errors['cover.src'] = 'Prieš publikuojant įkelkite viršelio nuotrauką.';
     }
     if ($errors) {

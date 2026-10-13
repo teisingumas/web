@@ -130,6 +130,55 @@ export function MediaPicker({ onClose, onSelect }: { onClose: () => void; onSele
   )
 }
 
+/** Pick several images in order (for a gallery); new uploads join the selection. */
+export function MediaMultiPicker({ title, confirmLabel, onClose, onDone }: { title: string; confirmLabel: string; onClose: () => void; onDone: (items: MediaItem[]) => void }) {
+  const { items, setItems, error, reload } = useMedia()
+  const [picked, setPicked] = useState<MediaItem[]>([])
+  const { uploads, start, dismiss } = useUploads(item => {
+    setItems(list => [item, ...(list ?? []).filter(x => x.id !== item.id)])
+    setPicked(p => (p.some(x => x.id === item.id) ? p : [...p, item]))
+  })
+  const toggle = (item: MediaItem) => setPicked(p => (p.some(x => x.id === item.id) ? p.filter(x => x.id !== item.id) : [...p, item]))
+  return (
+    <Modal
+      title={title} onClose={onClose} size="wide"
+      footer={
+        <>
+          <span className="adm-help" style={{ marginRight: 'auto', alignSelf: 'center' }}>Pasirinkta: {picked.length}. Nuotraukos bus tokia eilės tvarka, kokia jas pažymėjote.</span>
+          <button type="button" className="adm-btn adm-btn--ghost" onClick={onClose}>Atšaukti</button>
+          <button type="button" className="adm-btn" disabled={picked.length === 0} onClick={() => onDone(picked)}>{confirmLabel}</button>
+        </>
+      }
+    >
+      <DropZone onFiles={start}>
+        <strong>Įtempkite kelias naujas nuotraukas čia</strong> arba spauskite ir pasirinkite.<br />JPG, PNG arba WebP, iki 2 MB.
+      </DropZone>
+      <UploadList uploads={uploads} dismiss={dismiss} />
+      {error ? <ErrorState message={error} onRetry={reload} />
+        : !items ? <GridSkeleton />
+        : items.length === 0 ? <p className="adm-help">Bibliotekoje dar nėra nuotraukų. Įkelkite pirmąsias.</p>
+        : (
+          <div className="adm-media-grid">
+            {items.map(item => {
+              const n = picked.findIndex(x => x.id === item.id) + 1
+              return (
+                <div key={item.id} className={`adm-media${n ? ' adm-media--picked' : ''}`}>
+                  <button type="button" className="adm-media__img" aria-pressed={n > 0} onClick={() => toggle(item)} aria-label={`${n ? 'Atžymėti' : 'Pažymėti'}: ${item.alt || item.originalName}`}>
+                    <img src={item.src} alt="" loading="lazy" />
+                    {n > 0 && <span className="adm-media__num" aria-hidden="true">{n}</span>}
+                  </button>
+                  <div className="adm-media__body">
+                    <span className="adm-media__meta" title={item.originalName}>{item.alt || item.originalName}</span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+    </Modal>
+  )
+}
+
 function GridSkeleton() {
   return (
     <div className="adm-media-grid" aria-busy="true" aria-label="Kraunama">
