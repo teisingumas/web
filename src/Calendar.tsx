@@ -237,10 +237,17 @@ export default function Calendar() {
         .ev-tag--varzybos { background: transparent; color: var(--pink-text); border: 1px solid var(--pink-text); }
         .ev-tag--kita { background: transparent; color: var(--text-2); border: 1px solid var(--line-strong); }
         .cal-chip { display: inline-block; padding: 5px 10px; font-family: ${display}; font-weight: 700; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; line-height: 1; color: var(--text); border: 1px dashed var(--pink-text); }
-        .cal-more { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; margin-top: 2px; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--pink-text); text-decoration: none; white-space: nowrap; }
-        .cal-more:hover { color: var(--text); }
-        .cal-more span { transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1); }
-        .cal-more:hover span { transform: translateX(4px); }
+        /* "Plačiau apie renginį": outline that fills with pink from left to right on hover, like the day tabs */
+        .cal-cta {
+          position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 12px; align-self: flex-start; min-height: 48px; margin-top: 6px; padding: 12px 24px;
+          color: var(--text); border: 1px solid var(--text); text-decoration: none;
+          font-family: ${display}; font-weight: 800; font-size: 16px; letter-spacing: 1.5px; text-transform: uppercase;
+          transition: color 260ms cubic-bezier(0.23, 1, 0.32, 1), border-color 260ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .cal-cta::before { content: ''; position: absolute; inset: 0; background: #FFB3C6; transform: scaleX(0); transform-origin: left center; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .cal-cta > * { position: relative; }
+        .cal-cta:hover, .cal-cta:focus-visible { color: #080808; border-color: #FFB3C6; outline: none; }
+        .cal-cta:hover::before, .cal-cta:focus-visible::before { transform: scaleX(1); }
         .cal-title a { color: inherit; text-decoration: none; }
         .cal-title a:hover { color: var(--pink-text); }
         .cal-btn, .cal-ghost {
@@ -261,7 +268,7 @@ export default function Calendar() {
           .cal-month__head { padding: 16px; font-size: 22px; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .cal-thumb img, .cal-mf-btn > svg, .cal-more span { transition: none; }
+          .cal-thumb img, .cal-mf-btn > svg, .cal-cta, .cal-cta::before { transition: none; }
           .cal-skel { animation: none; }
         }
       `}</style>
@@ -327,7 +334,7 @@ function EventRow({ event: e, today }: { event: EventCard; today: string }) {
             </span>
           )}
         </div>
-        <a className="cal-more" href={href}>Plačiau <span>→</span></a>
+        <a className="cal-cta" href={href}><span>Plačiau apie renginį</span><span aria-hidden="true">→</span></a>
       </div>
     </article>
   )

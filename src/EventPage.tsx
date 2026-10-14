@@ -181,7 +181,6 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
 
         <div style={{ marginTop: 64, paddingTop: 32, borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
           <a href={PATHS.calendar} className="ev-back">← Visi renginiai</a>
-          <a href={PATHS.registration} className="ev-cta">Registruotis →</a>
         </div>
       </div>
       <style>{`
@@ -191,11 +190,6 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
         .ev-tag--kita { background: transparent; color: var(--text-2); border: 1px solid var(--line-strong); }
         .ev-back { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-2); text-decoration: none; transition: color 0.2s; }
         .ev-back:hover { color: var(--pink-text); }
-        .ev-cta {
-          background: #FFB3C6; color: #080808; text-decoration: none; padding: 14px 32px;
-          font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: background-color 0.2s;
-        }
-        .ev-cta:hover { background: var(--btn-hover); }
         .ev-layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 64px; align-items: start; }
         .ev-info { position: sticky; top: 112px; background: var(--surface); border: 1px solid var(--line); padding: 32px 28px; display: flex; flex-direction: column; gap: 28px; }
         .ev-info__date { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
