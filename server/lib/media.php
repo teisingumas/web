@@ -34,7 +34,46 @@ function media_public(array $row): array
 function list_media(PDO $pdo): array
 {
     $rows = $pdo->query('SELECT * FROM media ORDER BY created_at DESC, id DESC')->fetchAll();
+    // Alt texts are written where an image is used (post cover, page section, text); a library image
+    // without its own alt takes the one from its usage, so it is not reported as missing.
+    if (array_filter($rows, fn($r) => $r['alt'] === '')) {
+        $used = used_alts($pdo);
+        $update = $pdo->prepare("UPDATE media SET alt = ? WHERE id = ? AND alt = ''");
+        foreach ($rows as &$row) {
+            if ($row['alt'] === '' && ($used[$row['file_name']] ?? '') !== '') {
+                $row['alt'] = mb_substr($used[$row['file_name']], 0, 160);
+                $update->execute([$row['alt'], $row['id']]);
+            }
+        }
+        unset($row);
+    }
     return array_map('media_public', $rows);
+}
+
+/** file name => alt text, from every place an uploaded image is used. */
+function used_alts(PDO $pdo): array
+{
+    $alts = [];
+    $add = function (string $src, string $alt) use (&$alts) {
+        if ($alt !== '' && preg_match('#^/media/([^/]+)$#', $src, $m)) $alts[$m[1]] ??= $alt;
+    };
+    $rows = array_merge(
+        $pdo->query('SELECT cover_image, cover_alt, body_html FROM blog_posts')->fetchAll(),
+        $pdo->query('SELECT cover_image, cover_alt, body_html FROM events')->fetchAll(),
+    );
+    foreach ($rows as $post) {
+        $add($post['cover_image'], $post['cover_alt']);
+        preg_match_all('#<img src="([^"]+)" alt="([^"]*)"#', $post['body_html'], $m, PREG_SET_ORDER);
+        foreach ($m as $img) $add(html_entity_decode($img[1]), html_entity_decode($img[2], ENT_QUOTES | ENT_HTML5));
+    }
+    $walk = function ($v) use (&$walk, $add) {
+        if (!is_array($v)) return;
+        if (is_string($v['src'] ?? null) && is_string($v['alt'] ?? null)) $add($v['src'], $v['alt']);
+        foreach ($v as $child) $walk($child);
+    };
+    foreach ($pdo->query('SELECT data FROM content_sections') as $row) $walk(decode_json_object($row['data']));
+    foreach ($pdo->query('SELECT og_image, og_image_alt FROM page_seo') as $row) $add($row['og_image'], $row['og_image_alt']);
+    return $alts;
 }
 
 function format_mb(int $bytes): string
