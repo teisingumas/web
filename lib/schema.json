@@ -1,0 +1,350 @@
+{
+  "$comment": "Nuotraukos laukas: alt = required (numatyta) | optional | none (fono nuotrauka be alt). Turinio schema: kiekvienas redaguojamas laukas. Iš jos admin piešia formas, o serveris (server/lib/schema.php) tikrina duomenis. Keičiant laukus, atnaujinkite ir src/content/types.ts bei defaults.ts.",
+  "version": 1,
+  "reservedSlugs": [
+    "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "kalendorius", "kontaktai", "api", "lib", "media", "assets", "img",
+    "index", "sitemap", "robots", "favicon", "wp-admin", "wp-login", "wp-content", "wp-json", "feed"
+  ],
+  "seoFields": [
+    { "key": "title", "type": "text", "label": "Puslapio pavadinimas (title)", "required": true, "max": 70, "recommended": 60, "help": "Rodomas naršyklės skirtuke ir Google rezultatuose. Geriausia iki 60 ženklų." },
+    { "key": "description", "type": "textarea", "label": "Aprašymas (meta description)", "required": true, "max": 160, "recommended": 155, "rows": 3, "help": "1–2 sakiniai po pavadinimu Google rezultatuose. Geriausia 120–155 ženklai." },
+    { "key": "keywords", "type": "text", "label": "Raktažodžiai", "max": 255, "help": "Atskirkite kableliais, pvz.: hip hop šokiai Kaune, šokių studija, breikas." },
+    { "key": "ogImage", "type": "image", "label": "Nuotrauka dalinantis (Facebook ir kt.)", "alt": "optional", "help": "Jei nenurodyta, naudojama numatytoji iš „Bendri nustatymai“. Geriausia 1200 × 630 px." },
+    { "key": "noindex", "type": "checkbox", "label": "Slėpti nuo paieškos sistemų (noindex)", "help": "Pažymėkite tik jei puslapis neturi atsirasti Google paieškoje." }
+  ],
+  "pages": [
+    {
+      "key": "home", "label": "Pagrindinis", "path": "/", "admin": "pagrindinis",
+      "sections": ["home.hero", "home.stats", "home.styles", "home.schedule", "pricing", "home.trainers", "home.cta"],
+      "seo": {
+        "title": "Me Gusta — Hip hop šokių studija Kaune",
+        "description": "Me Gusta — hip hop šokių studija Kaune. Gatvės šokiai, Pop Dance, Lady Class ir Breikas vaikams, paaugliams ir suaugusiems. Pirmoji treniruotė nemokama.",
+        "keywords": "hip hop šokiai Kaune, šokių studija Kaune, gatvės šokiai, breikas, lady class, pop dance"
+      }
+    },
+    {
+      "key": "tvarkarastis", "label": "Tvarkaraštis", "path": "/tvarkarastis", "admin": "tvarkarastis",
+      "sections": ["timetable"],
+      "seo": {
+        "title": "Tvarkaraštis — Me Gusta",
+        "description": "Me Gusta šokių studijos treniruočių tvarkaraštis: renkamos grupės, salės ir treneriai. Treniruotės vyksta Savanorių pr. 271, Kaune.",
+        "keywords": "šokių tvarkaraštis, šokių treniruotės Kaune, Me Gusta tvarkaraštis"
+      }
+    },
+    {
+      "key": "registracija", "label": "Registracija", "path": "/registracija", "admin": "registracija",
+      "sections": ["registration", "registration.faq"],
+      "seo": {
+        "title": "Registracija — Me Gusta",
+        "description": "Užsiregistruokite į Me Gusta šokių studiją Kaune. Pirmoji treniruotė nemokama. Dažniausiai užduodami klausimai ir kainos.",
+        "keywords": "registracija į šokius, šokių pamokos Kaune, pirmoji treniruotė nemokama"
+      }
+    },
+    {
+      "key": "naujienos", "label": "Naujienos", "path": "/naujienos", "admin": "naujienos",
+      "sections": ["news"],
+      "seo": {
+        "title": "Naujienos — Me Gusta",
+        "description": "Me Gusta šokių studijos naujienos: renginiai, konkursai, pasirodymai ir studijos gyvenimas.",
+        "keywords": "šokių studijos naujienos, Me Gusta renginiai"
+      }
+    },
+    {
+      "key": "kalendorius", "label": "Kalendorius", "path": "/kalendorius", "admin": "renginiai",
+      "sections": ["calendar"],
+      "seo": {
+        "title": "Kalendorius — Me Gusta",
+        "description": "Me Gusta šokių studijos renginių kalendorius: artėjantys renginiai, varžybos, seminarai ir atvirų durų dienos Kaune.",
+        "keywords": "šokių renginiai Kaune, šokių varžybos, atvirų durų diena, Me Gusta kalendorius"
+      }
+    },
+    {
+      "key": "kontaktai", "label": "Kontaktai", "path": "/kontaktai", "admin": "bendri",
+      "sections": ["global.contacts"],
+      "seo": {
+        "title": "Kontaktai — Me Gusta",
+        "description": "Me Gusta šokių studijos kontaktai: adresas Savanorių pr. 271, Kaunas, telefonas, el. paštas ir darbo laikas.",
+        "keywords": "Me Gusta kontaktai, šokių studija Kaune, Savanorių pr. 271"
+      }
+    }
+  ],
+  "settingsSections": ["global.contacts", "global.socials", "global.footer", "global.seo"],
+  "sections": {
+    "global.contacts": {
+      "title": "Kontaktai",
+      "description": "Rodomi viršutinėje juostoje, registracijos puslapyje ir apačioje.",
+      "fields": [
+        { "key": "email", "type": "text", "label": "El. paštas", "required": true, "max": 120, "format": "email" },
+        { "key": "phone", "type": "text", "label": "Telefonas", "required": true, "max": 30, "format": "phone", "help": "Su šalies kodu, pvz. +370 606 44888." },
+        { "key": "address", "type": "text", "label": "Adresas", "required": true, "max": 100, "help": "Gatvė ir miestas, atskirti kableliu, pvz. Savanorių pr. 271, Kaunas." }
+      ]
+    },
+    "global.socials": {
+      "title": "Socialiniai tinklai",
+      "description": "Nuorodos į studijos paskyras. Tuščios nuorodos nerodomos.",
+      "fields": [
+        { "key": "facebook", "type": "text", "label": "Facebook", "max": 300, "format": "url", "placeholder": "https://www.facebook.com/..." },
+        { "key": "instagram", "type": "text", "label": "Instagram", "max": 300, "format": "url", "placeholder": "https://www.instagram.com/..." },
+        { "key": "tiktok", "type": "text", "label": "TikTok", "max": 300, "format": "url", "placeholder": "https://www.tiktok.com/@..." },
+        { "key": "youtube", "type": "text", "label": "YouTube", "max": 300, "format": "url", "placeholder": "https://www.youtube.com/@..." }
+      ]
+    },
+    "global.footer": {
+      "title": "Apačia (footer)",
+      "fields": [
+        { "key": "text", "type": "textarea", "label": "Trumpas aprašymas", "required": true, "max": 300, "rows": 3 },
+        { "key": "tagline", "type": "text", "label": "Apatinė eilutė dešinėje", "max": 80 }
+      ]
+    },
+    "global.seo": {
+      "title": "Numatytasis SEO",
+      "description": "Naudojama visuose puslapiuose, kurie neturi savo reikšmių.",
+      "fields": [
+        { "key": "siteName", "type": "text", "label": "Svetainės pavadinimas", "required": true, "max": 40, "help": "Pridedamas prie naujienų pavadinimų, pvz. „Įrašo pavadinimas — Me Gusta“." },
+        { "key": "ogImage", "type": "image", "label": "Numatytoji nuotrauka dalinantis", "alt": "optional", "help": "Rodoma, kai nuoroda dalijamasi Facebook, Messenger ir kt. Geriausia 1200 × 630 px." }
+      ]
+    },
+    "home.hero": {
+      "title": "Hero (pirmas ekranas)",
+      "description": "Didelė antraštė ir nuotrauka puslapio viršuje.",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 60 },
+        { "key": "line1", "type": "text", "label": "Antraštė: 1 eilutė", "required": true, "max": 20 },
+        { "key": "line2", "type": "text", "label": "Antraštė: 2 eilutė (rožinė, kruta)", "required": true, "max": 20 },
+        { "key": "line3", "type": "text", "label": "Antraštė: 3 eilutė", "max": 20 },
+        { "key": "text", "type": "textarea", "label": "Aprašymas", "required": true, "max": 300, "rows": 3 },
+        { "key": "primaryCta", "type": "text", "label": "Rožinis mygtukas", "required": true, "max": 30, "help": "Veda į skiltį „Pasirink savo stilių“." },
+        { "key": "secondaryCta", "type": "text", "label": "Antras mygtukas", "required": true, "max": 30, "help": "Veda į tvarkaraštį." },
+        { "key": "image", "type": "image", "label": "Nuotrauka (tamsi tema)", "required": true, "focus": true, "alt": "none", "help": "Plati nuotrauka, pvz. 2000 × 800 px." },
+        { "key": "imageLight", "type": "image", "label": "Nuotrauka (šviesi tema)", "alt": "none", "help": "Jei nenurodyta, šviesioje temoje rodoma tamsios temos nuotrauka." }
+      ]
+    },
+    "home.stats": {
+      "title": "Statistika (rožinė juosta)",
+      "fields": [
+        {
+          "key": "items", "type": "list", "label": "Skaičiai", "itemName": "skaičių", "itemTitle": "label", "layout": "rows", "min": 4, "max": 4,
+          "fields": [
+            { "key": "num", "type": "text", "label": "Skaičius", "required": true, "max": 6, "format": "stat", "placeholder": "650+" },
+            { "key": "label", "type": "text", "label": "Pavadinimas", "required": true, "max": 30 }
+          ]
+        }
+      ]
+    },
+    "home.styles": {
+      "title": "Šokių stiliai",
+      "description": "Skiltis „Pasirink savo stilių“ su skirtukais.",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "title1", "type": "text", "label": "Antraštė: 1 eilutė", "required": true, "max": 30 },
+        { "key": "title2", "type": "text", "label": "Antraštė: 2 eilutė (rožinė)", "max": 30 },
+        { "key": "button", "type": "text", "label": "Mygtukas", "required": true, "max": 30, "help": "Veda į kainas." },
+        {
+          "key": "items", "type": "list", "label": "Stiliai", "itemName": "stilių", "itemTitle": "name", "min": 1, "max": 8,
+          "fields": [
+            { "key": "name", "type": "text", "label": "Pavadinimas", "required": true, "max": 30 },
+            { "key": "tagline", "type": "text", "label": "Šūkis", "max": 80 },
+            { "key": "description", "type": "textarea", "label": "Aprašymas", "required": true, "max": 600, "rows": 4 },
+            { "key": "image", "type": "image", "label": "Nuotrauka", "required": true },
+            { "key": "levels", "type": "tags", "label": "Amžiaus grupės", "itemName": "grupę", "max": 20, "maxItems": 8, "placeholder": "7–11 m." }
+          ]
+        }
+      ]
+    },
+    "home.schedule": {
+      "title": "Tvarkaraštis (pagrindiniame puslapyje)",
+      "description": "Savaitės pamokos su dienų skirtukais. Pilnas tvarkaraštis redaguojamas puslapyje „Tvarkaraštis“.",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "title", "type": "text", "label": "Antraštė", "required": true, "max": 40 },
+        {
+          "key": "days", "type": "list", "label": "Dienos", "itemName": "dieną", "itemTitle": "day", "min": 1, "max": 7,
+          "fields": [
+            { "key": "day", "type": "select", "label": "Diena", "required": true, "options": "weekdays" },
+            {
+              "key": "classes", "type": "list", "label": "Pamokos", "itemName": "pamoką", "itemTitle": "style", "layout": "rows", "max": 20,
+              "fields": [
+                { "key": "time", "type": "text", "label": "Laikas", "required": true, "format": "time", "placeholder": "17:00" },
+                { "key": "duration", "type": "text", "label": "Trukmė", "required": true, "max": 15, "placeholder": "60 min" },
+                { "key": "style", "type": "text", "label": "Stilius", "required": true, "max": 40 },
+                { "key": "age", "type": "text", "label": "Amžius", "required": true, "max": 20, "placeholder": "Nuo 7 m." }
+              ]
+            }
+          ]
+        },
+        { "key": "note", "type": "richtext", "label": "Pastaba po lentele", "max": 300 }
+      ]
+    },
+    "pricing": {
+      "title": "Kainos",
+      "description": "Rodomos pagrindiniame puslapyje ir registracijos skirtuke „Kainos“.",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "title", "type": "text", "label": "Antraštė", "required": true, "max": 30 },
+        { "key": "badge", "type": "text", "label": "Išryškinto plano žymė", "required": true, "max": 30 },
+        {
+          "key": "plans", "type": "list", "label": "Planai", "itemName": "planą", "itemTitle": "name", "min": 1, "max": 4,
+          "fields": [
+            { "key": "name", "type": "text", "label": "Pavadinimas", "required": true, "max": 30 },
+            { "key": "desc", "type": "text", "label": "Trumpas aprašas", "max": 40 },
+            { "key": "price", "type": "text", "label": "Kaina, €", "required": true, "format": "price", "placeholder": "55" },
+            { "key": "period", "type": "text", "label": "Laikotarpis", "required": true, "max": 15, "placeholder": "/mėn" },
+            { "key": "features", "type": "tags", "label": "Kas įskaičiuota", "itemName": "eilutę", "max": 60, "maxItems": 10 },
+            { "key": "highlight", "type": "checkbox", "label": "Išryškinti (rožinė kortelė)" },
+            { "key": "cta", "type": "text", "label": "Mygtukas", "required": true, "max": 30 }
+          ]
+        },
+        { "key": "note", "type": "text", "label": "Pastaba po planais", "max": 120 }
+      ]
+    },
+    "home.trainers": {
+      "title": "Treneriai",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "title", "type": "text", "label": "Antraštė", "required": true, "max": 40 },
+        {
+          "key": "items", "type": "list", "label": "Treneriai", "itemName": "trenerį", "itemTitle": "name", "min": 1, "max": 16,
+          "fields": [
+            { "key": "name", "type": "text", "label": "Vardas ir pavardė", "required": true, "max": 40 },
+            { "key": "specialty", "type": "text", "label": "Stilius", "required": true, "max": 30 },
+            { "key": "experience", "type": "text", "label": "Patirtis", "max": 30, "placeholder": "10 m. patirtis" },
+            { "key": "bio", "type": "textarea", "label": "Apie trenerį", "max": 300, "rows": 3, "help": "Rodoma užvedus pelę ant nuotraukos." },
+            { "key": "color", "type": "select", "label": "Akcento spalva", "required": true, "options": "accentColors" },
+            { "key": "image", "type": "image", "label": "Nuotrauka", "required": true, "help": "Stačia nuotrauka, pvz. 800 × 1040 px." }
+          ]
+        }
+      ]
+    },
+    "home.cta": {
+      "title": "Kvietimas registruotis (rožinė juosta apačioje)",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 60 },
+        { "key": "line1", "type": "text", "label": "Antraštė: 1 eilutė", "required": true, "max": 30 },
+        { "key": "line2", "type": "text", "label": "Antraštė: 2 eilutė", "max": 30 },
+        { "key": "button", "type": "text", "label": "Mygtukas", "required": true, "max": 30 }
+      ]
+    },
+    "timetable": {
+      "title": "Tvarkaraštis",
+      "description": "Kiekviena salė yra atskiras skirtukas. Salė be dienų rodo pranešimą, kad tvarkaraštis netrukus bus paskelbtas.",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "title", "type": "text", "label": "Antraštė", "required": true, "max": 40 },
+        { "key": "validFrom", "type": "text", "label": "Galioja nuo", "required": true, "format": "date", "placeholder": "2026.09.02" },
+        { "key": "season", "type": "text", "label": "Sezonas", "max": 60 },
+        { "key": "note", "type": "textarea", "label": "Pastaba apačioje", "max": 300, "rows": 2 },
+        { "key": "emptyText", "type": "text", "label": "Tekstas, kai salė dar neturi tvarkaraščio", "required": true, "max": 120 },
+        {
+          "key": "halls", "type": "list", "label": "Skirtukai (salės)", "itemName": "skirtuką", "itemTitle": "label", "min": 1, "max": 6,
+          "fields": [
+            { "key": "label", "type": "text", "label": "Pavadinimas", "required": true, "max": 30 },
+            {
+              "key": "days", "type": "list", "label": "Dienos", "itemName": "dieną", "itemTitle": "day", "max": 7,
+              "fields": [
+                { "key": "day", "type": "select", "label": "Diena", "required": true, "options": "weekdays" },
+                {
+                  "key": "slots", "type": "list", "label": "Laikai", "itemName": "laiką", "itemTitle": "group", "layout": "rows", "max": 20,
+                  "check": { "type": "timeOrder", "start": "start", "end": "end" },
+                  "fields": [
+                    { "key": "status", "type": "select", "label": "Būsena", "required": true, "options": "slotStatuses" },
+                    { "key": "start", "type": "text", "label": "Nuo", "required": true, "format": "time", "placeholder": "17:00" },
+                    { "key": "end", "type": "text", "label": "Iki", "required": true, "format": "time", "placeholder": "18:00" },
+                    { "key": "group", "type": "text", "label": "Grupė", "required": true, "max": 60 },
+                    { "key": "trainer", "type": "text", "label": "Treneris", "max": 40 }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "registration": {
+      "title": "Registracijos tekstai",
+      "description": "Formos laukų pavadinimai lieka tokie patys; čia keičiami tekstai ir pasirinkimai.",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "intro", "type": "richtext", "label": "Įžanga (skirtukas „Registracija“)", "required": true, "max": 400, "help": "Paryškintas tekstas rodomas rožine spalva." },
+        { "key": "infoIntro", "type": "text", "label": "Įžanga (skirtukas „Informacija“)", "required": true, "max": 200, "help": "Po jos automatiškai pridedamas el. paštas ir telefonas." },
+        { "key": "styleOptions", "type": "tags", "label": "Šokių stiliai formoje", "itemName": "stilių", "max": 80, "minItems": 1, "maxItems": 10 },
+        { "key": "sourceOptions", "type": "tags", "label": "„Apie Me Gusta sužinojau“ pasirinkimai", "itemName": "pasirinkimą", "max": 40, "minItems": 1, "maxItems": 12 },
+        { "key": "formNote", "type": "textarea", "label": "Tekstas virš sutikimo", "max": 300, "rows": 2 },
+        { "key": "consent", "type": "textarea", "label": "Sutikimo tekstas", "required": true, "max": 300, "rows": 2 },
+        { "key": "freeNote", "type": "text", "label": "Tekstas šalia mygtuko", "max": 60 },
+        { "key": "steps", "type": "tags", "label": "„Kas toliau“ žingsniai", "itemName": "žingsnį", "max": 120, "minItems": 1, "maxItems": 5 },
+        {
+          "key": "hours", "type": "list", "label": "Studijos darbo laikas", "itemName": "eilutę", "itemTitle": "days", "layout": "rows", "max": 7,
+          "fields": [
+            { "key": "days", "type": "text", "label": "Dienos", "required": true, "max": 15, "placeholder": "I–IV" },
+            { "key": "hours", "type": "text", "label": "Valandos", "required": true, "max": 30, "placeholder": "16:00–20:30" }
+          ]
+        }
+      ]
+    },
+    "registration.faq": {
+      "title": "D.U.K. (skirtukas „Informacija“)",
+      "description": "Klausimų grupės ir atsakymai. Nuoroda #kainos atidaro skirtuką „Kainos“.",
+      "fields": [
+        {
+          "key": "groups", "type": "list", "label": "Grupės", "itemName": "grupę", "itemTitle": "title", "min": 1, "max": 12,
+          "fields": [
+            { "key": "title", "type": "text", "label": "Grupės pavadinimas", "required": true, "max": 60 },
+            {
+              "key": "items", "type": "list", "label": "Klausimai", "itemName": "klausimą", "itemTitle": "q", "min": 1, "max": 40,
+              "fields": [
+                { "key": "q", "type": "text", "label": "Klausimas", "required": true, "max": 200 },
+                { "key": "a", "type": "richtext", "label": "Atsakymas", "required": true, "max": 2000 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "news": {
+      "title": "Naujienų puslapio tekstai",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "title", "type": "text", "label": "Antraštė", "required": true, "max": 40 },
+        { "key": "intro", "type": "textarea", "label": "Įžanga", "max": 300, "rows": 2 },
+        { "key": "emptyText", "type": "text", "label": "Tekstas, kai naujienų dar nėra", "required": true, "max": 120 }
+      ]
+    },
+    "calendar": {
+      "title": "Kalendoriaus puslapio tekstai",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "title", "type": "text", "label": "Antraštė", "required": true, "max": 40 },
+        { "key": "intro", "type": "textarea", "label": "Įžanga", "max": 300, "rows": 2 },
+        { "key": "emptyUpcoming", "type": "text", "label": "Tekstas, kai artėjančių renginių nėra", "required": true, "max": 120 },
+        { "key": "emptyPast", "type": "text", "label": "Tekstas, kai praėjusių renginių nėra", "required": true, "max": 120 }
+      ]
+    }
+  },
+  "options": {
+    "eventTypes": [
+      { "value": "renginys", "label": "Renginys" },
+      { "value": "varzybos", "label": "Varžybos" },
+      { "value": "kita", "label": "Kita" }
+    ],
+    "weekdays": [
+      { "value": "Pirmadienis", "label": "Pirmadienis" },
+      { "value": "Antradienis", "label": "Antradienis" },
+      { "value": "Trečiadienis", "label": "Trečiadienis" },
+      { "value": "Ketvirtadienis", "label": "Ketvirtadienis" },
+      { "value": "Penktadienis", "label": "Penktadienis" },
+      { "value": "Šeštadienis", "label": "Šeštadienis" },
+      { "value": "Sekmadienis", "label": "Sekmadienis" }
+    ],
+    "slotStatuses": [
+      { "value": "Renkama grupė", "label": "Renkama grupė" },
+      { "value": "Uždara grupė", "label": "Uždara grupė" },
+      { "value": "Laisvas laikas", "label": "Laisvas laikas" }
+    ],
+    "accentColors": [
+      { "value": "#FFB3C6", "label": "Rožinė" },
+      { "value": "#FF5C8A", "label": "Ryški rožinė" },
+      { "value": "#00CFFF", "label": "Žydra" },
+      { "value": "#FF3DFF", "label": "Violetinė" }
+    ]
+  }
+}
