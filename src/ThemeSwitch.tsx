@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useSyncExternalStore } from 'react'
 
-// Sun / moon switch in the header. It records the visitor's choice on <html data-theme>
-// and in localStorage; the site itself is dark-only until a light palette is designed.
+// Sun / moon switch. It records the visitor's choice on <html data-theme> and in localStorage.
+// There can be several switches on screen (desktop header and the mobile menu), so the theme
+// lives in one shared store and every switch shows the same state.
 type Theme = 'light' | 'dark'
 const STORAGE_KEY = 'megusta-theme'
 
@@ -13,6 +14,18 @@ function initialTheme(): Theme {
     // storage blocked: fall back to the default
   }
   return 'dark'
+}
+
+let current: Theme = initialTheme()
+const listeners = new Set<() => void>()
+function setTheme(next: Theme) {
+  if (next === current) return
+  current = next
+  listeners.forEach(l => l())
+}
+const subscribe = (cb: () => void) => {
+  listeners.add(cb)
+  return () => listeners.delete(cb)
 }
 
 const Sun = () => (
@@ -31,7 +44,7 @@ const Moon = () => (
 )
 
 export default function ThemeSwitch() {
-  const [theme, setTheme] = useState<Theme>(initialTheme)
+  const theme = useSyncExternalStore(subscribe, () => current)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -90,7 +103,6 @@ export default function ThemeSwitch() {
           transform: translateX(32px); transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1);
         }
         .theme-switch[data-theme="light"] .theme-switch__knob { transform: translateX(0); }
-        @media (max-width: 480px) { .theme-switch { transform: scale(0.85); transform-origin: right center; } }
         @media (prefers-reduced-motion: reduce) { .theme-switch, .theme-switch__knob, .theme-switch__icon { transition: none; } }
       `}</style>
     </button>

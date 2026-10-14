@@ -61,6 +61,17 @@ const hoverPink = {
   onMouseLeave: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#ccc' },
 }
 
+// Header menu (desktop row and the hamburger panel). Tvarkaraštis, Naujienos and Kalendorius have
+// their pages; the others get an href once their pages exist.
+const MENU_ITEMS: { label: string; href?: string }[] = [
+  { label: 'Stiliai' },
+  { label: 'Tvarkaraštis', href: PATHS.timetable },
+  { label: 'Kainos' },
+  { label: 'Treneriai' },
+  { label: 'Naujienos', href: PATHS.news },
+  { label: 'Kalendorius', href: PATHS.calendar },
+]
+
 export default function App() {
   // Inner pages have their own paths (/tvarkarastis, /registracija/...); see router.ts.
   const route = useRoute()
@@ -135,6 +146,22 @@ function Site({ page }: { page: Page }) {
   }, [activeDay])
   const [menuOpen, setMenuOpen] = useState(false)
 
+  // Hamburger menu: closes on a new page, Escape, or a click outside the header.
+  useEffect(() => { setMenuOpen(false) }, [route.path])
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuOpen(false) }
+    const onDown = (e: MouseEvent) => { if (!(e.target as HTMLElement).closest('.site-header')) setMenuOpen(false) }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('mousedown', onDown)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('mousedown', onDown)
+    }
+  }, [menuOpen])
+  const isCurrent = (href?: string) =>
+    !!href && (route.path === href || route.path.startsWith(href + '/') || (href === PATHS.news && page === 'post'))
+
   const current = styles.items[Math.min(activeStyle, styles.items.length - 1)]
   const scheduleDay = schedule.days[Math.min(activeDay, schedule.days.length - 1)]
 
@@ -150,15 +177,15 @@ function Site({ page }: { page: Page }) {
       }}>
         <div className="wide-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 88, gap: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-            <a href={PATHS.home} data-edit="Logotipas" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
+            <a href={PATHS.home} data-edit="Logotipas" className="nav-logo" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} aria-label="Me Gusta — į pradžią">
               <img src={logo} alt="Me Gusta" width={81} height={52} style={{ height: 52, width: 'auto', display: 'block' }} />
             </a>
             <div className="nav-contacts" data-edit="Kontaktai" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <a href={`mailto:${contacts.email}`} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
+              <a href={`mailto:${contacts.email}`} className="nav-contact" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
                 <span style={{ color: '#FFB3C6' }}><Icon name="mail" size={14} /></span>
                 {contacts.email}
               </a>
-              <a href={phoneHref(contacts.phone)} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
+              <a href={phoneHref(contacts.phone)} className="nav-contact" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
                 <span style={{ color: '#FFB3C6' }}><Icon name="phone" size={14} /></span>
                 {contacts.phone}
               </a>
@@ -175,41 +202,70 @@ function Site({ page }: { page: Page }) {
             </>)}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links" data-edit="Meniu">
-            {/* Tvarkaraštis and Naujienos have their pages; the others get href once their pages exist. */}
-            {[
-              { label: 'Stiliai' },
-              { label: 'Tvarkaraštis', href: PATHS.timetable },
-              { label: 'Kainos' },
-              { label: 'Treneriai' },
-              { label: 'Naujienos', href: PATHS.news },
-              { label: 'Kalendorius', href: PATHS.calendar },
-            ].map(({ label: item, href }: { label: string; href?: string }) => (
+            <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links" data-edit="Meniu">
+              {MENU_ITEMS.map(({ label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-current={isCurrent(href) ? 'page' : undefined}
+                  style={{ color: '#888', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', transition: 'color 0.2s', cursor: href ? 'pointer' : 'default' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#FFB3C6')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#888')}
+                >
+                  {label}
+                </a>
+              ))}
               <a
-                key={item}
-                href={href}
-                aria-current={href && (route.path === href || route.path.startsWith(href + '/') || (href === PATHS.news && page === 'post')) ? 'page' : undefined}
-                style={{ color: '#888', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', transition: 'color 0.2s', cursor: href ? 'pointer' : 'default' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#FFB3C6')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#888')}
+                href={PATHS.registration}
+                style={{
+                  backgroundColor: '#FFB3C6', color: '#080808', textDecoration: 'none',
+                  padding: '8px 20px', fontWeight: 700, fontSize: 12, letterSpacing: 1.5,
+                  textTransform: 'uppercase', transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#fff'; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#FFB3C6'; }}
               >
-                {item}
+                Registruotis
               </a>
-            ))}
-            <a
-              href={PATHS.registration}
-              style={{
-                backgroundColor: '#FFB3C6', color: '#080808', textDecoration: 'none',
-                padding: '8px 20px', fontWeight: 700, fontSize: 12, letterSpacing: 1.5,
-                textTransform: 'uppercase', transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#fff'; }}
-              onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#FFB3C6'; }}
-            >
-              Registruotis
-            </a>
+            </div>
+            <div className="nav-theme"><ThemeSwitch /></div>
+            <button type="button" className="menu-btn" aria-expanded={menuOpen} aria-controls="site-menu" onClick={() => setMenuOpen(o => !o)}>
+              <span className="menu-btn__icon" aria-hidden="true"><i /><i /><i /></span>
+              Meniu
+            </button>
           </div>
-          <ThemeSwitch />
+        </div>
+
+        {/* Hamburger menu (tablet and phone): theme switch first, then the links */}
+        <div id="site-menu" className="menu-panel" data-open={menuOpen} inert={!menuOpen} onClick={e => { if ((e.target as HTMLElement).closest('a')) setMenuOpen(false) }}>
+          <div className="wide-container menu-panel__inner">
+            <div className="menu-theme">
+              <span>Tema</span>
+              <ThemeSwitch />
+            </div>
+            <ul className="menu-list">
+              {MENU_ITEMS.map(({ label, href }) => (
+                <li key={label}>
+                  {href
+                    ? <a href={href} className="menu-link" aria-current={isCurrent(href) ? 'page' : undefined}>{label}</a>
+                    : <span className="menu-link menu-link--idle">{label}</span>}
+                </li>
+              ))}
+            </ul>
+            <a href={PATHS.registration} className="menu-cta">Registruotis</a>
+            <div className="menu-contacts">
+              <a href={`mailto:${contacts.email}`} className="menu-contact"><span style={{ color: '#FFB3C6' }}><Icon name="mail" size={16} /></span>{contacts.email}</a>
+              <a href={phoneHref(contacts.phone)} className="menu-contact"><span style={{ color: '#FFB3C6' }}><Icon name="phone" size={16} /></span>{contacts.phone}</a>
+            </div>
+            {socials.length > 0 && (
+              <div className="menu-socials">
+                {socials.map(s => (
+                  <a key={s.name} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} title={s.name}>
+                    <Icon name={s.icon} size={18} />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </nav>
@@ -256,9 +312,10 @@ function Site({ page }: { page: Page }) {
             <p data-edit="Hero: aprašymas" className="hero-in hero-in-5" style={{ fontSize: 18, color: 'var(--c-aaaaaa)', lineHeight: 1.6, maxWidth: 480, marginBottom: 48, fontWeight: 300 }}>
               {hero.text}
             </p>
-            <div data-edit="Hero: mygtukai" className="hero-in hero-in-6" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            <div data-edit="Hero: mygtukai" className="hero-in hero-in-6 hero-btns" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <a
                 href="#stiliai"
+                className="hero-btn"
                 style={{
                   backgroundColor: '#FFB3C6', color: '#080808',
                   padding: '16px 40px', fontWeight: 800, fontSize: 14,
@@ -273,6 +330,7 @@ function Site({ page }: { page: Page }) {
               </a>
               <a
                 href="#tvarkarastis"
+                className="hero-btn"
                 style={{
                   border: '1px solid var(--line-strong)', color: 'var(--text)',
                   padding: '16px 40px', fontWeight: 600, fontSize: 14,
@@ -345,7 +403,7 @@ function Site({ page }: { page: Page }) {
           </div>
 
           {/* Tab row */}
-          <div role="tablist" aria-label="Šokių stiliai" style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--line)', marginBottom: 0, flexWrap: 'wrap' }}>
+          <div role="tablist" aria-label="Šokių stiliai" className="style-tabs" style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--line)', marginBottom: 0, flexWrap: 'wrap' }}>
             {styles.items.map((s, i) => (
               <button
                 key={i}
@@ -460,7 +518,7 @@ function Site({ page }: { page: Page }) {
           </div>
 
           {/* Day tabs */}
-          <div role="tablist" aria-label="Savaitės dienos" style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
+          <div role="tablist" aria-label="Savaitės dienos" className="day-tabs" style={{ display: 'flex', gap: 4, marginBottom: 4, flexWrap: 'wrap' }}>
             {schedule.days.map((d, i) => (
               <button
                 key={i}
@@ -655,8 +713,8 @@ function Site({ page }: { page: Page }) {
       {/* FOOTER */}
       <footer id="kontaktai" style={{ backgroundColor: '#050505', borderTop: '1px solid #1c1c1c', padding: '60px 24px 40px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 48 }}>
-            <div>
+          <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 48 }}>
+            <div className="footer-brand">
               <img src={logo} alt="Me Gusta" width={87} height={56} style={{ height: 56, width: 'auto', display: 'block', marginBottom: 20 }} />
               <p style={{ fontSize: 14, color: '#8c8c8c', lineHeight: 1.7, maxWidth: 260 }}>
                 {footer.text}
@@ -683,7 +741,7 @@ function Site({ page }: { page: Page }) {
                 </p>
               ))}
             </div>
-            <div>
+            <div className="footer-contacts">
               <p style={{ fontSize: 10, letterSpacing: 3, color: '#6e6e6e', textTransform: 'uppercase', fontWeight: 700, marginBottom: 16 }}>Kontaktai</p>
               <p style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>{contacts.address}</p>
               <p style={{ fontSize: 14, marginBottom: 8 }}><a href={phoneHref(contacts.phone)} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{contacts.phone}</a></p>
@@ -834,9 +892,6 @@ function Site({ page }: { page: Page }) {
           0% { top: -40%; }
           100% { top: 140%; }
         }
-        @media (max-width: 1024px) {
-          .nav-links { display: none !important; }
-        }
         @media (max-width: 900px) {
           .hero-overlay {
             background: linear-gradient(180deg, rgba(var(--bg-rgb), 0.55) 0%, rgba(var(--bg-rgb), 0.8) 60%, rgba(var(--bg-rgb), 0.9) 100%) !important;
@@ -853,10 +908,7 @@ function Site({ page }: { page: Page }) {
           section > div > div[style*="grid-template-columns: repeat(3"] {
             grid-template-columns: 1fr !important;
           }
-          section > div > div[style*="grid-template-columns: 2fr"],
-          footer > div > div[style*="grid-template-columns: 2fr"] {
-            grid-template-columns: 1fr 1fr !important;
-          }
+
         }
         @media (max-width: 600px) {
           section > div > div[style*="grid-template-columns: repeat(4"],
@@ -870,10 +922,7 @@ function Site({ page }: { page: Page }) {
             grid-template-columns: 1fr !important;
             gap: 24px !important;
           }
-          section > div > div[style*="grid-template-columns: 2fr"],
-          footer > div > div[style*="grid-template-columns: 2fr"] {
-            grid-template-columns: 1fr !important;
-          }
+
           section > div[style*="grid-template-columns: repeat(4"] > div:nth-child(2n) {
             border-right: none !important;
           }
@@ -886,6 +935,85 @@ function Site({ page }: { page: Page }) {
           .sched-head > span {
             letter-spacing: 1px !important;
           }
+        }
+
+        /* ===== Tablet and phone ===== */
+
+        /* Hamburger menu: below 1280px the full menu no longer fits the header. */
+        .menu-btn { display: none; align-items: center; gap: 9px; padding: 9px 14px; background: transparent; color: #f0f0f0; border: 1px solid #333; cursor: pointer; font: 700 12px 'Outfit', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; transition: border-color 0.2s, color 0.2s; }
+        .menu-btn:hover, .menu-btn[aria-expanded="true"] { border-color: #FFB3C6; color: #FFB3C6; }
+        .menu-btn:focus-visible { outline: 2px solid #FFB3C6; outline-offset: 3px; }
+        .menu-btn__icon { position: relative; display: block; width: 16px; height: 12px; }
+        .menu-btn__icon i { position: absolute; left: 0; right: 0; height: 2px; border-radius: 1px; background: currentColor; transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), top 0.25s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.15s; }
+        .menu-btn__icon i:nth-child(1) { top: 0; }
+        .menu-btn__icon i:nth-child(2) { top: 5px; }
+        .menu-btn__icon i:nth-child(3) { top: 10px; }
+        .menu-btn[aria-expanded="true"] .menu-btn__icon i:nth-child(1) { top: 5px; transform: rotate(45deg); }
+        .menu-btn[aria-expanded="true"] .menu-btn__icon i:nth-child(2) { opacity: 0; }
+        .menu-btn[aria-expanded="true"] .menu-btn__icon i:nth-child(3) { top: 5px; transform: rotate(-45deg); }
+        .menu-panel { display: none; }
+        .menu-theme { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid #1a1a1a; font: 700 12px 'Outfit', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: #8a8a8a; }
+        .menu-list { list-style: none; margin: 0; padding: 0; }
+        .menu-link { display: flex; align-items: center; min-height: 54px; border-bottom: 1px solid #1a1a1a; color: #d0d0d0; text-decoration: none; font: 600 15px 'Outfit', sans-serif; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
+        a.menu-link:hover, a.menu-link[aria-current="page"] { color: #FFB3C6; }
+        .menu-link--idle { color: #8a8a8a; cursor: default; }
+        .menu-cta { display: block; margin-top: 22px; padding: 16px 24px; text-align: center; background: #FFB3C6; color: #080808; text-decoration: none; font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
+        .menu-contacts { display: none; flex-direction: column; gap: 10px; margin-top: 22px; }
+        .menu-contact { display: flex; align-items: center; gap: 10px; color: #d0d0d0; text-decoration: none; font-size: 14px; }
+        .menu-socials { display: none; gap: 18px; margin-top: 22px; }
+        .menu-socials a { display: flex; color: #c8c8c8; }
+        .menu-socials a:hover { color: #FFB3C6; }
+        @media (max-width: 1279px) {
+          .nav-links, .nav-theme { display: none !important; }
+          .menu-btn { display: inline-flex; }
+          .menu-panel {
+            display: block; position: absolute; top: 100%; left: 0; right: 0;
+            background: #0a0a0a; border-bottom: 1px solid #1a1a1a; box-shadow: 0 24px 40px rgba(0, 0, 0, 0.55);
+            max-height: calc(100vh - 88px); max-height: calc(100dvh - 88px); overflow-y: auto;
+            opacity: 0; transform: translateY(-8px); visibility: hidden;
+            transition: opacity 0.2s, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), visibility 0s linear 0.25s;
+          }
+          .menu-panel[data-open="true"] { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
+          .menu-panel__inner { padding-bottom: 28px; }
+          /* hero: the scroll hint needs its own room under the buttons */
+          .hero-content { padding-bottom: 150px !important; }
+          /* hero buttons: equal width */
+          .hero-btns { display: inline-grid !important; grid-auto-flow: column; grid-auto-columns: 1fr; }
+          .hero-btn { text-align: center; }
+        }
+        @media (max-width: 640px) {
+          .menu-socials { display: flex; }
+        }
+        @media (max-width: 560px) {
+          .hero-btns { display: grid !important; grid-auto-flow: row; grid-template-columns: 1fr; width: 100%; max-width: 340px; gap: 12px !important; }
+        }
+        /* Tabs: 2 x 2 with equal widths */
+        @media (max-width: 700px) {
+          .style-tabs { display: grid !important; grid-template-columns: 1fr 1fr; border-bottom: none !important; }
+          .style-tab { padding: 16px 8px !important; text-align: center; box-shadow: inset 0 -1px 0 var(--line); }
+          .day-tabs { display: grid !important; grid-template-columns: 1fr 1fr; gap: 4px !important; }
+          .day-tab { padding: 14px 8px !important; text-align: center; }
+        }
+        /* Footer: Stiliai and Studija side by side, Kontaktai below them */
+        @media (max-width: 900px) {
+          .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 36px 24px !important; }
+          .footer-brand, .footer-contacts { grid-column: 1 / -1; }
+        }
+        /* Small phones: a tighter header */
+        @media (max-width: 420px) {
+          .site-header .wide-container { gap: 12px !important; }
+          .site-header .nav-logo img { height: 40px !important; }
+          .nav-contacts { gap: 4px !important; }
+          .nav-contact { font-size: 12px !important; gap: 6px !important; }
+          .menu-btn { padding: 8px 12px; gap: 7px; }
+          .day-tab { letter-spacing: 1px !important; font-size: 13px !important; }
+        }
+        @media (max-width: 340px) {
+          .nav-contacts { display: none !important; }
+          .menu-contacts { display: flex; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .menu-panel, .menu-btn__icon i { transition: none; }
         }
       `}</style>
     </div>
