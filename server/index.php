@@ -79,6 +79,29 @@ if (isset($pagePaths[$path])) {
             $prerender = news_prerender($data, $sections['news']['title'] ?? 'Naujienos', $pdo ? all_published_links($pdo) : []);
         }
     }
+} elseif ($path === '/kalendorius') {
+    $meta = page_meta($seoPages['kalendorius'], '/kalendorius');
+    if ($pdo || !db_configured()) {
+        // before the database is set up there are simply no events yet
+        $data = $pdo ? public_events($pdo) : ['upcoming' => [], 'past' => []];
+        $inline['view'] = ['type' => 'events', 'data' => $data];
+        $prerender = events_prerender($data, $sections['calendar']['title'] ?? 'Renginių kalendorius', $pdo ? all_published_event_links($pdo) : []);
+    }
+} elseif (preg_match('#^/kalendorius/([a-z0-9]+(?:-[a-z0-9]+)*)$#', $path, $m) && strlen($m[1]) <= 120) {
+    $row = $pdo ? find_published_event($pdo, $m[1]) : null;
+    if ($row) {
+        $event = event_public($row, $pdo);
+        $inline['view'] = ['type' => 'event', 'slug' => $row['slug'], 'event' => $event];
+        $meta = event_meta($row, $siteName);
+        $jsonLd[] = event_ld($row, $siteName, $meta);
+        $prerender = event_prerender($row, $event['more'] ?? []);
+    } elseif ($pdo && ($moved = find_event_redirect_target($pdo, $m[1]))) {
+        redirect_to('/kalendorius/' . $moved['slug']);   // a renamed event's old address
+    } elseif ($pdo || !db_configured()) {
+        $status = 404;
+        $meta = not_found_meta();
+        $inline['view'] = ['type' => 'notfound', 'path' => $path];
+    }
 } elseif ($path === '/adminas' || $path === '/apzvalga' || str_starts_with($path, '/apzvalga/')) {
     $meta = ['title' => 'Turinio valdymas — ' . $siteName, 'description' => '', 'keywords' => '', 'image' => '', 'imageAlt' => '',
         'canonical' => '', 'noindex' => true, 'type' => 'website'];
@@ -183,6 +206,24 @@ function post_meta(array $row, string $siteName): array
     ];
 }
 
+function event_meta(array $row, string $siteName): array
+{
+    $title = $row['seo_title'] !== '' ? $row['seo_title'] : $row['title'];
+    if (!str_contains($title, $siteName)) $title .= ' — ' . $siteName;
+    $description = $row['seo_description'] !== '' ? $row['seo_description']
+        : ($row['excerpt'] !== '' ? $row['excerpt'] : html_text($row['body_html']));
+    return [
+        'title' => $title,
+        'description' => truncate_text($description, 160),
+        'keywords' => $row['seo_keywords'],
+        'image' => $row['cover_image'],
+        'imageAlt' => $row['cover_alt'],
+        'canonical' => '/kalendorius/' . $row['slug'],
+        'noindex' => false,
+        'type' => 'website',
+    ];
+}
+
 function json_script($data): string
 {
     return json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -253,6 +294,84 @@ function article_ld(array $row, string $siteName, array $meta): array
     ];
     if ($row['cover_image'] !== '') $ld['image'] = absolute_url($row['cover_image']);
     return $ld;
+}
+
+/** schema.org Event, so Google can show the event with its date, place and price. */
+function event_ld(array $row, string $siteName, array $meta): array
+{
+    $tz = new DateTimeZone(POST_TIMEZONE);
+    $allDay = (bool) $row['all_day'];
+    $stamp = function (?string $date, ?string $time) use ($tz, $allDay): ?string {
+        if ($date === null) return null;
+        return $allDay || $time === null ? $date : (new DateTimeImmutable("$date $time", $tz))->format('c');
+    };
+    $url = absolute_url('/kalendorius/' . $row['slug']);
+    $ld = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Event',
+        'name' => mb_substr($row['title'], 0, 110),
+        'description' => $meta['description'],
+        'startDate' => $stamp($row['start_date'], hm($row['start_time'])),
+        'eventStatus' => 'https://schema.org/EventScheduled',
+        'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+        'url' => $url,
+        'inLanguage' => 'lt',
+    ];
+    if ($row['end_date'] !== null || $row['end_time'] !== null) {
+        $ld['endDate'] = $stamp($row['end_date'] ?? $row['start_date'], hm($row['end_time']));
+    }
+    if ($row['venue_name'] !== null) {
+        $ld['location'] = ['@type' => 'Place', 'name' => $row['venue_name']] + ($row['venue_address'] !== '' ? ['address' => $row['venue_address']] : []);
+    }
+    if ($row['organizer_name'] !== null) {
+        $ld['organizer'] = ['@type' => 'Organization', 'name' => $row['organizer_name']] + ($row['organizer_website'] !== '' ? ['url' => $row['organizer_website']] : []);
+    }
+    if ($row['price'] !== null) {
+        $ld['offers'] = ['@type' => 'Offer', 'price' => number_format((float) $row['price'], 2, '.', ''), 'priceCurrency' => 'EUR', 'availability' => 'https://schema.org/InStock', 'url' => $url];
+    }
+    if ($row['cover_image'] !== '') $ld['image'] = absolute_url($row['cover_image']);
+    return $ld;
+}
+
+/** "2026-10-18 12:00–16:00" / "2026-10-18 – 2026-12-01" / "2026-10-18 (visą dieną)" for the crawler copies. */
+function event_when_text(array $e): string
+{
+    $when = $e['startDate'] . ($e['endDate'] ? ' – ' . $e['endDate'] : '');
+    if ($e['allDay']) return $when . ' (visą dieną)';
+    $times = trim(($e['startTime'] ?? '') . ($e['endTime'] ? '–' . $e['endTime'] : ''));
+    return $times !== '' ? $when . ' ' . $times : $when;
+}
+
+function event_prerender(array $row, array $more = []): string
+{
+    $e = event_card($row);
+    $facts = '<p><time datetime="' . e((string) $e['startDate']) . '">' . e(event_when_text($e)) . '</time></p>';
+    if ($e['venue']) $facts .= '<p>' . e($e['venue']['name'] . ($e['venue']['address'] !== '' ? ', ' . $e['venue']['address'] : '')) . '</p>';
+    if ($e['organizer']) $facts .= '<p>Organizatorius: ' . e($e['organizer']['name']) . '</p>';
+    if ($e['price'] !== null) $facts .= '<p>' . ($e['price'] == 0 ? 'Nemokamai' : e(number_format($e['price'], 2, ',', '') . ' €')) . '</p>';
+    $cover = $row['cover_image'] !== '' ? '<img src="' . e($row['cover_image']) . '" alt="' . e($row['cover_alt']) . '" style="max-width:100%;height:auto">' : '';
+    $links = '';
+    foreach ($more as $card) $links .= '<li><a href="/kalendorius/' . e($card['slug']) . '">' . e($card['title']) . '</a></li>';
+    return '<div data-prerender style="' . PRERENDER_STYLE . '"><article><h1>' . e($row['title']) . '</h1>' . $facts . $cover
+        . ($row['excerpt'] !== '' ? '<p>' . e($row['excerpt']) . '</p>' : '') . $row['body_html'] . '</article>'
+        . ($links !== '' ? '<nav aria-label="Kiti renginiai"><ul>' . $links . '</ul></nav>' : '')
+        . '<p><a href="/kalendorius">← Visi renginiai</a></p></div>';
+}
+
+// $all lists every published event, so crawlers reach each one from /kalendorius (older ones are not in the visible list).
+function events_prerender(array $data, string $title, array $all = []): string
+{
+    $items = '';
+    $shown = [];
+    foreach ([...$data['upcoming'], ...$data['past']] as $e) {
+        $shown[$e['slug']] = true;
+        $items .= '<li><a href="/kalendorius/' . e($e['slug']) . '">' . e($e['title']) . '</a> <time datetime="' . e((string) $e['startDate']) . '">' . e(event_when_text($e)) . '</time>'
+            . ($e['excerpt'] !== '' ? '<p>' . e($e['excerpt']) . '</p>' : '') . '</li>';
+    }
+    foreach ($all as $e) {
+        if (!isset($shown[$e['slug']])) $items .= '<li><a href="/kalendorius/' . e($e['slug']) . '">' . e($e['title']) . '</a></li>';
+    }
+    return '<div data-prerender style="' . PRERENDER_STYLE . '"><h1>' . e($title) . '</h1><ul>' . $items . '</ul></div>';
 }
 
 // Plain HTML copies for crawlers; the app replaces them as soon as it starts.

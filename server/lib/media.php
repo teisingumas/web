@@ -174,6 +174,9 @@ function media_usage(PDO $pdo, string $fileName): array
     $stmt = $pdo->prepare('SELECT title FROM blog_posts WHERE cover_image LIKE ? OR body_html LIKE ?');
     $stmt->execute([$needle, $needle]);
     foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $title) $usage[] = 'Naujiena „' . ($title ?: 'be pavadinimo') . '“';
+    $stmt = $pdo->prepare('SELECT title FROM events WHERE cover_image LIKE ? OR body_html LIKE ?');
+    $stmt->execute([$needle, $needle]);
+    foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $title) $usage[] = 'Renginys „' . ($title ?: 'be pavadinimo') . '“';
     return $usage;
 }
 

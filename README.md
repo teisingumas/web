@@ -28,6 +28,7 @@ Paleidimo vadovas žingsnis po žingsnio ir naudojimo instrukcija: **[docs/CMS.m
 - `src/App.tsx` — puslapio rėmas (nav, footer) ir pagrindinio puslapio skiltys
 - `src/content/` — turinio schema (`schema.json`), pradinis turinys (`defaults.ts`) ir tipai
 - `src/News.tsx`, `src/PostPage.tsx`, `src/NotFound.tsx` — naujienų sąrašas (`/naujienos`), naujiena (`/<adresas>`), 404
+- `src/Calendar.tsx`, `src/EventPage.tsx` — renginių kalendorius (`/kalendorius`) ir renginys (`/kalendorius/<adresas>`)
 - `src/admin/` — turinio valdymas (įkeliamas tik `/adminas` ir `/apzvalga`)
 - `server/` — PHP: `index.php` (SEO žymės ir turinys kiekvienam puslapiui), `api/` (JSON API), `lib/`; build metu nukopijuojama į `dist/`
 - `src/index.css` — šriftai (Barlow Condensed, Outfit), spalvų kintamieji, Tailwind

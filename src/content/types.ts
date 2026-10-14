@@ -41,6 +41,7 @@ export type ContentMap = {
   }
   'registration.faq': { groups: { title: string; items: { q: string; a: string }[] }[] }
   news: { kicker: string; title: string; intro: string; emptyText: string }
+  calendar: { kicker: string; title: string; intro: string; emptyUpcoming: string; emptyPast: string }
 }
 
 export type SectionKey = keyof ContentMap
@@ -54,6 +55,23 @@ export type PostNearby = { newer: PostCard | null; older: PostCard | null; more:
 export type Post = PostCard & { bodyHtml: string; updatedAt?: string; nearby?: PostNearby }
 export type PostPage = { items: PostCard[]; page: number; pages: number; total: number }
 
+// A published event as the public pages show it. Dates are Lithuanian calendar dates ("2026-10-18"),
+// times are Lithuanian clock times ("18:00"); an all-day event has no times.
+export type EventCard = {
+  slug: string; title: string; excerpt: string; cover: Img
+  /** tag: renginys | varzybos | kita, with its Lithuanian label */
+  type: string; typeLabel: string
+  allDay: boolean
+  startDate: string; startTime: string | null; endDate: string | null; endTime: string | null
+  venue: { name: string; address: string } | null
+  organizer: { name: string; website: string } | null
+  showMap: boolean
+  /** EUR; 0 = free, null = not shown */
+  price: number | null
+}
+export type EventDetail = EventCard & { bodyHtml: string; updatedAt?: string; more?: EventCard[] }
+export type EventsData = { upcoming: EventCard[]; past: EventCard[] }
+
 // What index.php puts on the page (window.__MEGUSTA__).
 export type InlineData = {
   content?: Partial<Record<SectionKey, unknown>>
@@ -61,6 +79,8 @@ export type InlineData = {
   view?:
     | { type: 'news'; page: number; data: PostPage }
     | { type: 'post'; slug: string; post: Post }
+    | { type: 'events'; data: EventsData }
+    | { type: 'event'; slug: string; event: EventDetail }
     | { type: 'notfound'; path: string }
   clerkPublishableKey?: string
 }

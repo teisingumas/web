@@ -1,4 +1,4 @@
-import type { Post, PostPage } from './content/types'
+import type { EventDetail, EventsData, Post, PostPage } from './content/types'
 
 // Read-only calls for the public pages. The first page load usually has the data inline
 // (index.php), so these run only when the visitor moves between pages in the app.
@@ -16,6 +16,9 @@ async function getJson<T>(url: string): Promise<T> {
 
 export const fetchNewsPage = (page: number) => getJson<PostPage>(`/api/public/posts?page=${page}`)
 export const fetchPost = (slug: string) => getJson<Post>(`/api/public/posts/${encodeURIComponent(slug)}`)
+
+export const fetchEvents = () => getJson<EventsData>('/api/public/events')
+export const fetchEvent = (slug: string) => getJson<EventDetail>(`/api/public/events/${encodeURIComponent(slug)}`)
 
 const dateFormat = new Intl.DateTimeFormat('lt-LT', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Europe/Vilnius' })
 

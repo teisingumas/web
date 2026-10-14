@@ -174,6 +174,11 @@ Kai svetainė persikels iš `testas.vedejasedvardas.lt` į tikrą domeną (pvz. 
   **Publikavimo data ir laikas** (šoninė juosta): palikus tuščią, naujiena skelbiama iš karto. Įrašius **praeities** datą, naujiena rodoma su ta data ir išsirikiuoja pagal ją (tinka perkeliant senas naujienas). Įrašius **ateities** datą ir paspaudus „Suplanuoti“, naujiena pasirodys pati nurodytu Lietuvos laiku (sąraše ji pažymėta „Suplanuota“).
   Jei publikuotos naujienos **adresą pakeisite**, senas adresas automatiškai nukreips į naują (301), todėl pasidalintos nuorodos ir Google rezultatai neužlūš.
 - **Naujienos tekstas**: įrankių juostoje yra lygiavimas (kairė / centras / dešinė / abiejuose kraštuose), **▦ Galerija** (pažymėkite kelias nuotraukas iš bibliotekos arba įkelkite naujas; paspaudus galerijoje, galima pridėti ar pašalinti nuotraukų) ir **▶ YouTube** (įklijuokite nuorodą: vaizdo įrašas rodomas iki 1200 px pločio ir prisitaiko prie telefono). Paspaudus nuotrauką naujienoje, ji atsidaro didelė (galerijoje galima vartyti rodyklėmis ar braukiant).
+- **Renginiai** (`/apzvalga/renginiai`): kalendorius svetainėje `/kalendorius`, kiekvienas renginys turi savo adresą `/kalendorius/renginio-pavadinimas`.
+  Renginyje nurodoma: pavadinimas, adresas (galima keisti), trumpas aprašas, tekstas (toks pat redaktorius kaip naujienose), nuotrauka (thumbnail), ****žyma** (Renginys / Varžybos / Kita; sąrašas `options.eventTypes` faile `schema.json`), **pradžios ir pabaigos data bei laikas** (pabaiga nebūtina; pažymėjus **„Visos dienos renginys“** laikas nerodomas; skirtingos pabaigos data = „Kelių dienų“ renginys), vieta, **„Rodyti žemėlapyje“** (reikia vietos adreso), organizatorius, kaina EUR (0 = nemokamas, tuščia = nerodoma) ir SEO.
+  **Vietos** ir **Organizatoriai** kuriami meniu skiltyse po „Renginiai“ (arba tiesiai renginio formoje, mygtuku „+ Nauja vieta“). Naudojamos vietos ar organizatoriaus ištrinti negalima.
+  Būsenos kaip naujienose: **juodraštis**, **publikuoti / atnaujinti**, **suplanuoti** (šoninėje juostoje nurodoma publikavimo data: tai ne renginio data, o kada jis atsiras svetainėje), **grąžinti į juodraščius**. Pakeitus publikuoto renginio adresą, senas adresas nukreipia (301) į naują.
+  Kalendoriuje renginys lieka tarp „Artėjančių“ iki paskutinės jo dienos pabaigos, tada pereina į „Praėjusių“ (rodoma 15 paskutinių).
 - **SEO**: kiekvieno puslapio skirtuke **SEO** ir prie kiekvienos naujienos: pavadinimas, aprašymas, raktažodžiai, nuotrauka dalinantis.
   Peržiūra rodo, kaip puslapis atrodys Google paieškoje.
 - Nuotraukos, kuri kur nors naudojama, ištrinti negalima: sistema parodys, kur ji naudojama.
@@ -189,6 +194,7 @@ Kai svetainė persikels iš `testas.vedejasedvardas.lt` į tikrą domeną (pvz. 
 | Tipai | `src/content/types.ts` |
 | Admin | `src/admin/` (įkeliamas tik `/adminas` ir `/apzvalga`) |
 | Viešos naujienos | `src/News.tsx`, `src/PostPage.tsx`, `src/NotFound.tsx` |
+| Viešas kalendorius | `src/Calendar.tsx` (sąrašas), `src/EventPage.tsx` (renginys), `src/eventFormat.ts`; serveris `server/lib/events.php` |
 | PHP: puslapio SEO ir turinio įterpimas | `server/index.php` |
 | PHP: API | `server/api/index.php`, logika `server/lib/` |
 | Apache taisyklės | `public/.htaccess` |

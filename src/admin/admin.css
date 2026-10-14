@@ -30,6 +30,9 @@
 .adm-nav a:hover { color: #fff; background: #0d0d0d; }
 .adm-nav a[aria-current="page"] { color: var(--pink); border-left-color: var(--pink); background: #0d0d0d; }
 .adm-nav svg { width: 18px; height: 18px; flex-shrink: 0; }
+/* Vietos / Organizatoriai sit under Renginiai */
+.adm-nav a.adm-nav__sub { padding: 8px 24px 8px 52px; font-size: 13px; }
+.adm-nav a.adm-nav__sub svg { width: 15px; height: 15px; }
 .adm-side__foot { margin-top: auto; padding: 20px 24px 24px; border-top: 1px solid #1c1c1c; display: flex; flex-direction: column; gap: 14px; font-size: 13px; }
 .adm-side__user { color: #8c8c8c; overflow-wrap: anywhere; }
 .adm-side__link { color: #cfcfcf; text-decoration: none; background: none; border: none; padding: 0; font: inherit; text-align: left; cursor: pointer; }
@@ -377,3 +380,14 @@ a.adm-tile:hover { border-color: var(--pink); transform: translateY(-3px); }
   .adm-side, .adm-tab::after, .adm-card__chev, .adm-toast, a.adm-tile { transition: none; animation: none; }
   .adm-skel, .adm-spinner { animation: none; }
 }
+
+/* --- events -------------------------------------------------------------------------------- */
+.adm-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 640px) { .adm-grid2 { grid-template-columns: 1fr; } }
+.adm-pick { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+.adm-pick .adm-input { flex: 1; min-width: 200px; }
+.adm-lookup { border: 1px solid var(--line); background: var(--surface); }
+.adm-lookup__row { display: grid; grid-template-columns: minmax(0, 1fr) 140px auto; gap: 16px; align-items: center; padding: 14px 16px; border-top: 1px solid var(--line); }
+.adm-lookup__row:first-child { border-top: none; }
+.adm-lookup__name { background: none; border: none; padding: 0; font-family: inherit; cursor: pointer; text-align: left; max-width: 100%; }
+@media (max-width: 700px) { .adm-lookup__row { grid-template-columns: 1fr; } .adm-lookup__row .adm-table__actions { justify-content: flex-start; } }
