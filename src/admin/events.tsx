@@ -10,7 +10,7 @@ import ImageInput from './ImageInput'
 import { ADMIN } from './pages'
 import { fromVilniusLocal, slugify, toVilniusLocal } from './posts'
 import RichEditor from './RichEditor'
-import type { Errors, ImageField } from './schema'
+import { SCHEMA, type Errors, type ImageField } from './schema'
 import { ErrorState, formatDateTime, PageHeader, Skeleton, Spinner, Tabs } from './ui'
 
 const statusKey = (p: Pick<AdminEvent, 'status' | 'scheduled'>) => (p.scheduled ? 'scheduled' : p.status)
@@ -134,7 +134,7 @@ function EventsList() {
 // --- /apzvalga/renginiai/naujas, /apzvalga/renginiai/:id -------------------------------------
 
 type Form = {
-  title: string; slug: string; excerpt: string; bodyHtml: string; cover: Img
+  title: string; slug: string; excerpt: string; bodyHtml: string; cover: Img; type: string
   allDay: boolean; startDate: string; startTime: string; endDate: string; endTime: string
   venueId: string; organizerId: string   // '' = none
   showMap: boolean; price: string
@@ -142,14 +142,14 @@ type Form = {
   publishedAt: string   // Lithuanian time, '' = automatic (now)
 }
 const EMPTY: Form = {
-  title: '', slug: '', excerpt: '', bodyHtml: '', cover: { src: '', alt: '' },
+  title: '', slug: '', excerpt: '', bodyHtml: '', cover: { src: '', alt: '' }, type: SCHEMA.options.eventTypes[0].value,
   allDay: false, startDate: '', startTime: '', endDate: '', endTime: '', venueId: '', organizerId: '', showMap: false, price: '',
   seoTitle: '', seoDescription: '', seoKeywords: '', publishedAt: '',
 }
 const COVER_FIELD: ImageField = { key: 'cover', type: 'image', label: 'Nuotrauka (thumbnail)', required: true, help: 'Rodoma kalendoriuje, renginio puslapio viršuje ir dalinantis Facebook. Geriausia plati, pvz. 1600 × 1000 px.' }
 
 const fromEvent = (e: AdminEvent): Form => ({
-  title: e.title, slug: e.slug, excerpt: e.excerpt, bodyHtml: e.bodyHtml, cover: e.cover,
+  title: e.title, slug: e.slug, excerpt: e.excerpt, bodyHtml: e.bodyHtml, cover: e.cover, type: e.type,
   allDay: e.allDay, startDate: e.startDate ?? '', startTime: e.startTime ?? '', endDate: e.endDate ?? '', endTime: e.endTime ?? '',
   venueId: e.venueId === null ? '' : String(e.venueId), organizerId: e.organizerId === null ? '' : String(e.organizerId),
   showMap: e.showMap, price: e.price === null ? '' : String(e.price).replace('.', ','),
@@ -410,6 +410,15 @@ export function EventEditor({ id }: { id: number | 'new' }) {
             <p className="adm-help">Rodomas kalendoriuje ir renginio puslapio viršuje, taip pat Google paieškoje (jei SEO aprašymas tuščias).</p>
           </div>
 
+          <div className="adm-field" style={{ maxWidth: 280 }}>
+            <label htmlFor="ev-type" className="adm-label"><span>Žyma</span></label>
+            <select id="ev-type" className="adm-input" value={form.type} aria-invalid={!!err.type} onChange={e => set(['type'], e.target.value)}>
+              {SCHEMA.options.eventTypes.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+            {err.type && <p className="adm-error">{err.type}</p>}
+            <p className="adm-help">Rodoma prie renginio kalendoriuje.</p>
+          </div>
+
           <div className="adm-panel">
             <span className="adm-panel__title">Data ir laikas</span>
             <p className="adm-help" style={{ marginTop: -8 }}>Lietuvos laiku.</p>
@@ -579,6 +588,7 @@ export function EventEditor({ id }: { id: number | 'new' }) {
           <div className="adm-preview" style={{ margin: -20 }}>
             <EventView preview event={{
               title: form.title || 'Be pavadinimo', excerpt: form.excerpt, cover: form.cover, bodyHtml: form.bodyHtml,
+              type: form.type, typeLabel: SCHEMA.options.eventTypes.find(o => o.value === form.type)?.label ?? '',
               allDay: form.allDay, startDate: form.startDate, startTime: form.allDay ? null : form.startTime || null,
               endDate: form.endDate && form.endDate !== form.startDate ? form.endDate : null, endTime: form.allDay ? null : form.endTime || null,
               venue: venue ? { name: venue.name, address: venue.address } : null,

@@ -89,7 +89,8 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <a href={PATHS.calendar} className="ev-back">← Visi renginiai</a>
         <header style={{ margin: '32px 0 48px', maxWidth: 960 }}>
-          <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', margin: '0 0 16px' }}>
+          <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '12px 16px', flexWrap: 'wrap' }}>
+            <span className={`ev-tag ev-tag--${event.type}`} style={{ letterSpacing: 2.5 }}>{event.typeLabel}</span>
             ◆&nbsp;&nbsp;{event.startDate ? <time dateTime={event.startDate}>{longDate(event.startDate)}</time> : 'Renginys'}{past && ' · Įvyko'}
           </p>
           <h1 style={{ fontFamily: display, fontWeight: 900, fontSize: 'clamp(40px, 5.5vw, 80px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0, overflowWrap: 'anywhere' }}>
@@ -184,6 +185,10 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
         </div>
       </div>
       <style>{`
+        .ev-tag { display: inline-block; padding: 5px 10px; font-family: ${display}; font-weight: 700; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; line-height: 1; }
+        .ev-tag--renginys { background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; }
+        .ev-tag--varzybos { background: transparent; color: var(--pink-text); border: 1px solid var(--pink-text); }
+        .ev-tag--kita { background: transparent; color: var(--text-2); border: 1px solid var(--line-strong); }
         .ev-back { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-2); text-decoration: none; transition: color 0.2s; }
         .ev-back:hover { color: var(--pink-text); }
         .ev-cta {

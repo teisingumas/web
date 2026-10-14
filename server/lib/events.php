@@ -21,6 +21,13 @@ function today_local(): string
     return date('Y-m-d');
 }
 
+/** Label of an event tag ("varzybos" => "Varžybos"); unknown values count as the first one. */
+function event_type_label(string $type): string
+{
+    foreach (schema()['options']['eventTypes'] as $o) if ($o['value'] === $type) return $o['label'];
+    return schema()['options']['eventTypes'][0]['label'];
+}
+
 function hm(?string $time): ?string
 {
     return $time === null ? null : substr($time, 0, 5);
@@ -35,6 +42,8 @@ function event_card(array $row): array
         'title' => $row['title'],
         'excerpt' => $row['excerpt'],
         'cover' => ['src' => $row['cover_image'], 'alt' => $row['cover_alt']],
+        'type' => $row['type'],
+        'typeLabel' => event_type_label($row['type']),
         'allDay' => (bool) $row['all_day'],
         'startDate' => $row['start_date'],
         'startTime' => hm($row['start_time']),
@@ -125,6 +134,7 @@ function event_admin(array $row): array
         'excerpt' => $row['excerpt'],
         'bodyHtml' => $row['body_html'],
         'cover' => ['src' => $row['cover_image'], 'alt' => $row['cover_alt']],
+        'type' => $row['type'],
         'allDay' => (bool) $row['all_day'],
         'startDate' => $row['start_date'],
         'startTime' => hm($row['start_time']),
@@ -264,6 +274,10 @@ function admin_save_event(PDO $pdo, ?int $id, array $in): array
 
     $cover = validate_image(['alt' => 'required'], $in['cover'] ?? [], 'cover', $errors);
 
+    $type = clean_line($in['type'] ?? '', false);
+    if ($type === '') $type = option_values('eventTypes')[0];
+    elseif (!in_array($type, option_values('eventTypes'), true)) $errors['type'] = 'Pasirinkite žymą iš sąrašo.';
+
     // When: dates are Lithuanian calendar dates, times are Lithuanian clock times.
     $allDay = !empty($in['allDay']);
     $startDate = $endDate = $startTime = $endTime = null;
@@ -334,19 +348,19 @@ function admin_save_event(PDO $pdo, ?int $id, array $in): array
     if ($chosenAt !== null && !($publishedAt && substr($publishedAt, 0, 16) === substr($chosenAt, 0, 16))) $publishedAt = $chosenAt;
     if ($publish && !$publishedAt) $publishedAt = now_utc();
 
-    $values = [$slug, $status, $title, $excerpt, $body, $cover['src'], $cover['alt'], $allDay ? 1 : 0, $startDate, $startTime, $endDate, $endTime,
+    $values = [$slug, $status, $title, $excerpt, $body, $cover['src'], $cover['alt'], $type, $allDay ? 1 : 0, $startDate, $startTime, $endDate, $endTime,
         $venueId, $organizerId, $showMap ? 1 : 0, $price, $seo['seoTitle'], $seo['seoDescription'], $seo['seoKeywords'], $publishedAt];
     $wasPublic = $existing && $existing['status'] === 'published' && $existing['published_at'] !== null && $existing['published_at'] <= now_utc();
     try {
         if ($existing) {
-            $pdo->prepare('UPDATE events SET slug = ?, status = ?, title = ?, excerpt = ?, body_html = ?, cover_image = ?, cover_alt = ?,
+            $pdo->prepare('UPDATE events SET slug = ?, status = ?, title = ?, excerpt = ?, body_html = ?, cover_image = ?, cover_alt = ?, type = ?,
                 all_day = ?, start_date = ?, start_time = ?, end_date = ?, end_time = ?, venue_id = ?, organizer_id = ?, show_map = ?, price = ?,
                 seo_title = ?, seo_description = ?, seo_keywords = ?, published_at = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
                 ->execute([...$values, $id]);
         } else {
-            $pdo->prepare('INSERT INTO events (slug, status, title, excerpt, body_html, cover_image, cover_alt, all_day, start_date, start_time, end_date, end_time,
+            $pdo->prepare('INSERT INTO events (slug, status, title, excerpt, body_html, cover_image, cover_alt, type, all_day, start_date, start_time, end_date, end_time,
                 venue_id, organizer_id, show_map, price, seo_title, seo_description, seo_keywords, published_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')->execute($values);
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')->execute($values);
             $id = (int) $pdo->lastInsertId();
         }
     } catch (PDOException $e) {

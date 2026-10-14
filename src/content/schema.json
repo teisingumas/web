@@ -312,6 +312,11 @@
     }
   },
   "options": {
+    "eventTypes": [
+      { "value": "renginys", "label": "Renginys" },
+      { "value": "varzybos", "label": "Varžybos" },
+      { "value": "kita", "label": "Kita" }
+    ],
     "weekdays": [
       { "value": "Pirmadienis", "label": "Pirmadienis" },
       { "value": "Antradienis", "label": "Antradienis" },

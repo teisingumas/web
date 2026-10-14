@@ -59,6 +59,8 @@ export type PostPage = { items: PostCard[]; page: number; pages: number; total: 
 // times are Lithuanian clock times ("18:00"); an all-day event has no times.
 export type EventCard = {
   slug: string; title: string; excerpt: string; cover: Img
+  /** tag: renginys | varzybos | kita, with its Lithuanian label */
+  type: string; typeLabel: string
   allDay: boolean
   startDate: string; startTime: string | null; endDate: string | null; endTime: string | null
   venue: { name: string; address: string } | null

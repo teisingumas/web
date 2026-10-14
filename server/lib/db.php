@@ -89,6 +89,7 @@ const MEGUSTA_TABLES = [
         body_html MEDIUMTEXT NOT NULL,
         cover_image VARCHAR(255) NOT NULL DEFAULT '',
         cover_alt VARCHAR(160) NOT NULL DEFAULT '',
+        type VARCHAR(20) NOT NULL DEFAULT 'renginys',
         all_day TINYINT(1) NOT NULL DEFAULT 0,
         start_date DATE NULL,
         start_time TIME NULL,
@@ -152,5 +153,9 @@ function migrate(PDO $pdo, string $dbId): void
     $marker = data_dir() . '/.schema-v' . MEGUSTA_SCHEMA_VERSION . '-' . $dbId;
     if (is_file($marker)) return;
     foreach (MEGUSTA_TABLES as $sql) $pdo->exec($sql);
+    // v4: event tags (type) were added after the events table first shipped
+    if (!$pdo->query("SHOW COLUMNS FROM events LIKE 'type'")->fetch()) {
+        $pdo->exec("ALTER TABLE events ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'renginys' AFTER cover_alt");
+    }
     if (ensure_dir(data_dir())) @file_put_contents($marker, now_utc());
 }

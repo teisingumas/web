@@ -60,6 +60,8 @@ export type AdminEvent = {
   excerpt: string
   bodyHtml: string
   cover: Img
+  /** tag key from schema.json options.eventTypes */
+  type: string
   allDay: boolean
   /** Lithuanian dates "YYYY-MM-DD" and times "HH:MM" */
   startDate: string | null

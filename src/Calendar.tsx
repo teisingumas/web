@@ -232,6 +232,10 @@ export default function Calendar() {
         .cal-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 500ms ease; }
         .cal-ev:hover .cal-thumb img { transform: scale(1.06); }
         .cal-thumb img.is-past { filter: grayscale(1); opacity: 0.7; }
+        .ev-tag { display: inline-block; padding: 5px 10px; font-family: ${display}; font-weight: 700; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; line-height: 1; }
+        .ev-tag--renginys { background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; }
+        .ev-tag--varzybos { background: transparent; color: var(--pink-text); border: 1px solid var(--pink-text); }
+        .ev-tag--kita { background: transparent; color: var(--text-2); border: 1px solid var(--line-strong); }
         .cal-chip { display: inline-block; padding: 5px 10px; font-family: ${display}; font-weight: 700; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; line-height: 1; color: var(--text); border: 1px dashed var(--pink-text); }
         .cal-more { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; margin-top: 2px; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--pink-text); text-decoration: none; white-space: nowrap; }
         .cal-more:hover { color: var(--text); }
@@ -289,6 +293,7 @@ function EventRow({ event: e, today }: { event: EventCard; today: string }) {
       </a>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px 16px', flexWrap: 'wrap' }}>
+          <span className={`ev-tag ev-tag--${e.type}`}>{e.typeLabel}</span>
           {multi && <span className="cal-chip">Kelių dienų</span>}
           {time && (
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: display, fontWeight: 800, fontSize: 20, letterSpacing: 1, color: 'var(--pink-text)' }}>

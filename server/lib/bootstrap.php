@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-const MEGUSTA_SCHEMA_VERSION = 3;
+const MEGUSTA_SCHEMA_VERSION = 4;
 
 date_default_timezone_set('Europe/Vilnius');
 ini_set('display_errors', '0');
