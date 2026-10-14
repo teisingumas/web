@@ -76,31 +76,6 @@ function initial(slug: string): State {
 
 // The article itself; the admin uses it for the draft preview too (preview: less top space, inert links).
 export function PostView({ post, preview = false }: { post: Pick<Post, 'title' | 'cover' | 'bodyHtml' | 'publishedAt' | 'nearby'>; preview?: boolean }) {
-  const bodyRef = useRef<HTMLDivElement>(null)
-  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null)
-
-  // Pictures in the text open in a lightbox (gallery pictures can be paged through).
-  const imagesAround = useCallback((img: HTMLImageElement) => {
-    const group = img.closest('.gallery')
-    const list = group ? Array.from(group.querySelectorAll('img')) : [img]
-    return { images: list.map(i => ({ src: i.currentSrc || i.src, alt: i.alt })), index: Math.max(0, list.indexOf(img)) }
-  }, [])
-  useEffect(() => {
-    if (preview) return
-    bodyRef.current?.querySelectorAll('img').forEach(img => {
-      if (img.closest('a')) return
-      img.setAttribute('tabindex', '0')
-      img.setAttribute('role', 'button')
-      img.setAttribute('aria-label', img.alt ? `Didinti nuotrauką: ${img.alt}` : 'Didinti nuotrauką')
-    })
-  }, [post.bodyHtml, preview])
-  const openFrom = (target: EventTarget | null) => {
-    const img = (target as HTMLElement | null)?.closest?.('img')
-    if (!img || preview || img.closest('a') || !bodyRef.current?.contains(img)) return false
-    setLightbox(imagesAround(img))
-    return true
-  }
-
   return (
     <article className="post" style={{ padding: preview ? '48px 0 64px' : '168px 0 120px', backgroundColor: 'var(--bg)' }} inert={preview || undefined}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
@@ -118,12 +93,7 @@ export function PostView({ post, preview = false }: { post: Pick<Post, 'title' |
             <img src={post.cover.src} alt={post.cover.alt} style={{ display: 'block', width: '100%', maxHeight: 620, objectFit: 'cover' }} />
           </figure>
         )}
-        <div
-          ref={bodyRef} className="post-body" dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
-          onClick={e => { openFrom(e.target) }}
-          onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && openFrom(e.target)) e.preventDefault() }}
-        />
-        {lightbox && <Lightbox images={lightbox.images} start={lightbox.index} onClose={() => setLightbox(null)} />}
+        <PostBody html={post.bodyHtml} preview={preview} />
         <Nearby nearby={post.nearby} />
         <div style={{ maxWidth: 760, marginTop: 64, paddingTop: 32, borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
           <a href={PATHS.news} className="post-back">← Visos naujienos</a>
@@ -156,6 +126,46 @@ export function PostView({ post, preview = false }: { post: Pick<Post, 'title' |
         .post-more h3 { margin: 0; font-family: ${display}; font-weight: 900; font-size: 22px; line-height: 1.05; text-transform: uppercase; color: var(--text); }
         @media (max-width: 1024px) { .post-more { grid-template-columns: 1fr; } }
         @media (max-width: 640px) { .post-step { grid-template-columns: 1fr; } .post-step a:last-child:not(:first-child) { text-align: left; } }
+      `}</style>
+    </article>
+  )
+}
+
+// The text of a post or an event: pictures in it open in a lightbox (gallery pictures can be paged through).
+export function PostBody({ html, preview = false }: { html: string; preview?: boolean }) {
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null)
+
+  const imagesAround = useCallback((img: HTMLImageElement) => {
+    const group = img.closest('.gallery')
+    const list = group ? Array.from(group.querySelectorAll('img')) : [img]
+    return { images: list.map(i => ({ src: i.currentSrc || i.src, alt: i.alt })), index: Math.max(0, list.indexOf(img)) }
+  }, [])
+  useEffect(() => {
+    if (preview) return
+    bodyRef.current?.querySelectorAll('img').forEach(img => {
+      if (img.closest('a')) return
+      img.setAttribute('tabindex', '0')
+      img.setAttribute('role', 'button')
+      img.setAttribute('aria-label', img.alt ? `Didinti nuotrauką: ${img.alt}` : 'Didinti nuotrauką')
+    })
+  }, [html, preview])
+  const openFrom = (target: EventTarget | null) => {
+    const img = (target as HTMLElement | null)?.closest?.('img')
+    if (!img || preview || img.closest('a') || !bodyRef.current?.contains(img)) return false
+    setLightbox(imagesAround(img))
+    return true
+  }
+
+  return (
+    <>
+      <div
+        ref={bodyRef} className="post-body" dangerouslySetInnerHTML={{ __html: html }}
+        onClick={e => { openFrom(e.target) }}
+        onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && openFrom(e.target)) e.preventDefault() }}
+      />
+      {lightbox && <Lightbox images={lightbox.images} start={lightbox.index} onClose={() => setLightbox(null)} />}
+      <style>{`
         .post-body { font-size: 18px; line-height: 1.75; font-weight: 300; color: var(--c-cccccc); overflow-wrap: break-word; }
         .post-body > :first-child { margin-top: 0; }
         /* text keeps a comfortable reading width; videos and galleries use the full width (up to 1200px) */
@@ -191,7 +201,7 @@ export function PostView({ post, preview = false }: { post: Pick<Post, 'title' |
           .post-body blockquote { font-size: 22px; }
         }
       `}</style>
-    </article>
+    </>
   )
 }
 

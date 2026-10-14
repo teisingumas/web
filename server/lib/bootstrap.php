@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-const MEGUSTA_SCHEMA_VERSION = 2;
+const MEGUSTA_SCHEMA_VERSION = 3;
 
 date_default_timezone_set('Europe/Vilnius');
 ini_set('display_errors', '0');
@@ -15,6 +15,7 @@ require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/sanitize.php';
 require_once __DIR__ . '/content.php';
 require_once __DIR__ . '/posts.php';
+require_once __DIR__ . '/events.php';
 require_once __DIR__ . '/media.php';
 require_once __DIR__ . '/auth.php';
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { PostList } from './api'
+import type { EventList, PostList } from './api'
 import { useApi } from './context'
 import { SectionCard, SeoCard } from './FormCard'
 import { pageDef, SCHEMA } from './schema'
@@ -51,19 +51,23 @@ export function Settings() {
 export function Dashboard() {
   const api = useApi()
   const [posts, setPosts] = useState<PostList | null>(null)
+  const [events, setEvents] = useState<EventList | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [eventsError, setEventsError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
   useEffect(() => {
     setError(null)
+    setEventsError(null)
     api.posts({ page: 1 }).then(setPosts).catch(e => setError(e.message))
+    api.events({ page: 1 }).then(setEvents).catch(e => setEventsError(e.message))
   }, [api, attempt])
 
   return (
     <>
       <PageHeader
         kicker="Sveiki sugrįžę" title="Apžvalga"
-        lead="Čia keičiate svetainės tekstus, nuotraukas, tvarkaraštį ir naujienas. Išsaugoti pakeitimai svetainėje matomi iš karto: tereikia atnaujinti puslapį."
-        actions={<a href={`${ADMIN}/naujienos/naujas`} className="adm-btn">+ Nauja naujiena</a>}
+        lead="Čia keičiate svetainės tekstus, nuotraukas, tvarkaraštį, naujienas ir renginius. Išsaugoti pakeitimai svetainėje matomi iš karto: tereikia atnaujinti puslapį."
+        actions={<><a href={`${ADMIN}/naujienos/naujas`} className="adm-btn">+ Nauja naujiena</a><a href={`${ADMIN}/renginiai/naujas`} className="adm-btn adm-btn--ghost">+ Naujas renginys</a></>}
       />
       <div className="adm-tiles">
         <div className="adm-tile">
@@ -77,6 +81,18 @@ export function Dashboard() {
               </div>
             )}
           <a href={`${ADMIN}/naujienos`} className="adm-tile__more">Visos naujienos →</a>
+        </div>
+        <div className="adm-tile">
+          <span className="adm-tile__title">Renginiai</span>
+          {eventsError ? <ErrorState message={eventsError} onRetry={() => setAttempt(a => a + 1)} />
+            : !events ? <Skeleton style={{ height: 44, width: 120 }} />
+            : (
+              <div style={{ display: 'flex', gap: 28 }}>
+                <div><div className="adm-stat">{events.counts.published}</div><p className="adm-tile__text">publikuota</p></div>
+                <div><div className="adm-stat" style={{ color: 'var(--text-2)' }}>{events.counts.draft}</div><p className="adm-tile__text">juodraščiai</p></div>
+              </div>
+            )}
+          <a href={`${ADMIN}/renginiai`} className="adm-tile__more">Visi renginiai →</a>
         </div>
         {(['home', 'tvarkarastis', 'registracija'] as const).map(key => {
           const page = pageDef(key)

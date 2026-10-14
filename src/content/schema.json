@@ -2,7 +2,7 @@
   "$comment": "Nuotraukos laukas: alt = required (numatyta) | optional | none (fono nuotrauka be alt). Turinio schema: kiekvienas redaguojamas laukas. Iš jos admin piešia formas, o serveris (server/lib/schema.php) tikrina duomenis. Keičiant laukus, atnaujinkite ir src/content/types.ts bei defaults.ts.",
   "version": 1,
   "reservedSlugs": [
-    "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "api", "lib", "media", "assets", "img",
+    "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "kalendorius", "api", "lib", "media", "assets", "img",
     "index", "sitemap", "robots", "favicon", "wp-admin", "wp-login", "wp-content", "wp-json", "feed"
   ],
   "seoFields": [
@@ -47,6 +47,15 @@
         "title": "Naujienos — Me Gusta",
         "description": "Me Gusta šokių studijos naujienos: renginiai, konkursai, pasirodymai ir studijos gyvenimas.",
         "keywords": "šokių studijos naujienos, Me Gusta renginiai"
+      }
+    },
+    {
+      "key": "kalendorius", "label": "Kalendorius", "path": "/kalendorius", "admin": "renginiai",
+      "sections": ["calendar"],
+      "seo": {
+        "title": "Kalendorius — Me Gusta",
+        "description": "Me Gusta šokių studijos renginių kalendorius: artėjantys renginiai, varžybos, seminarai ir atvirų durų dienos Kaune.",
+        "keywords": "šokių renginiai Kaune, šokių varžybos, atvirų durų diena, Me Gusta kalendorius"
       }
     }
   ],
@@ -289,6 +298,16 @@
         { "key": "title", "type": "text", "label": "Antraštė", "required": true, "max": 40 },
         { "key": "intro", "type": "textarea", "label": "Įžanga", "max": 300, "rows": 2 },
         { "key": "emptyText", "type": "text", "label": "Tekstas, kai naujienų dar nėra", "required": true, "max": 120 }
+      ]
+    },
+    "calendar": {
+      "title": "Kalendoriaus puslapio tekstai",
+      "fields": [
+        { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
+        { "key": "title", "type": "text", "label": "Antraštė", "required": true, "max": 40 },
+        { "key": "intro", "type": "textarea", "label": "Įžanga", "max": 300, "rows": 2 },
+        { "key": "emptyUpcoming", "type": "text", "label": "Tekstas, kai artėjančių renginių nėra", "required": true, "max": 120 },
+        { "key": "emptyPast", "type": "text", "label": "Tekstas, kai praėjusių renginių nėra", "required": true, "max": 120 }
       ]
     }
   },

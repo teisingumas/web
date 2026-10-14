@@ -60,6 +60,64 @@ const MEGUSTA_TABLES = [
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         KEY idx_redirect_post (post_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+    // Calendar: venues and organizers are picked from lists when an event is edited.
+    "CREATE TABLE IF NOT EXISTS event_venues (
+        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(120) NOT NULL,
+        address VARCHAR(200) NOT NULL DEFAULT '',
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+    "CREATE TABLE IF NOT EXISTS event_organizers (
+        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(120) NOT NULL,
+        website VARCHAR(300) NOT NULL DEFAULT '',
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+    // Events: dates and times are Lithuanian wall-clock values (an event happens where it is held);
+    // published_at is UTC like blog_posts and decides when the event appears on the site.
+    "CREATE TABLE IF NOT EXISTS events (
+        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        slug VARCHAR(120) NOT NULL,
+        status ENUM('draft','published') NOT NULL DEFAULT 'draft',
+        title VARCHAR(160) NOT NULL DEFAULT '',
+        excerpt VARCHAR(300) NOT NULL DEFAULT '',
+        body_html MEDIUMTEXT NOT NULL,
+        cover_image VARCHAR(255) NOT NULL DEFAULT '',
+        cover_alt VARCHAR(160) NOT NULL DEFAULT '',
+        all_day TINYINT(1) NOT NULL DEFAULT 0,
+        start_date DATE NULL,
+        start_time TIME NULL,
+        end_date DATE NULL,
+        end_time TIME NULL,
+        venue_id INT UNSIGNED NULL,
+        organizer_id INT UNSIGNED NULL,
+        show_map TINYINT(1) NOT NULL DEFAULT 0,
+        price DECIMAL(8,2) NULL,
+        seo_title VARCHAR(70) NOT NULL DEFAULT '',
+        seo_description VARCHAR(160) NOT NULL DEFAULT '',
+        seo_keywords VARCHAR(255) NOT NULL DEFAULT '',
+        published_at DATETIME NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY uq_event_slug (slug),
+        KEY idx_event_status (status, published_at),
+        KEY idx_event_start (start_date),
+        KEY idx_event_venue (venue_id),
+        KEY idx_event_organizer (organizer_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+    // Old addresses of renamed events: they answer with a 301 to the event's current address.
+    "CREATE TABLE IF NOT EXISTS event_redirects (
+        old_slug VARCHAR(120) NOT NULL PRIMARY KEY,
+        event_id INT UNSIGNED NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        KEY idx_event_redirect (event_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
 ];
 
 function db_configured(): bool

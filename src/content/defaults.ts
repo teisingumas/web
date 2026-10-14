@@ -181,6 +181,14 @@ export const DEFAULTS: ContentMap = {
     intro: 'Renginiai, konkursai, pasirodymai ir viskas, kas vyksta Me Gustoje.',
     emptyText: 'Naujienų dar nėra. Užsukite netrukus!',
   },
+
+  calendar: {
+    kicker: 'Renginiai',
+    title: 'Renginių kalendorius',
+    intro: 'Studijos renginiai, varžybos ir kiti svarbūs įvykiai — viskas vienoje vietoje. Sekite, kas vyksta, ir neužmirškite užsiregistruoti.',
+    emptyUpcoming: 'Artėjančių renginių kol kas nėra. Užsukite netrukus!',
+    emptyPast: 'Praėjusių renginių dar nėra.',
+  },
 }
 
 // --- Timetables -------------------------------------------------------------------------

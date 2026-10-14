@@ -18,6 +18,8 @@ $routes = [
     ['GET', '#^/status$#', 'route_status', false],
     ['GET', '#^/public/posts$#', 'route_public_posts', false],
     ['GET', '#^/public/posts/([a-z0-9-]{1,120})$#', 'route_public_post', false],
+    ['GET', '#^/public/events$#', 'route_public_events', false],
+    ['GET', '#^/public/events/([a-z0-9-]{1,120})$#', 'route_public_event', false],
     ['GET', '#^/admin/me$#', 'route_me', true],
     ['GET', '#^/admin/content$#', 'route_content', true],
     ['PUT', '#^/admin/content/([a-z.]{1,64})$#', 'route_save_content', true],
@@ -29,6 +31,16 @@ $routes = [
     ['GET', '#^/admin/posts/(\d+)$#', 'route_post', true],
     ['PUT', '#^/admin/posts/(\d+)$#', 'route_update_post', true],
     ['DELETE', '#^/admin/posts/(\d+)$#', 'route_delete_post', true],
+    ['GET', '#^/admin/events$#', 'route_events', true],
+    ['POST', '#^/admin/events$#', 'route_create_event', true],
+    ['GET', '#^/admin/events/slug-check$#', 'route_event_slug_check', true],
+    ['GET', '#^/admin/events/(\d+)$#', 'route_event', true],
+    ['PUT', '#^/admin/events/(\d+)$#', 'route_update_event', true],
+    ['DELETE', '#^/admin/events/(\d+)$#', 'route_delete_event', true],
+    ['GET', '#^/admin/(venues|organizers)$#', 'route_lookups', true],
+    ['POST', '#^/admin/(venues|organizers)$#', 'route_create_lookup', true],
+    ['PUT', '#^/admin/(venues|organizers)/(\d+)$#', 'route_update_lookup', true],
+    ['DELETE', '#^/admin/(venues|organizers)/(\d+)$#', 'route_delete_lookup', true],
     ['GET', '#^/admin/media$#', 'route_media', true],
     ['POST', '#^/admin/media$#', 'route_upload', true],
     ['PATCH', '#^/admin/media/(\d+)$#', 'route_update_media', true],
@@ -105,6 +117,19 @@ function route_public_post(string $slug): array
     return post_public($row, db());
 }
 
+function route_public_events(): array
+{
+    if (!db_configured()) return ['upcoming' => [], 'past' => []];
+    return public_events(db());
+}
+
+function route_public_event(string $slug): array
+{
+    $row = db_configured() ? (find_published_event(db(), $slug) ?? find_event_redirect_target(db(), $slug)) : null;
+    if (!$row) throw not_found('Renginys nerastas.');
+    return event_public($row, db());
+}
+
 // --- admin ----------------------------------------------------------------------------------
 
 function route_me(): array
@@ -165,6 +190,67 @@ function route_slug_check(): array
     $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
     $problem = slug_problem(db(), $slug, $id);
     return ['ok' => $problem === null, 'message' => $problem];
+}
+
+function route_events(): array
+{
+    return admin_list_events(db(), (string) ($_GET['status'] ?? ''), (string) ($_GET['q'] ?? ''), (int) ($_GET['page'] ?? 1));
+}
+
+function route_event(string $id): array
+{
+    return event_admin(find_event(db(), (int) $id));
+}
+
+function route_create_event(): array
+{
+    return admin_save_event(db(), null, json_body());
+}
+
+function route_update_event(string $id): array
+{
+    return admin_save_event(db(), (int) $id, json_body());
+}
+
+function route_delete_event(string $id): array
+{
+    admin_delete_event(db(), (int) $id);
+    return ['ok' => true];
+}
+
+function route_event_slug_check(): array
+{
+    $slug = strtolower(trim((string) ($_GET['slug'] ?? '')));
+    $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+    $problem = event_slug_problem(db(), $slug, $id);
+    return ['ok' => $problem === null, 'message' => $problem];
+}
+
+/** /admin/venues and /admin/organizers share one set of handlers. */
+function lookup_kind_of(string $plural): string
+{
+    return $plural === 'venues' ? 'venue' : 'organizer';
+}
+
+function route_lookups(string $plural): array
+{
+    return admin_list_lookups(db(), lookup_kind_of($plural));
+}
+
+function route_create_lookup(string $plural): array
+{
+    return admin_save_lookup(db(), lookup_kind_of($plural), null, json_body());
+}
+
+function route_update_lookup(string $plural, string $id): array
+{
+    return admin_save_lookup(db(), lookup_kind_of($plural), (int) $id, json_body());
+}
+
+function route_delete_lookup(string $plural, string $id): array
+{
+    admin_delete_lookup(db(), lookup_kind_of($plural), (int) $id);
+    return ['ok' => true];
 }
 
 function route_media(): array

@@ -52,6 +52,54 @@ export type PostList = {
   counts: { all: number; draft: number; published: number }
 }
 
+export type AdminEvent = {
+  id: number
+  slug: string
+  status: 'draft' | 'published'
+  title: string
+  excerpt: string
+  bodyHtml: string
+  cover: Img
+  allDay: boolean
+  /** Lithuanian dates "YYYY-MM-DD" and times "HH:MM" */
+  startDate: string | null
+  startTime: string | null
+  endDate: string | null
+  endTime: string | null
+  venueId: number | null
+  organizerId: number | null
+  showMap: boolean
+  /** EUR; 0 = free, null = not shown */
+  price: number | null
+  seoTitle: string
+  seoDescription: string
+  seoKeywords: string
+  publishedAt: string | null
+  /** published, but its publishing time is still ahead */
+  scheduled: boolean
+  createdAt: string
+  updatedAt: string
+  venueName: string | null
+  organizerName: string | null
+}
+// the form sends dates and times as typed ('' = empty), the ids of the chosen venue / organizer (null = none) and the price as text
+export type EventInput = Omit<AdminEvent, 'id' | 'startDate' | 'startTime' | 'endDate' | 'endTime' | 'price' | 'publishedAt' | 'scheduled' | 'createdAt' | 'updatedAt' | 'venueName' | 'organizerName'> & {
+  startDate: string; startTime: string; endDate: string; endTime: string; price: string; slugAuto?: boolean; publishedAt: string
+}
+export type EventList = {
+  items: Omit<AdminEvent, 'bodyHtml'>[]
+  total: number
+  page: number
+  pages: number
+  counts: { all: number; draft: number; published: number }
+}
+
+export type Venue = { id: number; name: string; address: string; eventCount: number }
+export type Organizer = { id: number; name: string; website: string; eventCount: number }
+export type LookupKind = 'venues' | 'organizers'
+export type LookupMap = { venues: Venue; organizers: Organizer }
+export type LookupInput = { name: string; address?: string; website?: string }
+
 export type MediaItem = {
   id: number
   src: string
@@ -142,6 +190,18 @@ export function createApi(getToken: TokenGetter) {
     deletePost: (id: number) => request<{ ok: true }>('DELETE', `/admin/posts/${id}`),
     slugCheck: (slug: string, id?: number) =>
       request<{ ok: boolean; message: string | null }>('GET', `/admin/posts/slug-check?${new URLSearchParams({ slug, ...(id ? { id: String(id) } : {}) })}`),
+    events: (params: { status?: string; q?: string; page?: number }) =>
+      request<EventList>('GET', `/admin/events?${new URLSearchParams({ status: params.status ?? '', q: params.q ?? '', page: String(params.page ?? 1) })}`),
+    event: (id: number) => request<AdminEvent>('GET', `/admin/events/${id}`),
+    createEvent: (event: EventInput) => request<AdminEvent>('POST', '/admin/events', event),
+    updateEvent: (id: number, event: EventInput) => request<AdminEvent>('PUT', `/admin/events/${id}`, event),
+    deleteEvent: (id: number) => request<{ ok: true }>('DELETE', `/admin/events/${id}`),
+    eventSlugCheck: (slug: string, id?: number) =>
+      request<{ ok: boolean; message: string | null }>('GET', `/admin/events/slug-check?${new URLSearchParams({ slug, ...(id ? { id: String(id) } : {}) })}`),
+    lookups: <K extends LookupKind>(kind: K) => request<{ items: LookupMap[K][] }>('GET', `/admin/${kind}`),
+    createLookup: <K extends LookupKind>(kind: K, input: LookupInput) => request<LookupMap[K]>('POST', `/admin/${kind}`, input),
+    updateLookup: <K extends LookupKind>(kind: K, id: number, input: LookupInput) => request<LookupMap[K]>('PUT', `/admin/${kind}/${id}`, input),
+    deleteLookup: (kind: LookupKind, id: number) => request<{ ok: true }>('DELETE', `/admin/${kind}/${id}`),
     media: () => request<{ items: MediaItem[] }>('GET', '/admin/media'),
     updateMediaAlt: (id: number, alt: string) => request<MediaItem>('PATCH', `/admin/media/${id}`, { alt }),
     deleteMedia: (id: number) => request<{ ok: true }>('DELETE', `/admin/media/${id}`),

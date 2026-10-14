@@ -9,6 +9,8 @@ import Registration from './Registration'
 import Pricing from './Pricing'
 import Timetable from './Timetable'
 import News from './News'
+import Calendar from './Calendar'
+import EventPage from './EventPage'
 import PostPage from './PostPage'
 import NotFound from './NotFound'
 import ThemeSwitch from './ThemeSwitch'
@@ -75,7 +77,7 @@ export default function App() {
   return <Site page={route.page} />
 }
 
-const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos'])
+const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius'])
 
 function Site({ page }: { page: Page }) {
   const route = useRoute()
@@ -181,6 +183,7 @@ function Site({ page }: { page: Page }) {
               { label: 'Kainos' },
               { label: 'Treneriai' },
               { label: 'Naujienos', href: PATHS.news },
+              { label: 'Kalendorius', href: PATHS.calendar },
             ].map(({ label: item, href }: { label: string; href?: string }) => (
               <a
                 key={item}
@@ -214,6 +217,8 @@ function Site({ page }: { page: Page }) {
       {page === 'registracija' ? <Registration route={route} />
         : page === 'tvarkarastis' ? <Timetable />
         : page === 'naujienos' ? <News pageNum={route.pageNum} />
+        : page === 'kalendorius' ? <Calendar />
+        : page === 'event' ? <EventPage slug={route.slug} />
         : page === 'post' ? <PostPage slug={route.slug} />
         : page === 'notfound' ? <NotFound />
         : (<>
@@ -671,6 +676,7 @@ function Site({ page }: { page: Page }) {
                 { label: 'Tvarkaraštis', href: PATHS.timetable },
                 { label: 'Kainos', href: '/#kainos' },
                 { label: 'Naujienos', href: PATHS.news },
+                { label: 'Kalendorius', href: PATHS.calendar },
               ].map(({ label, href }: { label: string; href?: string }) => (
                 <p key={label} style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>
                   {href ? <a href={href} className="footer-link">{label}</a> : label}

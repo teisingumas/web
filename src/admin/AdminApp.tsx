@@ -10,6 +10,7 @@ import { clerkAppearance, clerkLocalization } from './clerkTheme'
 import { ConfirmProvider, DirtyProvider, SessionProvider, StoreProvider, ToastProvider, useSession } from './context'
 import MediaLibraryPage from './MediaLibrary'
 import { AdminNotFound, Dashboard, PageEditor, Settings } from './pages'
+import { EventEditor, EventsAdmin, LookupAdmin } from './events'
 import { NewsAdmin, PostEditor } from './posts'
 import { ErrorState, Icons, LoadingCards, Spinner } from './ui'
 import './admin.css'
@@ -219,6 +220,9 @@ const NAV = [
     group: 'Turinys',
     items: [
       { path: '/naujienos', label: 'Naujienos', icon: Icons.news },
+      { path: '/renginiai', label: 'Renginiai', icon: Icons.calendar },
+      { path: '/renginiai/vietos', label: 'Vietos', icon: Icons.pin, sub: true },
+      { path: '/renginiai/organizatoriai', label: 'Organizatoriai', icon: Icons.user, sub: true },
       { path: '/nuotraukos', label: 'Nuotraukos', icon: Icons.image },
       { path: '/bendri', label: 'Bendri nustatymai', icon: Icons.settings },
     ],
@@ -249,7 +253,10 @@ function Shell({ route }: { route: Route }) {
   useEffect(() => { document.title = 'Turinio valdymas — Me Gusta' }, [route.adminPath])
 
   const sub = route.adminPath === '/' ? '' : route.adminPath
-  const isActive = (path: string) => (path === '' ? sub === '' : sub === path || sub.startsWith(path + '/'))
+  // the longest matching menu path wins, so /renginiai/vietos does not also light up Renginiai
+  const matches = (path: string) => (path === '' ? sub === '' : sub === path || sub.startsWith(path + '/'))
+  const activePath = NAV.flatMap(g => g.items).map(i => i.path).filter(matches).sort((a, b) => b.length - a.length)[0]
+  const isActive = (path: string) => path === activePath
 
   const sidebar = (
     <aside className="adm-side" data-open={menuOpen} aria-label="Meniu">
@@ -262,7 +269,7 @@ function Shell({ route }: { route: Route }) {
           <div key={gi} style={{ display: 'contents' }}>
             {g.group && <span className="adm-nav__group">{g.group}</span>}
             {g.items.map(item => (
-              <a key={item.path} href={PATHS.admin + item.path} aria-current={isActive(item.path) ? 'page' : undefined}>
+              <a key={item.path} href={PATHS.admin + item.path} aria-current={isActive(item.path) ? 'page' : undefined} className={'sub' in item && item.sub ? 'adm-nav__sub' : undefined}>
                 {item.icon}{item.label}
               </a>
             ))}
@@ -310,6 +317,12 @@ function AdminPage({ sub }: { sub: string }) {
   if (sub === '/nuotraukos') return <MediaLibraryPage />
   if (sub === '/naujienos') return <NewsAdmin />
   if (sub === '/naujienos/naujas') return <PostEditor id="new" />
+  if (sub === '/renginiai') return <EventsAdmin />
+  if (sub === '/renginiai/naujas') return <EventEditor id="new" />
+  if (sub === '/renginiai/vietos') return <LookupAdmin key="venues" kind="venues" />
+  if (sub === '/renginiai/organizatoriai') return <LookupAdmin key="organizers" kind="organizers" />
+  const ev = /^\/renginiai\/(\d+)$/.exec(sub)
+  if (ev) return <EventEditor id={Number(ev[1])} />
   const m = /^\/naujienos\/(\d+)$/.exec(sub)
   if (m) return <PostEditor id={Number(m[1])} />
   return <AdminNotFound />
