@@ -83,7 +83,6 @@ export default function ThemeSwitch() {
           background: linear-gradient(180deg, #f59ab3 0%, #FFB3C6 100%); border-color: #f7a3bb;
           box-shadow: inset 0 3px 6px rgba(120,30,60,0.45), inset 0 -1px 0 rgba(255,255,255,0.35), 0 4px 10px rgba(0,0,0,0.5);
         }
-        .theme-switch:hover { border-color: #FFB3C6; }
         .theme-switch:focus-visible { outline: 2px solid #FFB3C6; outline-offset: 3px; }
         .theme-switch__icon {
           position: absolute; top: 50%; transform: translateY(-50%); display: flex; color: #6e6e6e;

@@ -2,7 +2,7 @@
   "$comment": "Nuotraukos laukas: alt = required (numatyta) | optional | none (fono nuotrauka be alt). Turinio schema: kiekvienas redaguojamas laukas. Iš jos admin piešia formas, o serveris (server/lib/schema.php) tikrina duomenis. Keičiant laukus, atnaujinkite ir src/content/types.ts bei defaults.ts.",
   "version": 1,
   "reservedSlugs": [
-    "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "kalendorius", "api", "lib", "media", "assets", "img",
+    "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "kalendorius", "kontaktai", "api", "lib", "media", "assets", "img",
     "index", "sitemap", "robots", "favicon", "wp-admin", "wp-login", "wp-content", "wp-json", "feed"
   ],
   "seoFields": [
@@ -56,6 +56,15 @@
         "title": "Kalendorius — Me Gusta",
         "description": "Me Gusta šokių studijos renginių kalendorius: artėjantys renginiai, varžybos, seminarai ir atvirų durų dienos Kaune.",
         "keywords": "šokių renginiai Kaune, šokių varžybos, atvirų durų diena, Me Gusta kalendorius"
+      }
+    },
+    {
+      "key": "kontaktai", "label": "Kontaktai", "path": "/kontaktai", "admin": "bendri",
+      "sections": ["global.contacts"],
+      "seo": {
+        "title": "Kontaktai — Me Gusta",
+        "description": "Me Gusta šokių studijos kontaktai: adresas Savanorių pr. 271, Kaunas, telefonas, el. paštas ir darbo laikas.",
+        "keywords": "Me Gusta kontaktai, šokių studija Kaune, Savanorių pr. 271"
       }
     }
   ],

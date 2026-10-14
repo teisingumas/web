@@ -56,21 +56,70 @@ function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
   )
 }
 
+// Giant outlined word behind a section (decorative). Colours come from the theme tokens.
+function Backdrop({ children, className = '', style }: { children: React.ReactNode; className?: string; style: React.CSSProperties }) {
+  return <div className={`backdrop ${className}`} aria-hidden="true" style={style}>{children}</div>
+}
+
 const hoverPink = {
   onMouseEnter: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#FFB3C6' },
   onMouseLeave: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#ccc' },
 }
 
 // Header menu (desktop row and the hamburger panel). Tvarkaraštis, Naujienos and Kalendorius have
-// their pages; the others get an href once their pages exist.
+// their pages; Kainos gets an href once it has one.
 const MENU_ITEMS: { label: string; href?: string }[] = [
-  { label: 'Stiliai' },
-  { label: 'Tvarkaraštis', href: PATHS.timetable },
   { label: 'Kainos' },
-  { label: 'Treneriai' },
-  { label: 'Naujienos', href: PATHS.news },
+  { label: 'Tvarkaraštis', href: PATHS.timetable },
   { label: 'Kalendorius', href: PATHS.calendar },
+  { label: 'Naujienos', href: PATHS.news },
+  { label: 'Kontaktai', href: PATHS.contacts },
 ]
+
+function ContactsPage() {
+  const contacts = section('global.contacts')
+  const socialLinks = section('global.socials')
+  const hours = section('registration').hours
+  const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contacts.address)}`
+  const label = { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 3, color: 'var(--text-3, var(--text-2))', textTransform: 'uppercase' as const, margin: '0 0 10px' }
+  const link = { color: 'var(--text)', textDecoration: 'none', fontSize: 20, fontWeight: 500 }
+  return (
+    <section className="has-backdrop" style={{ padding: '168px 0 120px', backgroundColor: 'var(--bg)', minHeight: '70vh' }}>
+      <Backdrop style={{ bottom: '-4%', right: '-4vw', fontSize: 'clamp(90px, 22vw, 300px)', textAlign: 'right' }}>Kontaktai</Backdrop>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+        <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>◆&nbsp;&nbsp;Susisiek</p>
+        <h1 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: '0 0 56px' }}>Kontaktai</h1>
+        <div className="contact-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 40 }}>
+          <div>
+            <p style={label}>Adresas</p>
+            <a href={map} target="_blank" rel="noopener noreferrer" style={link}>{contacts.address}</a>
+            <p style={{ margin: '10px 0 0' }}><a href={map} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--pink-text)', fontSize: 14, fontWeight: 600 }}>Atidaryti žemėlapyje →</a></p>
+          </div>
+          <div>
+            <p style={label}>Telefonas</p>
+            <a href={phoneHref(contacts.phone)} style={link}>{contacts.phone}</a>
+            <p style={{ ...label, margin: '28px 0 10px' }}>El. paštas</p>
+            <a href={`mailto:${contacts.email}`} style={{ ...link, overflowWrap: 'anywhere' }}>{contacts.email}</a>
+          </div>
+          <div>
+            <p style={label}>Darbo laikas</p>
+            {hours.map(h => (
+              <p key={h.days} style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 500, color: 'var(--text)' }}>
+                <span style={{ display: 'inline-block', minWidth: 64, color: 'var(--pink-text)', fontWeight: 700 }}>{h.days}</span>{h.hours}
+              </p>
+            ))}
+            <p style={{ ...label, margin: '28px 0 10px' }}>Socialiniai tinklai</p>
+            <div style={{ display: 'flex', gap: 18 }}>
+              {SOCIAL_ICONS.map(s => socialLinks[s.key]
+                ? <a key={s.key} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} title={s.name} style={{ color: 'var(--text)', display: 'flex' }}><Icon name={s.icon} size={24} /></a>
+                : <span key={s.key} aria-hidden="true" style={{ color: 'var(--text)', display: 'flex' }}><Icon name={s.icon} size={24} /></span>)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export default function App() {
   // Inner pages have their own paths (/tvarkarastis, /registracija/...); see router.ts.
@@ -88,13 +137,13 @@ export default function App() {
   return <Site page={route.page} />
 }
 
-const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius'])
+const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius', 'kontaktai'])
 
 function Site({ page }: { page: Page }) {
   const route = useRoute()
   const contacts = section('global.contacts')
   const socialLinks = section('global.socials')
-  const socials = SOCIAL_ICONS.filter(s => socialLinks[s.key])
+  const socials = SOCIAL_ICONS   // all four always show; one without a link yet is not clickable
   const footer = section('global.footer')
   const hero = section('home.hero')
   const heroImg = heroImages(hero)
@@ -171,7 +220,8 @@ function Site({ page }: { page: Page }) {
       {/* NAV */}
       <nav className="site-header" style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        borderBottom: '1px solid #1a1a1a',
+        borderBottom: '1px solid #262626',
+        boxShadow: '0 1px 0 rgba(255,255,255,0.05), 0 6px 16px rgba(0,0,0,0.45), 0 18px 36px -8px rgba(0,0,0,0.5)',
         backdropFilter: 'blur(16px)',
         backgroundColor: 'rgba(8,8,8,0.88)',
       }}>
@@ -181,25 +231,25 @@ function Site({ page }: { page: Page }) {
               <img src={logo} alt="Me Gusta" width={81} height={52} style={{ height: 52, width: 'auto', display: 'block' }} />
             </a>
             <div className="nav-contacts" data-edit="Kontaktai" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <a href={`mailto:${contacts.email}`} className="nav-contact" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
-                <span style={{ color: '#FFB3C6' }}><Icon name="mail" size={14} /></span>
+              <a href={`mailto:${contacts.email}`} className="nav-contact" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 15, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
+                <span style={{ color: '#FFB3C6' }}><Icon name="mail" size={16} /></span>
                 {contacts.email}
               </a>
-              <a href={phoneHref(contacts.phone)} className="nav-contact" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
-                <span style={{ color: '#FFB3C6' }}><Icon name="phone" size={14} /></span>
+              <a href={phoneHref(contacts.phone)} className="nav-contact" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#ccc', textDecoration: 'none', fontSize: 15, fontWeight: 500, letterSpacing: 0.3, transition: 'color 0.2s' }} {...hoverPink}>
+                <span style={{ color: '#FFB3C6' }}><Icon name="phone" size={16} /></span>
                 {contacts.phone}
               </a>
             </div>
-            {socials.length > 0 && (<>
             <span className="nav-socials" aria-hidden="true" style={{ width: 1, height: 40, backgroundColor: '#2a2a2a' }} />
             <div className="nav-socials" data-edit="Soc. tinklai" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 16px)', gap: 10 }}>
-              {socials.map(s => (
+              {socials.map(s => socialLinks[s.key] ? (
                 <a key={s.name} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} title={s.name} style={{ color: '#ccc', display: 'flex', transition: 'color 0.2s' }} {...hoverPink}>
                   <Icon name={s.icon} size={16} />
                 </a>
+              ) : (
+                <span key={s.name} aria-hidden="true" style={{ color: '#ccc', display: 'flex' }}><Icon name={s.icon} size={16} /></span>
               ))}
             </div>
-            </>)}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
             <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links" data-edit="Meniu">
@@ -208,9 +258,9 @@ function Site({ page }: { page: Page }) {
                   key={label}
                   href={href}
                   aria-current={isCurrent(href) ? 'page' : undefined}
-                  style={{ color: '#888', textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', transition: 'color 0.2s', cursor: href ? 'pointer' : 'default' }}
+                  style={{ color: '#e6e6e6', textDecoration: 'none', fontSize: 13, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', transition: 'color 0.2s', cursor: href ? 'pointer' : 'default' }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#FFB3C6')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#888')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#e6e6e6')}
                 >
                   {label}
                 </a>
@@ -219,7 +269,7 @@ function Site({ page }: { page: Page }) {
                 href={PATHS.registration}
                 style={{
                   backgroundColor: '#FFB3C6', color: '#080808', textDecoration: 'none',
-                  padding: '8px 20px', fontWeight: 700, fontSize: 12, letterSpacing: 1.5,
+                  padding: '9px 22px', fontWeight: 700, fontSize: 13.2, letterSpacing: 1.65,
                   textTransform: 'uppercase', transition: 'all 0.2s',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#fff'; }}
@@ -257,15 +307,15 @@ function Site({ page }: { page: Page }) {
               <a href={`mailto:${contacts.email}`} className="menu-contact"><span style={{ color: '#FFB3C6' }}><Icon name="mail" size={16} /></span>{contacts.email}</a>
               <a href={phoneHref(contacts.phone)} className="menu-contact"><span style={{ color: '#FFB3C6' }}><Icon name="phone" size={16} /></span>{contacts.phone}</a>
             </div>
-            {socials.length > 0 && (
-              <div className="menu-socials">
-                {socials.map(s => (
-                  <a key={s.name} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} title={s.name}>
-                    <Icon name={s.icon} size={18} />
-                  </a>
-                ))}
-              </div>
-            )}
+            <div className="menu-socials">
+              {socials.map(s => socialLinks[s.key] ? (
+                <a key={s.name} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} title={s.name}>
+                  <Icon name={s.icon} size={18} />
+                </a>
+              ) : (
+                <span key={s.name} aria-hidden="true" style={{ display: 'flex' }}><Icon name={s.icon} size={18} /></span>
+              ))}
+            </div>
           </div>
         </div>
       </nav>
@@ -274,6 +324,7 @@ function Site({ page }: { page: Page }) {
         : page === 'tvarkarastis' ? <Timetable />
         : page === 'naujienos' ? <News pageNum={route.pageNum} />
         : page === 'kalendorius' ? <Calendar />
+        : page === 'kontaktai' ? <ContactsPage />
         : page === 'event' ? <EventPage slug={route.slug} />
         : page === 'post' ? <PostPage slug={route.slug} />
         : page === 'notfound' ? <NotFound />
@@ -391,8 +442,9 @@ function Site({ page }: { page: Page }) {
       </section>
 
       {/* DANCE STYLE SELECTOR */}
-      <section id="stiliai" style={{ padding: '120px 0', backgroundColor: 'var(--bg)' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+      <section id="stiliai" className="has-backdrop" style={{ padding: '120px 0', backgroundColor: 'var(--bg)' }}>
+        <Backdrop style={{ top: '6%', right: '-7vw', fontSize: 'clamp(84px, 18vw, 250px)', textAlign: 'right' }}>Gatvės<br />šokiai</Backdrop>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;{styles.kicker}
@@ -506,8 +558,9 @@ function Site({ page }: { page: Page }) {
       </section>
 
       {/* SCHEDULE */}
-      <section id="tvarkarastis" style={{ padding: '120px 0', backgroundColor: 'var(--bg-alt)', borderTop: '1px solid var(--c-111111)' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+      <section id="tvarkarastis" className="has-backdrop" style={{ padding: '120px 0', backgroundColor: 'var(--bg-alt)', borderTop: '1px solid var(--c-111111)' }}>
+        <Backdrop style={{ bottom: '-3%', left: '-3vw', fontSize: 'clamp(92px, 22vw, 300px)' }}>Breikas</Backdrop>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;{schedule.kicker}
@@ -592,15 +645,17 @@ function Site({ page }: { page: Page }) {
       </section>
 
       {/* PRICING */}
-      <section id="kainos" style={{ padding: '120px 0', backgroundColor: 'var(--bg)', borderTop: '1px solid var(--c-111111)' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+      <section id="kainos" className="has-backdrop" style={{ padding: '120px 0', backgroundColor: 'var(--bg)', borderTop: '1px solid var(--c-111111)' }}>
+        <Backdrop className="backdrop--pink" style={{ top: '5%', right: '-6vw', fontSize: 'clamp(88px, 19.5vw, 270px)', textAlign: 'right' }}>Pop<br />dance</Backdrop>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
           <Pricing />
         </div>
       </section>
 
       {/* TRAINERS */}
-      <section id="treneriai" style={{ padding: '120px 0', backgroundColor: 'var(--bg-alt)', borderTop: '1px solid var(--c-111111)' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+      <section id="treneriai" className="has-backdrop" style={{ padding: '120px 0', backgroundColor: 'var(--bg-alt)', borderTop: '1px solid var(--c-111111)' }}>
+        <Backdrop style={{ top: '4%', left: '-5vw', fontSize: 'clamp(84px, 18vw, 250px)' }}>Lady<br />class</Backdrop>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
           <div style={{ marginBottom: 64 }}>
             <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
               ◆&nbsp;&nbsp;{trainers.kicker}
@@ -682,7 +737,8 @@ function Site({ page }: { page: Page }) {
       </section>
 
       {/* CTA BANNER */}
-      <section data-reveal style={{ backgroundColor: '#FFB3C6', padding: '80px 24px', textAlign: 'center' }}>
+      <section data-reveal className="has-backdrop" style={{ backgroundColor: '#FFB3C6', padding: '80px 24px', textAlign: 'center' }}>
+        <Backdrop className="backdrop--cta" style={{ top: '50%', left: 0, right: 0, transform: 'translateY(-50%)', fontSize: 'clamp(190px, 40vw, 520px)', textAlign: 'center' }}>Šok</Backdrop>
         <p className="reveal reveal-1" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: '#333', textTransform: 'uppercase', marginBottom: 16 }}>
           <span className="cta-shake">◆&nbsp;&nbsp;{cta.kicker}</span>
         </p>
@@ -735,6 +791,7 @@ function Site({ page }: { page: Page }) {
                 { label: 'Kainos', href: '/#kainos' },
                 { label: 'Naujienos', href: PATHS.news },
                 { label: 'Kalendorius', href: PATHS.calendar },
+                { label: 'Kontaktai', href: PATHS.contacts },
               ].map(({ label, href }: { label: string; href?: string }) => (
                 <p key={label} style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>
                   {href ? <a href={href} className="footer-link">{label}</a> : label}
@@ -746,13 +803,11 @@ function Site({ page }: { page: Page }) {
               <p style={{ fontSize: 14, color: '#8c8c8c', marginBottom: 8 }}>{contacts.address}</p>
               <p style={{ fontSize: 14, marginBottom: 8 }}><a href={phoneHref(contacts.phone)} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{contacts.phone}</a></p>
               <p style={{ fontSize: 14, marginBottom: 16 }}><a href={`mailto:${contacts.email}`} style={{ color: '#8c8c8c', textDecoration: 'none' }}>{contacts.email}</a></p>
-              {socials.length > 0 && (
-                <div style={{ display: 'flex', gap: 12 }}>
-                  {socials.map(s => (
-                    <a key={s.key} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} className="footer-social">{s.short}</a>
-                  ))}
-                </div>
-              )}
+              <div style={{ display: 'flex', gap: 12 }}>
+                {socials.map(s => socialLinks[s.key]
+                  ? <a key={s.key} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} className="footer-social">{s.short}</a>
+                  : <span key={s.key} aria-hidden="true" className="footer-social">{s.short}</span>)}
+              </div>
             </div>
           </div>
           <div style={{ borderTop: '1px solid #1c1c1c', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
@@ -789,6 +844,17 @@ function Site({ page }: { page: Page }) {
         @media (max-width: 900px) {
           .hero-photo { background-position: 0 0, var(--hero-mobile-pos, 75% 50%) !important; }
         }
+        /* Giant outlined words behind sections (decorative); pale strokes in light, faint in dark */
+        .has-backdrop { position: relative; overflow: hidden; isolation: isolate; }
+        .has-backdrop > *:not(.backdrop) { position: relative; z-index: 1; }
+        .backdrop {
+          position: absolute; z-index: 0; pointer-events: none; user-select: none;
+          font-family: 'Barlow Condensed', sans-serif; font-weight: 900; text-transform: uppercase; line-height: 0.8;
+          white-space: nowrap; letter-spacing: 0.01em; color: transparent; -webkit-text-stroke: 2px var(--outline);
+        }
+        .backdrop--pink { -webkit-text-stroke-color: var(--outline-pink); }
+        .backdrop--cta { -webkit-text-stroke: 3px rgba(255,255,255,0.8); opacity: 0.4; }
+        @media (max-width: 700px) { .backdrop { -webkit-text-stroke-width: 1.5px; } .backdrop--cta { -webkit-text-stroke-width: 2px; } }
         .rich-note p { margin: 0; }
         .rich-note a { color: var(--pink-text); text-decoration: underline; text-underline-offset: 3px; }
         .footer-link { color: #8c8c8c; text-decoration: none; transition: color 0.2s; }
