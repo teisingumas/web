@@ -5,7 +5,7 @@ import { dayOf, isMultiDay, isOngoing, isPast, lastDay, monthKey, monthLabel, mo
 import { fetchEvents } from './publicApi'
 import { pageTitle } from './seo'
 
-const display = "'Barlow Condensed', sans-serif"
+const display = "'Archivo', sans-serif"
 type View = 'up' | 'past'
 
 // The data the server rendered comes inline; opening the calendar from another page fetches it.
@@ -218,7 +218,7 @@ export default function Calendar() {
         .cal-mf-opt:hover, .cal-mf-opt:focus-visible { background: #FFB3C6; color: #080808; outline: none; }
         .cal-mf-opt.is-on { color: var(--pink-text); }
         .cal-mf-opt.is-on:hover, .cal-mf-opt.is-on:focus-visible { color: #080808; }
-        .cal-mf-opt small { font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 12px; letter-spacing: 0; text-transform: none; opacity: 0.8; }
+        .cal-mf-opt small { font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 12px; letter-spacing: 0; text-transform: none; opacity: 0.8; }
         .cal-month { border: 1px solid var(--line); margin-top: 32px; }
         .cal-month__head {
           margin: 0; padding: 18px 24px; background-color: var(--surface); display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
@@ -245,7 +245,7 @@ export default function Calendar() {
         .cal-title a:hover { color: var(--pink-text); }
         .cal-btn, .cal-ghost {
           display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 14px 28px; cursor: pointer;
-          font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+          font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
         }
         .cal-btn { background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; transition: background-color 0.2s; }
         .cal-btn:hover { background: var(--btn-hover); }

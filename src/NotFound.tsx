@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { PATHS } from './router'
 import { withSiteName } from './seo'
 
-const display = "'Barlow Condensed', sans-serif"
+const display = "'Archivo', sans-serif"
 
 export default function NotFound() {
   useEffect(() => {

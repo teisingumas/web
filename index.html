@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Me Gusta — hip hop šokių studija Kaune. Gatvės šokiai, Pop Dance, Lady Class ir Breikas." />
-    <meta name="theme-color" content="#080808" />
+    <meta name="theme-color" content="#F4F3EF" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <script>
-      // Apply the saved theme before first paint (set by the header sun/moon switch).
-      try { if (localStorage.getItem('megusta-theme') === 'light') document.documentElement.dataset.theme = 'light' } catch (e) {}
+      // The public site is light only; the admin keeps its own look.
+      if (!/^\/(adminas|apzvalga)/.test(location.pathname)) document.documentElement.dataset.theme = 'light'
     </script>
     <title>Me Gusta — Hip hop šokių studija Kaune</title>
   </head>
@@ -24,7 +24,7 @@
         var root = document.getElementById('root')
         // (index.php may pre-fill #root with a [data-prerender] copy of the article for search engines)
         if (root && (!root.childElementCount || root.firstElementChild.hasAttribute('data-prerender'))) {
-          root.innerHTML = '<p style="font:16px/1.5 system-ui,sans-serif;color:#f0f0f0;background:#080808;padding:24px;margin:0">Nepavyko įkelti failo: ' + (t.src || t.href) + '<br>Patikrinkite, ar aplankas <b>assets</b> įkeltas šalia index.html.</p>'
+          root.innerHTML = '<p style="font:16px/1.5 system-ui,sans-serif;color:#111;background:#F4F3EF;padding:24px;margin:0">Nepavyko įkelti failo: ' + (t.src || t.href) + '<br>Patikrinkite, ar aplankas <b>assets</b> įkeltas šalia index.html.</p>'
         }
       }, true)
     </script>

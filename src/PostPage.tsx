@@ -6,7 +6,7 @@ import { fetchPost, formatDate, NotFoundError } from './publicApi'
 import { PATHS } from './router'
 import { withSiteName } from './seo'
 
-const display = "'Barlow Condensed', sans-serif"
+const display = "'Archivo', sans-serif"
 
 // The post the server rendered comes inline; posts opened from the news list are fetched.
 let inlinePost: Post | null = inlineData.view?.type === 'post' ? inlineData.view.post : null

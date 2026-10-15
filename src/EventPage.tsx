@@ -8,7 +8,7 @@ import { fetchEvent, NotFoundError } from './publicApi'
 import { PATHS } from './router'
 import { withSiteName } from './seo'
 
-const display = "'Barlow Condensed', sans-serif"
+const display = "'Archivo', sans-serif"
 
 // The event the server rendered comes inline; events opened from the calendar are fetched.
 let inlineEvent: EventDetail | null = inlineData.view?.type === 'event' ? inlineData.view.event : null

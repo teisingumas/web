@@ -5,7 +5,7 @@ import { fetchNewsPage, formatDate } from './publicApi'
 import { newsPagePath, PATHS } from './router'
 import { pageTitle } from './seo'
 
-const display = "'Barlow Condensed', sans-serif"
+const display = "'Archivo', sans-serif"
 
 // The page the server rendered comes inline; later pages are fetched.
 let inlinePage: PostPage | null = inlineData.view?.type === 'news' ? inlineData.view.data : null
@@ -157,7 +157,7 @@ export default function News({ pageNum: routePage }: { pageNum: number }) {
         .news-gap { min-width: 32px; text-align: center; color: var(--muted); font-family: ${display}; font-weight: 800; }
         .news-btn {
           background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; cursor: pointer; padding: 14px 28px;
-          font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+          font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
         }
         .news-btn:hover { background: var(--btn-hover); }
         .news-inline-link { color: var(--pink-text); text-decoration: underline; text-underline-offset: 3px; }

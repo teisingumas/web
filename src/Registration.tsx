@@ -12,7 +12,7 @@ const PINK = '#FFB3C6'
 // pink for text and small marks: darker in the light theme so it reads on white
 const PINK_TEXT = 'var(--pink-text)'
 const ERROR = '#ff8a8a'
-const display = "'Barlow Condensed', sans-serif"
+const display = "'Archivo', sans-serif"
 const mapsUrl = (address: string) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address)
 
 // Horizontal three-stripe flags (Poland has two), drawn instead of emoji, which Windows does not render.
@@ -361,7 +361,7 @@ export default function Registration({ route }: { route: Route }) {
         .faq-q {
           width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px;
           background: none; border: none; cursor: pointer; text-align: left; padding: 22px 4px;
-          font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.4;
+          font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.4;
         }
         .faq-q:hover { color: ${PINK_TEXT}; }
         .faq-q:focus-visible { outline: 2px solid ${PINK}; outline-offset: 2px; }
@@ -386,7 +386,7 @@ export default function Registration({ route }: { route: Route }) {
         .reg-input {
           width: 100%; min-height: 48px; padding: 0 14px;
           background: var(--surface); border: 1px solid var(--c-262626); color: var(--text);
-          font-family: 'Outfit', sans-serif; font-size: 15px; border-radius: 0;
+          font-family: 'Manrope', sans-serif; font-size: 15px; border-radius: 0;
           color-scheme: var(--scheme); transition: border-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
         }
         .reg-input::placeholder { color: var(--placeholder); }
@@ -416,7 +416,7 @@ export default function Registration({ route }: { route: Route }) {
         .reg-aside { position: sticky; top: 113px; }
         .reg-btn {
           background: ${PINK}; color: #080808; border: 1px solid ${PINK}; cursor: pointer;
-          padding: 18px 44px; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 14px;
+          padding: 18px 44px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 14px;
           letter-spacing: 2px; text-transform: uppercase; transition: background-color 160ms, transform 160ms;
         }
         .reg-btn:hover { background: var(--btn-hover); transform: translateY(-2px); }

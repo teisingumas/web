@@ -19,7 +19,7 @@ export const clerkAppearance: ProviderProps['appearance'] = {
     colorDanger: '#ff8a8a',
     colorRing: '#FFB3C6',
     borderRadius: '0px',
-    fontFamily: "'Outfit', sans-serif",
+    fontFamily: "'Manrope', sans-serif",
   },
   elements: {
     // sign-ups are closed: hide "Neturite paskyros?"
@@ -27,7 +27,7 @@ export const clerkAppearance: ProviderProps['appearance'] = {
     card: { boxShadow: 'none', border: '1px solid #222222' },
     cardBox: { boxShadow: 'none', width: '100%' },
     rootBox: { width: '100%' },
-    headerTitle: { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '28px', letterSpacing: '0.5px' },
+    headerTitle: { fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '28px', letterSpacing: '0.5px' },
     formButtonPrimary: { textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 800, fontSize: '13px', padding: '12px' },
   },
 }

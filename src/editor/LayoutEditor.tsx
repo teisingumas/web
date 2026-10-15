@@ -207,7 +207,7 @@ function Editor() {
   const btn = {
     background: 'none', border: '1px solid #333', color: '#ccc', cursor: 'pointer',
     padding: '6px 10px', fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase' as const,
-    fontFamily: "'Outfit', sans-serif",
+    fontFamily: "'Manrope', sans-serif",
   }
 
   return (
@@ -217,7 +217,7 @@ function Editor() {
         position: 'fixed', right: 16, bottom: 16, zIndex: 1000, width: 320, maxWidth: 'calc(100vw - 32px)',
         maxHeight: 'calc(100vh - 32px)', overflowY: 'auto',
         backgroundColor: 'rgba(17,17,17,0.97)', border: `1px solid ${PINK}`, color: '#ddd',
-        fontFamily: "'Outfit', sans-serif", fontSize: 12, boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
+        fontFamily: "'Manrope', sans-serif", fontSize: 12, boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', borderBottom: '1px solid #222' }}>

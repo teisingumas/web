@@ -4,7 +4,7 @@ import { section } from './content'
 import type { SlotStatus } from './content/types'
 
 const PINK = '#FFB3C6'
-const display = "'Barlow Condensed', sans-serif"
+const display = "'Archivo', sans-serif"
 
 const STATUS_CLASS: Record<SlotStatus, string> = {
   'Renkama grupė': 'open',
