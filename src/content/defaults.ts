@@ -110,24 +110,24 @@ export const DEFAULTS: ContentMap = {
     title: 'Mūsų treneriai',
     items: [
       {
-        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
-        image: { src: '/img/trainers/treneris-1.webp', alt: 'Treneris 1' },
+        name: 'Aušrė Savonytė', specialty: 'Pop Dance, Lady Class', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-1.webp', alt: 'Treneris Aušrė Savonytė' },
       },
       {
-        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
-        image: { src: '/img/trainers/treneris-2.webp', alt: 'Treneris 2' },
+        name: 'Edvinas Milaknis', specialty: 'Breikas', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-2.webp', alt: 'Treneris Edvinas Milaknis' },
       },
       {
-        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
-        image: { src: '/img/trainers/treneris-3.webp', alt: 'Treneris 3' },
+        name: 'Greta Pukenytė', specialty: 'Gatvės šokiai', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-3.webp', alt: 'Treneris Greta Pukenytė' },
       },
       {
-        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
-        image: { src: '/img/trainers/treneris-4.webp', alt: 'Treneris 4' },
+        name: 'Paulina Kindurytė', specialty: 'Gatvės šokiai', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-4.webp', alt: 'Treneris Paulina Kindurytė' },
       },
       {
-        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
-        image: { src: '/img/trainers/treneris-5.webp', alt: 'Treneris 5' },
+        name: 'Rytis Survila', specialty: 'Gatvės šokiai', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-5.webp', alt: 'Treneris Rytis Survila' },
       },
     ],
   },
