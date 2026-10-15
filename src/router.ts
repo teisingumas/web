@@ -81,7 +81,8 @@ function normalizeAddress() {
 }
 
 // Inside some embedded previews the URL cannot be changed; then the route lives in memory only.
-let memoryPath: string | null = null
+// VITE_PREVIEW builds (a single page shown inside an artifact) start at / and keep the route in memory.
+let memoryPath: string | null = import.meta.env.VITE_PREVIEW ? '/' : null
 const listeners = new Set<() => void>()
 const currentPath = () => memoryPath ?? window.location.pathname
 let route = parse(currentPath())
@@ -113,6 +114,7 @@ export function navigate(href: string, replace = false) {
   const next = parse(path)
   const samePage = next.path === route.path && next.tab === route.tab
   try {
+    if (import.meta.env.VITE_PREVIEW) throw new Error('preview')
     window.history[replace ? 'replaceState' : 'pushState'](null, '', (pathAndQuery || '/') + hash)
     memoryPath = null
   } catch {
