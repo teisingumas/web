@@ -401,7 +401,7 @@ function Site({ page }: { page: Page }) {
               </div>
               <div className="ng-trainer__info">
                 <h3>{t.name}</h3>
-                <span>{t.specialty} · {t.experience}</span>
+                <span>{t.experience ? `${t.specialty} · ${t.experience}` : t.specialty}</span>
               </div>
             </article>
           ))}

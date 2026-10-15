@@ -215,15 +215,15 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 .ng-pricenote { margin: 28px 0 0; font-size: 15px; font-weight: 700; }
 
 /* ---------- trainers ---------- */
-.ng-trainers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px; }
-.ng-trainer { background: #fff; border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; }
-.ng-trainer__img { position: relative; height: 340px; overflow: hidden; background: #DDDAD3; }
-.ng-trainer__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
-.ng-trainer:hover .ng-trainer__img img { transform: scale(1.04); }
+.ng-trainers { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+.ng-trainer { flex: 0 0 calc((100% - 64px) / 5); background: #fff; border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; }
+.ng-trainer__img { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #fff; }
+.ng-trainer__img img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.14); transform-origin: 50% 45%; transition: transform 0.5s ease; }
+.ng-trainer:hover .ng-trainer__img img { transform: scale(1.19); }
 .ng-trainer__bio { position: absolute; inset: 0; margin: 0; padding: 24px; display: flex; align-items: center; background: rgba(255, 255, 255, 0.94); font-size: 14px; line-height: 1.6; opacity: 0; transition: opacity 0.3s; }
 .ng-trainer:hover .ng-trainer__bio { opacity: 1; }
-.ng-trainer__info { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 6px; }
-.ng-trainer__info h3 { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.01em; text-transform: none; }
+.ng-trainer__info { border-top: 1px solid #F1EFEA; padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 6px; }
+.ng-trainer__info h3 { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 19px; letter-spacing: -0.01em; text-transform: none; }
 .ng-trainer__info span { font-size: 14px; color: #3D3D3D; }
 
 /* ---------- CTA banner ---------- */
@@ -268,6 +268,7 @@ h1[style], h2[style] { font-family: 'Archivo', sans-serif; }
   .menu-panel__inner { padding-bottom: 28px; }
   .menu-socials { display: flex; }
 }
+@media (max-width: 1100px) { .ng-trainer { flex-basis: calc((100% - 32px) / 3); } }
 @media (max-width: 900px) {
   .ng-wrap, .wide-container { padding-left: 20px; padding-right: 20px; }
   .ng-sec { padding-top: 88px; }
@@ -278,6 +279,7 @@ h1[style], h2[style] { font-family: 'Archivo', sans-serif; }
   .ng-hero { padding-top: 120px; gap: 36px; }
 }
 @media (max-width: 700px) {
+  .ng-trainer { flex-basis: calc((100% - 16px) / 2); }
   .ng-tabs { display: grid; grid-template-columns: 1fr 1fr; width: 100%; border-radius: 28px; }
   .ng-tab { padding: 14px 8px; text-align: center; }
   .ng-h3 { font-size: 34px; }

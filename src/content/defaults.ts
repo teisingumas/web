@@ -110,24 +110,24 @@ export const DEFAULTS: ContentMap = {
     title: 'Mūsų treneriai',
     items: [
       {
-        name: 'Tomas Kazlauskas', specialty: 'Gatvės šokiai', experience: '12 m. patirtis', color: '#FFB3C6',
-        bio: 'Lietuvos freestyle čempionas. Šokęs su žymiausiais Europos artistais ir vedęs masterclass 12 šalių.',
-        image: { src: unsplash('photo-1605450984717-5b2386930f7c'), alt: 'Treneris Tomas Kazlauskas' },
+        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-1.webp', alt: 'Treneris 1' },
       },
       {
-        name: 'Eglė Mockutė', specialty: 'Lady Class', experience: '8 m. patirtis', color: '#FF5C8A',
-        bio: 'Heels ir women\'s style specialistė. Choreografė, dirbusi su Lietuvos muzikos žvaigždėmis ir TV projektais.',
-        image: { src: unsplash('photo-1586211070543-61ae1ad4a665'), alt: 'Trenerė Eglė Mockutė' },
+        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-2.webp', alt: 'Treneris 2' },
       },
       {
-        name: 'Mantas Rimkus', specialty: 'Breikas', experience: '15 m. patirtis', color: '#00CFFF',
-        bio: 'Battle King Vilnius nugalėtojas. Atstovauja Lietuvai tarptautiniuose breakdance čempionatuose Europoje ir JAV.',
-        image: { src: unsplash('photo-1504293476958-6d6d0257d014'), alt: 'Treneris Mantas Rimkus' },
+        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-3.webp', alt: 'Treneris 3' },
       },
       {
-        name: 'Karolis Adomaitis', specialty: 'Pop Dance', experience: '10 m. patirtis', color: '#FF3DFF',
-        bio: 'Buvęs profesionalus šokėjas iš televizijos. Specializuojasi sceninėje choreografijoje ir konkursų ruošime.',
-        image: { src: unsplash('photo-1769535348343-d01ebd9ed8e4'), alt: 'Treneris Karolis Adomaitis' },
+        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-4.webp', alt: 'Treneris 4' },
+      },
+      {
+        name: 'Vardas Pavardė', specialty: 'Stilius', experience: '', color: '#FFB3C6', bio: '',
+        image: { src: '/img/trainers/treneris-5.webp', alt: 'Treneris 5' },
       },
     ],
   },
