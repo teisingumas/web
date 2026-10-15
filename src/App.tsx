@@ -339,16 +339,18 @@ function Site({ page }: { page: Page }) {
             <StyleVideo key={activeStyle} src={current.image.src} alt={current.image.alt} name={current.name} autoPlay={picked} />
           </div>
           <div className="ng-card ng-card--info">
-            <span className="ng-tag">{current.tagline}</span>
-            <h3 className="ng-h3">{current.name}</h3>
-            <p className="ng-text">{current.description}</p>
+            <div className="ng-stack">
+              <span className="ng-tag">{current.tagline}</span>
+              <h3 className="ng-h3">{current.name}</h3>
+              <p className="ng-text">{current.description}</p>
+            </div>
             <div className="ng-stack ng-stack--sm">
               <span className="ng-small">Lygiai</span>
               <div className="ng-levels">{current.levels.map((l, i) => <span key={i}>{l}</span>)}</div>
             </div>
             <div className="ng-card__foot">
-              <a href={PATHS.registration} className="ng-btn ng-btn--dark">Registruokis {arrow}</a>
-              <a href="#kainos" className="ng-link">{styles.button.replace(/\s*→\s*$/, '')}</a>
+              <a href="#kainos" className="ng-btn ng-btn--dark">{styles.button}</a>
+              <a href={PATHS.registration} aria-label="Registruotis" className="ng-round">{arrow}</a>
             </div>
           </div>
         </div>
@@ -411,17 +413,15 @@ function Site({ page }: { page: Page }) {
       {/* CTA */}
       <section id="registruokis" className="ng-wrap ng-sec">
         <div className="ng-cta">
-          <div className="ng-stack">
+          <div className="ng-cta__main">
             <span className="ng-tag ng-tag--dark"><i />{cta.kicker}</span>
             <h2 className="ng-h1 ng-h1--cta">{cta.line1}{cta.line2 && <><br />{cta.line2}</>}</h2>
-            <div className="ng-cta__contacts">
-              <a href={phoneHref(contacts.phone)}>{contacts.phone}</a>
-              <a href={`mailto:${contacts.email}`}>{contacts.email}</a>
-              <span>{contacts.address}</span>
-            </div>
-          </div>
-          <div className="ng-cta__action">
             <a href={PATHS.registration} className="ng-btn ng-btn--dark ng-btn--xl">Registruokis {arrow}</a>
+          </div>
+          <div className="ng-cta__card">
+            <div><span>Telefonas</span><a href={phoneHref(contacts.phone)}>{contacts.phone}</a></div>
+            <div><span>El. paštas</span><a href={`mailto:${contacts.email}`}>{contacts.email}</a></div>
+            <div><span>Adresas</span><b>{contacts.address}</b></div>
           </div>
         </div>
       </section>

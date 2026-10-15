@@ -117,7 +117,7 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 .ng-split { align-items: stretch; }
 .ng-card { border-radius: 32px; overflow: hidden; min-height: 560px; }
 .ng-card--photo { position: relative; background: #DDDAD3; }
-.ng-card--info { background: #fff; padding: clamp(28px, 3.6vw, 52px); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 24px; }
+.ng-card--info { background: #fff; padding: clamp(28px, 3.6vw, 44px); display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; gap: 28px; }
 .ng-stack { display: flex; flex-direction: column; gap: 20px; }
 .ng-stack--sm { gap: 12px; }
 .ng-tag { align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; background: var(--ng-accent); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -128,7 +128,7 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 .ng-small { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #555; }
 .ng-levels { display: flex; gap: 8px; flex-wrap: wrap; }
 .ng-levels span { padding: 9px 16px; border-radius: 999px; border: 1.5px solid #111; font-size: 14px; font-weight: 700; }
-.ng-card__foot { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: 8px; }
+.ng-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid #ECEAE4; padding-top: 24px; }
 
 /* video-style player */
 .sv { position: absolute; inset: 0; overflow: hidden; background: #1a1a1a; }
@@ -227,12 +227,16 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 .ng-trainer__info span { font-size: 14px; color: #3D3D3D; }
 
 /* ---------- CTA banner ---------- */
-.ng-cta { background: var(--ng-accent); border-radius: 40px; padding: clamp(32px, 5.5vw, 80px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 40px; align-items: center; }
-.ng-cta__contacts { display: flex; flex-direction: column; gap: 8px; font-size: 18px; font-weight: 800; }
-.ng-cta__contacts a { text-decoration: none; }
-.ng-cta__contacts a:hover { text-decoration: underline; }
-.ng-cta__contacts span { font-size: 15px; font-weight: 600; color: #333; }
-.ng-cta__action { display: flex; justify-content: center; }
+.ng-cta { background: var(--ng-accent); border-radius: 40px; padding: clamp(28px, 5vw, 72px); display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
+.ng-cta__main { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
+.ng-h1--cta { font-size: clamp(44px, 6vw, 88px); }
+.ng-cta__card { background: rgba(255, 255, 255, 0.72); border-radius: 28px; padding: 12px 32px; display: flex; flex-direction: column; }
+.ng-cta__card > div { display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid rgba(17, 17, 17, 0.12); }
+.ng-cta__card > div:first-child { border-top: 0; }
+.ng-cta__card span { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #555; }
+.ng-cta__card a, .ng-cta__card b { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: clamp(20px, 2.1vw, 28px); letter-spacing: -0.01em; text-decoration: none; overflow-wrap: anywhere; }
+.ng-cta__card a:hover { text-decoration: underline; }
+@media (max-width: 900px) { .ng-cta { grid-template-columns: 1fr; } }
 
 /* ---------- footer ---------- */
 .ng-footer { padding-top: 72px; padding-bottom: 40px; margin-top: 0; color: #111; background: var(--cream); font-family: 'Manrope', sans-serif; }
