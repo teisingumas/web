@@ -20,7 +20,7 @@ export const DEFAULTS: ContentMap = {
   'global.seo': { siteName: 'Me Gusta', ogImage: { src: '/img/og-default.jpg', alt: 'Me Gusta šokių studija Kaune' } },
 
   'home.hero': {
-    kicker: 'Kaunas · Nuo 2006',
+    kicker: 'Kaune nuo 2006',
     line1: 'TAVO',
     line2: 'JUDESIO',
     line3: 'NAMAI',

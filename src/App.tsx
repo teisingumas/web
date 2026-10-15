@@ -7,6 +7,8 @@ import Odometer from './Odometer'
 import { heroImages, inlineData, phoneHref, section } from './content'
 import Registration from './Registration'
 import Pricing from './Pricing'
+import StyleVideo from './StyleVideo'
+import Reviews from './Reviews'
 import Timetable from './Timetable'
 import News from './News'
 import Calendar from './Calendar'
@@ -156,6 +158,7 @@ function Site({ page }: { page: Page }) {
     else window.scrollTo({ top: 0, behavior: 'instant' })
   }, [page])
   const [activeStyle, setActiveStyle] = useState(0)
+  const [picked, setPicked] = useState(false)   // a tab was chosen: its video starts by itself
   const [activeDay, setActiveDay] = useState(0)
 
   // Sections marked data-reveal play their intro once they scroll into view.
@@ -206,7 +209,7 @@ function Site({ page }: { page: Page }) {
   const scheduleDay = schedule.days[Math.min(activeDay, schedule.days.length - 1)]
 
   const arrow = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-  const kickerParts = hero.kicker.split('·').map(s => s.trim()).filter(Boolean)
+    const arrowDown = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>
   const heading = (kicker: string, title: React.ReactNode) => (
     <div className="ng-head">
       <span className="ng-kicker">{kicker}</span>
@@ -290,9 +293,7 @@ function Site({ page }: { page: Page }) {
       {/* HERO */}
       <section id="hero" className="ng-wrap ng-hero">
         <div className="ng-hero__text">
-          <div data-edit="Hero: Kaunas · Nuo 2006" className="ng-chips">
-            {kickerParts.map((p, i) => <span key={i} className={i === 0 ? 'on' : undefined}>{p}</span>)}
-          </div>
+          <div data-edit="Hero: Kaune nuo 2006" className="ng-chips"><span>{hero.kicker}</span></div>
           <h1 data-edit="Hero: antraštė" className="ng-h1">
             {hero.line1}<br />
             <span className="ng-mark">{hero.line2}</span>
@@ -300,8 +301,8 @@ function Site({ page }: { page: Page }) {
           </h1>
           <p data-edit="Hero: aprašymas" className="ng-lead">{hero.text}</p>
           <div data-edit="Hero: mygtukai" className="ng-actions hero-btns">
-            <a href="#stiliai" className="ng-btn ng-btn--dark hero-btn">{hero.primaryCta}</a>
-            <a href="#tvarkarastis" className="ng-btn ng-btn--outline hero-btn">{hero.secondaryCta}</a>
+            <a href={PATHS.registration} className="ng-btn ng-btn--dark hero-btn">Registruokis {arrow}</a>
+            <a href="#stiliai" className="ng-btn ng-btn--ghost hero-btn">{hero.primaryCta.replace(/\s*→\s*$/, '')}{arrowDown}</a>
           </div>
         </div>
         <div className="ng-hero__photo">
@@ -329,28 +330,25 @@ function Site({ page }: { page: Page }) {
           {heading(styles.kicker, <>{styles.title1}{styles.title2 && <><br />{styles.title2}</>}</>)}
           <div role="tablist" aria-label="Šokių stiliai" className="ng-tabs style-tabs">
             {styles.items.map((s, i) => (
-              <button key={i} type="button" role="tab" aria-selected={current === s} className="ng-tab style-tab" onClick={() => setActiveStyle(i)}>{s.name}</button>
+              <button key={i} type="button" role="tab" aria-selected={current === s} className="ng-tab style-tab" onClick={() => { setPicked(true); setActiveStyle(i) }}>{s.name}</button>
             ))}
           </div>
         </div>
         <div className="ng-split">
           <div className="ng-card ng-card--photo">
-            <img src={current.image.src} alt={current.image.alt} />
-            <span className="ng-tag-white">{current.name}</span>
+            <StyleVideo key={activeStyle} src={current.image.src} alt={current.image.alt} name={current.name} autoPlay={picked} />
           </div>
           <div className="ng-card ng-card--info">
-            <div className="ng-stack">
-              <span className="ng-tag">{current.tagline}</span>
-              <h3 className="ng-h3">{current.name}</h3>
-              <p className="ng-text">{current.description}</p>
-            </div>
+            <span className="ng-tag">{current.tagline}</span>
+            <h3 className="ng-h3">{current.name}</h3>
+            <p className="ng-text">{current.description}</p>
             <div className="ng-stack ng-stack--sm">
               <span className="ng-small">Lygiai</span>
               <div className="ng-levels">{current.levels.map((l, i) => <span key={i}>{l}</span>)}</div>
             </div>
             <div className="ng-card__foot">
-              <a href="#kainos" className="ng-btn ng-btn--dark">{styles.button}</a>
-              <a href={PATHS.registration} aria-label="Registruotis" className="ng-round">{arrow}</a>
+              <a href={PATHS.registration} className="ng-btn ng-btn--dark">Registruokis {arrow}</a>
+              <a href="#kainos" className="ng-link">{styles.button.replace(/\s*→\s*$/, '')}</a>
             </div>
           </div>
         </div>
@@ -407,6 +405,8 @@ function Site({ page }: { page: Page }) {
           ))}
         </div>
       </section>
+
+      <Reviews />
 
       {/* CTA */}
       <section id="registruokis" className="ng-wrap ng-sec">

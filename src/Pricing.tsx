@@ -39,7 +39,7 @@ export default function Pricing({ centered = false, heading = true }: { centered
       )}
     </div>
 
-    {pricing.note && (
+    {centered && pricing.note && (
       <p className="ng-pricenote" style={centered ? { textAlign: 'center' } : undefined}>{pricing.note}</p>
     )}
     </>
