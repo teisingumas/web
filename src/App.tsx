@@ -238,13 +238,6 @@ function Site({ page }: { page: Page }) {
             ))}
           </div>
           <div className="ng-bar__right">
-            <div className="nav-socials" data-edit="Soc. tinklai">
-              {socials.map(s => socialLinks[s.key] ? (
-                <a key={s.name} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} title={s.name} className="ng-social"><Icon name={s.icon} size={16} /></a>
-              ) : (
-                <span key={s.name} aria-hidden="true" className="ng-social"><Icon name={s.icon} size={16} /></span>
-              ))}
-            </div>
             <a href={PATHS.registration} className="nav-cta ng-btn ng-btn--accent">Registruotis</a>
             <button type="button" className="menu-btn" aria-expanded={menuOpen} aria-controls="site-menu" onClick={() => setMenuOpen(o => !o)}>
               <span className="menu-btn__icon" aria-hidden="true"><i /><i /><i /></span>
@@ -280,6 +273,15 @@ function Site({ page }: { page: Page }) {
           </div>
         </div>
       </nav>
+
+      {/* Social icons: fixed on the right edge, only while the full header menu shows (no hamburger) */}
+      <div className="ng-rail" data-edit="Soc. tinklai">
+        {socials.map(s => socialLinks[s.key] ? (
+          <a key={s.name} href={socialLinks[s.key]} target="_blank" rel="noopener noreferrer" aria-label={s.name} title={s.name} className="ng-social"><Icon name={s.icon} size={18} /></a>
+        ) : (
+          <span key={s.name} aria-hidden="true" className="ng-social"><Icon name={s.icon} size={18} /></span>
+        ))}
+      </div>
 
       {page === 'registracija' ? <Registration route={route} />
         : page === 'tvarkarastis' ? <Timetable />
