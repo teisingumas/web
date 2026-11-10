@@ -440,9 +440,9 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
   width: var(--sw, 0); height: var(--sh, 0); transform: translate(var(--sx, 0), var(--sy, 0)); opacity: var(--so, 0);
 }
 [data-slider][data-slider-ready]::before { transition: transform 0.34s cubic-bezier(0.23, 1, 0.32, 1), width 0.34s cubic-bezier(0.23, 1, 0.32, 1), height 0.34s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.2s; }
-[data-slider][data-slider] > * { position: relative; z-index: 1; background: transparent !important; color: #111 !important; transition: color 0.2s !important; }
-[data-slider][data-slider] > [data-hot] { color: #fff !important; }
-[data-slider][data-slider] > :disabled, [data-slider][data-slider] > [aria-disabled="true"] { opacity: 0.35; }
+[data-slider][data-slider][data-slider][data-slider] > * { position: relative; z-index: 1; background: transparent !important; color: #111 !important; transition: color 0.2s !important; }
+[data-slider][data-slider][data-slider][data-slider] > [data-hot] { color: #fff !important; }
+[data-slider][data-slider][data-slider][data-slider] > :disabled, [data-slider][data-slider][data-slider][data-slider] > [aria-disabled="true"] { opacity: 0.35; }
 /* a white track for the calendar filter, like the other tab rows */
 .cal-toolbar > [role="tablist"] { background: #fff; border-radius: 999px; padding: 5px; gap: 2px !important; flex-wrap: nowrap !important; }
 @media (prefers-reduced-motion: reduce) { [data-slider][data-slider-ready]::before { transition: none; } }
