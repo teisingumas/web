@@ -401,7 +401,6 @@ function Site({ page }: { page: Page }) {
               <img src={t.image.src} alt={t.image.alt} loading="lazy" className="ng-trainer__photo" />
               <span className="ng-trainer__shade" aria-hidden="true" />
               <div className="ng-trainer__info">
-                {t.role && <span className="ng-trainer__role">{t.role}</span>}
                 <h3>{t.name.split(' ')[0]}</h3>
                 {t.specialty && <span className="ng-trainer__style">{t.specialty}</span>}
               </div>

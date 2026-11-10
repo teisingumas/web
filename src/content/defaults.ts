@@ -110,24 +110,24 @@ export const DEFAULTS: ContentMap = {
     title: 'Mūsų treneriai',
     items: [
       {
-        name: 'Rytis Survila', role: 'Studijos vadovas', specialty: 'Gatvės šokiai', experience: '', color: '#F7B1D4', bio: '',
-        image: { src: '/img/trainers/treneris-5.webp', alt: 'Studijos vadovas Rytis Survila' },
+        name: 'Rytis Survila', specialty: 'Gatvės šokiai', experience: '', color: '#F7B1D4', bio: '',
+        image: { src: '/img/trainers/treneris-5.webp', alt: 'Rytis Survila' },
       },
       {
-        name: 'Aušrė Savonytė', role: 'Trenerė', specialty: 'Pop Dance, Lady Class', experience: '', color: '#F7B1D4', bio: '',
-        image: { src: '/img/trainers/treneris-1.webp', alt: 'Trenerė Aušrė Savonytė' },
+        name: 'Aušrė Savonytė', specialty: 'Pop Dance, Lady Class', experience: '', color: '#F7B1D4', bio: '',
+        image: { src: '/img/trainers/treneris-1.webp', alt: 'Aušrė Savonytė' },
       },
       {
-        name: 'Edvinas Milaknis', role: 'Treneris', specialty: 'Breikas', experience: '', color: '#F7B1D4', bio: '',
-        image: { src: '/img/trainers/treneris-2.webp', alt: 'Treneris Edvinas Milaknis' },
+        name: 'Edvinas Milaknis', specialty: 'Breikas', experience: '', color: '#F7B1D4', bio: '',
+        image: { src: '/img/trainers/treneris-2.webp', alt: 'Edvinas Milaknis' },
       },
       {
-        name: 'Greta Pukenytė', role: 'Trenerė', specialty: 'Gatvės šokiai', experience: '', color: '#F7B1D4', bio: '',
-        image: { src: '/img/trainers/treneris-3.webp', alt: 'Trenerė Greta Pukenytė' },
+        name: 'Greta Pukenytė', specialty: 'Gatvės šokiai', experience: '', color: '#F7B1D4', bio: '',
+        image: { src: '/img/trainers/treneris-3.webp', alt: 'Greta Pukenytė' },
       },
       {
-        name: 'Paulina Kindurytė', role: 'Trenerė', specialty: 'Gatvės šokiai', experience: '', color: '#F7B1D4', bio: '',
-        image: { src: '/img/trainers/treneris-4.webp', alt: 'Trenerė Paulina Kindurytė' },
+        name: 'Paulina Kindurytė', specialty: 'Gatvės šokiai', experience: '', color: '#F7B1D4', bio: '',
+        image: { src: '/img/trainers/treneris-4.webp', alt: 'Paulina Kindurytė' },
       },
     ],
   },
