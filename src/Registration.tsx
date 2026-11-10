@@ -155,7 +155,7 @@ export default function Registration({ route }: { route: Route }) {
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ marginBottom: 56 }}>
           <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: PINK_TEXT, textTransform: 'uppercase', marginBottom: 12 }}>
-            ◆&nbsp;&nbsp;{reg.kicker}
+            {reg.kicker}
           </p>
           <h1 className="sr-only">Registracija</h1>
           <nav role="tablist" aria-label="Registracijos skiltys" className="page-tabs">

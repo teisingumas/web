@@ -123,18 +123,6 @@
   --c-ffffff: #111111;
 }
 
-:root[data-theme="light"] .adm-login {
-  --pink-text: #FFB3C6;
-  --bg: #080808;
-  --bg-rgb: 8, 8, 8;
-  --surface: #0d0d0d;
-  --surface-2: #111111;
-  --line: #1a1a1a;
-  --text: #f0f0f0;
-  --text-2: #c4c4c4;
-  --text-3: #a0a0a0;
-  --muted: #8a8a8a;
-}
 
 .hero-photo { --hero-img: var(--hero-img-dark); }
 :root[data-theme="light"] .hero-photo { --hero-img: var(--hero-img-light); }

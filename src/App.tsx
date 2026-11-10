@@ -78,7 +78,7 @@ function ContactsPage() {
   return (
     <section style={{ padding: '168px 0 120px', backgroundColor: 'var(--bg)', minHeight: '70vh' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
-        <p style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>◆&nbsp;&nbsp;Susisiek</p>
+        <p style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>Susisiek</p>
         <h1 style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: '0 0 56px' }}>Kontaktai</h1>
         <div className="contact-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 40 }}>
           <div>

@@ -327,3 +327,36 @@ h1[style], h2[style] { font-family: 'Archivo', sans-serif; }
 }
 @media (max-width: 340px) { .nav-contacts { display: none; } .menu-contacts { display: flex; } }
 @media (prefers-reduced-motion: reduce) { .ng-mark, .time-colon, .sv__img, .ng-btn--ghost svg { animation: none !important; } .menu-panel, .menu-btn__icon i { transition: none; } }
+
+/* ===== Inner pages (timetable, registration, news, calendar, contacts ...) in the new look ===== */
+p[style*="letter-spacing: 5px"] { letter-spacing: 0.12em !important; font-family: 'Manrope', sans-serif !important; font-weight: 800 !important; color: #111 !important; font-size: 12px !important; }
+input:not([type="checkbox"]):not([type="radio"]), select, textarea { border-radius: 14px !important; }
+a[style*="247, 177, 212"], button[style*="247, 177, 212"] { border-radius: 999px !important; text-transform: none !important; letter-spacing: 0 !important; font-size: 15px !important; font-weight: 800 !important; color: #111 !important; }
+[style*="var(--surface)"], [style*="var(--surface-2)"] { border-radius: 24px !important; border-color: transparent !important; }
+
+/* buttons / tabs / cards of the inner pages: pills and rounded white blocks */
+.reg-btn, .cal-btn, .cal-ghost, .news-btn, .reg-btn--ghost { border-radius: 999px !important; text-transform: none !important; letter-spacing: 0 !important; font-size: 15px !important; font-weight: 800 !important; padding: 15px 30px !important; color: #111 !important; }
+.reg-btn--ghost, .cal-ghost { background: transparent !important; border: 1.5px solid #111 !important; }
+.reg-btn--ghost:hover, .cal-ghost:hover { background: #111 !important; color: #fff !important; }
+.reg-phone, .reg-input { border-radius: 14px !important; }
+.reg-phone .reg-input { border-radius: 0 !important; }
+.reg-aside > div, .reg-aside { border-radius: 24px; }
+/* timetable */
+.tt-week > div { border-radius: 24px !important; overflow: hidden; background: #fff !important; border-color: transparent !important; }
+.tt-week > div > h2 { background: #fff !important; text-transform: none !important; letter-spacing: -0.01em !important; font-size: 22px !important; }
+.tt-status { border-radius: 999px !important; text-transform: none !important; letter-spacing: 0.02em !important; font-size: 12px !important; padding: 6px 12px !important; font-weight: 700 !important; }
+.tt-status--open { background: var(--ng-accent); color: #111 !important; border-color: transparent !important; }
+.tt-tabs { background: #fff; border-radius: 999px; padding: 5px; gap: 2px !important; }
+.tt-tabs .day-tab { border-radius: 999px !important; border: 0 !important; background: transparent !important; color: #111 !important; text-transform: none !important; letter-spacing: 0 !important; font-size: 15px !important; font-family: 'Manrope', sans-serif !important; font-weight: 700 !important; overflow: visible; }
+.tt-tabs .day-tab::before { display: none; }
+.tt-tabs .day-tab:hover { background: #F0EEE8 !important; }
+.tt-tabs .day-tab[aria-selected="true"] { background: #111 !important; color: #fff !important; }
+/* registration + calendar tab rows */
+[role="tablist"] button[style*="uppercase"], .cal-tab, .reg-tab { text-transform: none !important; letter-spacing: -0.01em !important; }
+/* news, calendar, event cards */
+.news-card, .cal-ev, .ev-facts, .ev-map, .ev-nearby { border-radius: 24px; }
+.news-card { overflow: hidden; background: #fff; border-color: transparent !important; }
+.cal-thumb, .cal-thumb img { border-radius: 16px; }
+.ev-tag, .cal-chip { border-radius: 999px !important; text-transform: none !important; letter-spacing: 0.02em !important; }
+[style*="border: 1px solid var(--line)"] { border-radius: 24px !important; background: #fff; }
+[style*="border-top"] { border-radius: 0 !important; }

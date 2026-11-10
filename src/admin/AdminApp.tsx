@@ -4,7 +4,6 @@ import { ClerkProvider, SignIn, useAuth, useClerk, useUser } from '@clerk/react'
 import logo from '../assets/logo-megusta.webp'
 import { inlineData } from '../content'
 import { navigate, PATHS, type Route } from '../router'
-import ThemeSwitch from '../ThemeSwitch'
 import { ApiError, createApi, fetchStatus, type Api, type SavedSection, type SeoRecord, type SetupStatus, type TokenGetter } from './api'
 import { clerkAppearance, clerkLocalization } from './clerkTheme'
 import { ConfirmProvider, DirtyProvider, SessionProvider, StoreProvider, ToastProvider, useSession } from './context'
@@ -112,7 +111,7 @@ function LoginScreen({ children }: { children: React.ReactNode }) {
         <div className="adm-login__brand">
           <a href={PATHS.home} aria-label="Į svetainę"><img src={logo} alt="Me Gusta" width={87} height={56} /></a>
           <div>
-            <p className="adm-kicker">◆&nbsp;&nbsp;Me Gusta</p>
+            <p className="adm-kicker">Me Gusta</p>
             <h1 className="adm-h1" style={{ fontSize: 44 }}>Turinio valdymas</h1>
           </div>
         </div>
@@ -280,7 +279,6 @@ function Shell({ route }: { route: Route }) {
         <a className="adm-side__link" href="/" target="_blank" rel="noreferrer">Atidaryti svetainę ↗</a>
         {userLabel && <span className="adm-side__user">{userLabel}</span>}
         <button type="button" className="adm-side__link" onClick={signOut}>Atsijungti</button>
-        <ThemeSwitch />
       </div>
     </aside>
   )

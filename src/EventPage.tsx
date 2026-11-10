@@ -91,7 +91,7 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
         <header style={{ margin: '32px 0 48px', maxWidth: 960 }}>
           <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '12px 16px', flexWrap: 'wrap' }}>
             <span className={`ev-tag ev-tag--${event.type}`} style={{ letterSpacing: 2.5 }}>{event.typeLabel}</span>
-            ◆&nbsp;&nbsp;{event.startDate ? <time dateTime={event.startDate}>{longDate(event.startDate)}</time> : 'Renginys'}{past && ' · Įvyko'}
+            {event.startDate ? <time dateTime={event.startDate}>{longDate(event.startDate)}</time> : 'Renginys'}{past && ' · Įvyko'}
           </p>
           <h1 style={{ fontFamily: display, fontWeight: 900, fontSize: 'clamp(40px, 5.5vw, 80px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0, overflowWrap: 'anywhere' }}>
             {event.title}

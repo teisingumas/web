@@ -4,7 +4,7 @@ export function PageHeader({ kicker, title, lead, actions }: { kicker: string; t
   return (
     <header className="adm-head">
       <div style={{ minWidth: 0 }}>
-        <p className="adm-kicker">◆&nbsp;&nbsp;{kicker}</p>
+        <p className="adm-kicker">{kicker}</p>
         <h1 className="adm-h1">{title}</h1>
         {lead && <p className="adm-lead">{lead}</p>}
       </div>

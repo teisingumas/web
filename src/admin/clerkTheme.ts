@@ -7,28 +7,28 @@ type ProviderProps = ComponentProps<typeof ClerkProvider>
 
 export const clerkAppearance: ProviderProps['appearance'] = {
   variables: {
-    colorPrimary: '#FFB3C6',
-    colorPrimaryForeground: '#080808',
-    colorBackground: '#111111',
-    colorForeground: '#f0f0f0',
-    colorMutedForeground: '#a8a8a8',
-    colorNeutral: '#f0f0f0',
-    colorInput: '#0d0d0d',
-    colorInputForeground: '#f0f0f0',
-    colorBorder: '#2a2a2a',
-    colorDanger: '#ff8a8a',
-    colorRing: '#FFB3C6',
-    borderRadius: '0px',
+    colorPrimary: '#F7B1D4',
+    colorPrimaryForeground: '#111111',
+    colorBackground: '#ffffff',
+    colorForeground: '#111111',
+    colorMutedForeground: '#555555',
+    colorNeutral: '#111111',
+    colorInput: '#ffffff',
+    colorInputForeground: '#111111',
+    colorBorder: '#DEDBD3',
+    colorDanger: '#b3261e',
+    colorRing: '#F7B1D4',
+    borderRadius: '14px',
     fontFamily: "'Manrope', sans-serif",
   },
   elements: {
     // sign-ups are closed: hide "Neturite paskyros?"
     footerAction: { display: 'none' },
-    card: { boxShadow: 'none', border: '1px solid #222222' },
+    card: { boxShadow: 'none', border: '1px solid #E6E3DB' },
     cardBox: { boxShadow: 'none', width: '100%' },
     rootBox: { width: '100%' },
-    headerTitle: { fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '28px', letterSpacing: '0.5px' },
-    formButtonPrimary: { textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 800, fontSize: '13px', padding: '12px' },
+    headerTitle: { fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'none', fontSize: '28px', letterSpacing: '-0.01em' },
+    formButtonPrimary: { textTransform: 'none', letterSpacing: '0', fontWeight: 800, fontSize: '15px', padding: '13px', borderRadius: '999px' },
   },
 }
 

@@ -13,7 +13,7 @@ export default function NotFound() {
     <section style={{ padding: '168px 0 120px', backgroundColor: 'var(--bg)', minHeight: '70vh' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', marginBottom: 12 }}>
-          ◆&nbsp;&nbsp;Klaida 404
+          Klaida 404
         </p>
         <h1 style={{ fontFamily: display, fontWeight: 900, fontSize: 'clamp(48px, 7vw, 100px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: '0 0 24px' }}>
           Puslapis<br /><span style={{ color: 'var(--pink-text)' }}>nerastas</span>

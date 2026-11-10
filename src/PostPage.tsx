@@ -82,7 +82,7 @@ export function PostView({ post, preview = false }: { post: Pick<Post, 'title' |
         <a href={PATHS.news} className="post-back">← Visos naujienos</a>
         <header style={{ margin: '32px 0 48px', maxWidth: 960 }}>
           <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: 'var(--pink-text)', textTransform: 'uppercase', margin: '0 0 16px' }}>
-            ◆&nbsp;&nbsp;{post.publishedAt ? <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> : 'Juodraštis'}
+            {post.publishedAt ? <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> : 'Juodraštis'}
           </p>
           <h1 style={{ fontFamily: display, fontWeight: 900, fontSize: 'clamp(40px, 5.5vw, 80px)', lineHeight: 0.95, textTransform: 'uppercase', color: 'var(--text)', margin: 0, overflowWrap: 'anywhere' }}>
             {post.title}
