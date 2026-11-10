@@ -222,8 +222,8 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 .ng-trainers { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
 .ng-trainer { position: relative; flex: 0 0 calc((100% - 64px) / 5); aspect-ratio: 1 / 1.08; border-radius: 28px; overflow: hidden; isolation: isolate; background: #1b1b1b; }
 /* graphic behind the person: the studio "N" mark, large and translucent */
-.ng-trainer__mark { position: absolute; z-index: 0; left: 2%; top: 4%; width: 78%; aspect-ratio: 335 / 255; background: url('/img/trainers/n-mark.webp') center / contain no-repeat; opacity: 0.2; }
-.ng-trainer__photo { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; display: block; transition: transform 0.5s ease; }
+.ng-trainer__mark { position: absolute; z-index: 2; left: -9%; top: -3%; width: 74%; aspect-ratio: 335 / 255; background: url('/img/trainers/n-mark.webp') center / contain no-repeat; opacity: 0.22; }
+.ng-trainer__photo { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block; transition: transform 0.5s ease; }
 .ng-trainer:hover .ng-trainer__photo { transform: scale(1.04); }
 .ng-trainer__shade { position: absolute; z-index: 2; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.72) 100%); pointer-events: none; }
 .ng-trainer__info { position: absolute; z-index: 3; left: 20px; right: 16px; bottom: 18px; display: flex; flex-direction: column; gap: 2px; color: #fff; }
