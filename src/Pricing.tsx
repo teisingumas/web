@@ -19,15 +19,12 @@ export default function Pricing({ centered = false, heading = true, header = tru
       {pricing.plans.map((plan, pi) => (
         <div key={pi} className={'ng-plan' + (plan.highlight ? ' ng-plan--hot' : '')}>
           {plan.highlight && <span className="ng-plan__badge">{pricing.badge}</span>}
-          <div>
-            <p className="ng-plan__desc">{plan.desc}</p>
-            <h3 className="ng-plan__name">{plan.name}</h3>
-          </div>
+          <h3 className="ng-plan__name">{plan.desc}</h3>
           <div className="ng-plan__price"><b>€{plan.price}</b><span>{plan.period}{marks && ' *'}</span></div>
           <ul>
             {plan.features.map((f, fi) => <li key={fi}><Check />{f}</li>)}
           </ul>
-          <a href="/registracija" className="ng-plan__cta">{plan.cta}</a>
+          <a href="/registracija" className="ng-plan__cta">Rinkis</a>
         </div>
       ))}
       {!centered && (

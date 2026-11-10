@@ -16,7 +16,7 @@ export type ContentMap = {
   'home.stats': { items: { num: string; label: string }[] }
   'home.styles': {
     kicker: string; title1: string; title2: string; button: string
-    items: { name: string; tagline: string; description: string; image: Img; levels: string[] }[]
+    items: { name: string; tagline: string; description: string; image: Img; video?: string; levels: string[] }[]
   }
   'home.schedule': {
     kicker: string; title: string; note: string

@@ -41,8 +41,8 @@ export const DEFAULTS: ContentMap = {
   },
   'home.styles': {
     kicker: 'Ko mokome',
-    title1: 'Pasirink savo',
-    title2: 'stilių',
+    title1: 'Pasirink stilių',
+    title2: '',
     button: 'Plačiau →',
     items: [
       {
@@ -96,18 +96,18 @@ export const DEFAULTS: ContentMap = {
       {
         name: 'Standart', desc: '1 šokių stilius', price: '55', period: '/mėn',
         features: ['1 šokių stilius', '8 šokių pamokos per mėnesį', 'Studijos renginiai', 'Konkursai, čempionatai', 'Galimybė papildomai treniruotis'],
-        highlight: false, cta: 'Rinktis Standart →',
+        highlight: false, cta: 'Rinkis',
       },
       {
         name: 'Intensive', desc: '2 šokių stiliai', price: '70', period: '/mėn',
         features: ['2 šokių stiliai', '16 šokių pamokų per mėnesį', 'Studijos renginiai', 'Konkursai, čempionatai', 'Galimybė papildomai treniruotis'],
-        highlight: true, cta: 'Rinktis Intensive →',
+        highlight: true, cta: 'Rinkis',
       },
     ],
   },
   'home.trainers': {
     kicker: 'Komanda',
-    title: 'Mūsų treneriai',
+    title: 'Treneriai',
     items: [
       {
         name: 'Rytis Survila', specialty: 'Gatvės šokiai', experience: '', color: '#F7B1D4', bio: '',

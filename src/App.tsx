@@ -340,7 +340,7 @@ function Site({ page }: { page: Page }) {
         </div>
         <div className="ng-split">
           <div className="ng-card ng-card--photo">
-            <StyleVideo key={activeStyle} src={current.image.src} alt={current.image.alt} name={current.name} autoPlay={picked} />
+            <StyleVideo key={activeStyle} src={current.image.src} alt={current.image.alt} name={current.name} autoPlay={picked} video={current.video} />
           </div>
           <div className="ng-card ng-card--info">
             <div className="ng-stack">

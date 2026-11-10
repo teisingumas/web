@@ -28,7 +28,7 @@ export default function Reviews() {
     <section id="atsiliepimai" className="ng-wrap ng-sec">
       <div className="ng-head">
         <span className="ng-kicker">Atsiliepimai</span>
-        <h2 className="ng-h2">Ką sako mūsų šokėjai</h2>
+        <h2 className="ng-h2">Kodėl verta rinktis mums</h2>
       </div>
       <div className="rv">
         <div className="rv__score">

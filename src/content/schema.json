@@ -72,7 +72,7 @@
       "sections": ["pricing.notes", "pricing.faq"],
       "seo": {
         "title": "Kainos — Me Gusta",
-        "description": "Me Gusta šokių studijos kainos: Standart ir Intensive narystės, nuolaidos ir dažniausiai užduodami klausimai apie apmokėjimą.",
+        "description": "Me Gusta šokių studijos kainos: narystės, nuolaidos ir dažniausiai užduodami klausimai apie apmokėjimą.",
         "keywords": "šokių pamokų kainos Kaune, Me Gusta kainos, šokių studijos narystė"
       }
     }
@@ -142,7 +142,7 @@
     },
     "home.styles": {
       "title": "Šokių stiliai",
-      "description": "Skiltis „Pasirink savo stilių“ su skirtukais.",
+      "description": "Skiltis „Pasirink stilių“ su skirtukais.",
       "fields": [
         { "key": "kicker", "type": "text", "label": "Viršutinė eilutė", "required": true, "max": 40 },
         { "key": "title1", "type": "text", "label": "Antraštė: 1 eilutė", "required": true, "max": 30 },
@@ -154,7 +154,8 @@
             { "key": "name", "type": "text", "label": "Pavadinimas", "required": true, "max": 30 },
             { "key": "tagline", "type": "text", "label": "Šūkis", "max": 80 },
             { "key": "description", "type": "textarea", "label": "Aprašymas", "required": true, "max": 600, "rows": 4 },
-            { "key": "image", "type": "image", "label": "Nuotrauka", "required": true },
+            { "key": "image", "type": "image", "label": "Nuotrauka (viršelis)", "required": true },
+            { "key": "video", "type": "text", "label": "YouTube nuoroda (neprivaloma)", "max": 200, "help": "Pvz. https://www.youtube.com/watch?v=… Jei nurodyta, paspaudus „Play“ paleidžiamas šis vaizdo įrašas; kitų stilių skirtukuose jis paleidžiamas pats (be garso)." },
             { "key": "levels", "type": "tags", "label": "Amžiaus grupės", "itemName": "grupę", "max": 20, "maxItems": 8, "placeholder": "7–11 m." }
           ]
         }

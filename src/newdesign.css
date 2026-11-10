@@ -427,3 +427,7 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .ng-cta-pill:hover { background: #EE9DC6; transform: translateY(-2px); }
 /* header menu: the active item stays black with white text on hover */
 .ng-pill[aria-current="page"], a.ng-pill[aria-current="page"]:hover { background: #111; color: #fff; }
+
+.sv__frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #000; }
+.ng-plan--hot .ng-plan__name { padding-right: 150px; }
+@media (max-width: 420px) { .ng-plan--hot .ng-plan__name { padding-right: 0; margin-top: 36px; } }
