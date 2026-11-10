@@ -173,6 +173,8 @@ export const DEFAULTS: ContentMap = {
       { days: 'V', hours: '16:00–19:00' },
     ],
   },
+  'pricing.notes': { items: [] },
+  'pricing.faq': { groups: [] },
   'registration.faq': { groups: [] },
 
   news: {
@@ -356,6 +358,48 @@ DEFAULTS['registration.faq'].groups = [
       {
         q: 'Kaip rasti Me Gustą socialiniuose tinkluose?',
         a: '<p>Me Gusta šokių studijos paskyras galite rasti <strong>YouTube</strong>, <strong>Facebook</strong>, <strong>Instagram</strong> ir <strong>TikTok</strong> socialinių tinklų platformose. Sekite mus!</p>',
+      },
+    ],
+  },
+]
+
+DEFAULTS['pricing.notes'].items = [
+  { text: 'Už narystę mokama kalendoriniais mėnesiais (mėnesio pradžioje) atėjus į pirmą pamoką.' },
+  { text: 'Studentams pateikus galiojantį studento pažymėjimą, taikoma 10% nuolaida.' },
+  { text: 'Pamokas lankantiems 2 ir daugiau šeimos nariams yra taikoma nuolaida. Kreiptis į studijos administratorę.' },
+]
+
+DEFAULTS['pricing.faq'].groups = [
+  {
+    title: 'Narystė ir apmokėjimas',
+    items: [
+      {
+        q: 'Noriu pradėti šokti Me Gustoje. Nuo ko pradėti? Ar galiu prisijungti dabar?',
+        a: '<p>Studijoje šokėjai laukiami viso sezono metu. Visų pirma, reikia užpildyti <a href="/registracija">registracijos formą</a>. Artimiausiu metu jums atsiųsime elektroninį laišką arba SMS žinutę su pakvietimu į pirmąją jūsų pasirinkto šokio stiliaus pamoką.</p>',
+      },
+      {
+        q: 'Kaip nutraukti Me Gusta narystę?',
+        a: '<p>Norint nutraukti narystę reikia apie tai pranešti administracijai el. paštu <a href="mailto:admin@megusta.lt">admin@megusta.lt</a>, atiduoti savo nario kortelę studijos administratorei bei pranešti asmeniškai savo šokių mokytojui.</p>',
+      },
+      {
+        q: 'Ar Me Gustoje pritaikomas NVŠ krepšelis (15 eur)?',
+        a: '<p>Me Gusta šokių studijoje netaikomas NVŠ mokinio krepšelis!</p>',
+      },
+      {
+        q: 'Kiek kainuoja šokti Me Gustoje?',
+        a: '<p><a href="/kainos">Šokių pamokų kainos.</a></p>',
+      },
+      {
+        q: 'Kokia apmokėjimo tvarka Me Gustoje už šokių pamokas?',
+        a: '<p>Už šokių pamokas yra mokama už einamąjį mėnesį. Nario mokestis mokamas mėnesio pradžioje.</p>',
+      },
+      {
+        q: 'Ką daryti, jei susirgau?',
+        a: '<p>Apie ligą privaloma informuoti administratorę el. paštu <a href="mailto:admin@megusta.lt">admin@megusta.lt</a> iškart, kai tik liga pasireiškia.</p>',
+      },
+      {
+        q: 'Ką daryti, jei išvykstu atostogų?',
+        a: '<p>Ketinant praleisti daugiau nei savaitę atostogaujant, reikia pranešti apie išvykimą studijos administratorei el. paštu <a href="mailto:admin@megusta.lt">admin@megusta.lt</a>.</p>',
       },
     ],
   },

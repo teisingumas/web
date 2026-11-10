@@ -3,6 +3,7 @@ import type React from 'react'
 import { phoneHref, section } from './content'
 import { showRegistrationTab, TAB_EVENT, type RegTab, type Route } from './router'
 import Pricing from './Pricing'
+import Faq from './Faq'
 
 // Where submissions are POSTed as JSON (e.g. a Formspree / Web3Forms / own API URL).
 // Until it is set, the form validates and shows the thank-you screen but sends nothing.
@@ -157,7 +158,7 @@ export default function Registration({ route }: { route: Route }) {
           <p style={{ fontFamily: display, fontWeight: 700, fontSize: 12, letterSpacing: 5, color: PINK_TEXT, textTransform: 'uppercase', marginBottom: 12 }}>
             {reg.kicker}
           </p>
-          <h1 className="sr-only">Registracija</h1>
+          <h1 className="ng-h2" style={{ fontSize: 'clamp(48px, 6vw, 88px)', margin: '0 0 28px' }}>Registracija</h1>
           <nav role="tablist" aria-label="Registracijos skiltys" className="page-tabs">
             {TABS.map(t => (
               <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className="page-tab" onClick={() => setTab(t.id)}>
@@ -177,7 +178,7 @@ export default function Registration({ route }: { route: Route }) {
 
         {tab === 'kainos' ? <Pricing centered heading={false} /> : (
         <div className="reg-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: 40, alignItems: 'start' }}>
-          {tab === 'informacija' ? <Faq /> : status === 'sent' ? (
+          {tab === 'informacija' ? <RegFaq /> : status === 'sent' ? (
             <div role="status" style={{ border: `1px solid ${PINK}`, padding: '48px 40px', backgroundColor: 'var(--surface)' }}>
               <p style={{ fontFamily: display, fontWeight: 900, fontSize: 40, textTransform: 'uppercase', color: PINK_TEXT, margin: '0 0 16px' }}>Ačiū!</p>
               <p style={{ fontSize: 17, color: 'var(--c-d0d0d0)', lineHeight: 1.6, margin: '0 0 24px' }}>
@@ -499,15 +500,8 @@ function PhoneField({ id, label, required, value, error, onChange }: {
   )
 }
 
-function Faq() {
+function RegFaq() {
   const faq = section('registration.faq')
-  const [open, setOpen] = useState<Set<string>>(() => new Set())
-  const toggle = (id: string) => setOpen(prev => {
-    const next = new Set(prev)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    return next
-  })
   // "#kainos" links in the answers open the Kainos tab on this page.
   const onAnswerClick = (e: React.MouseEvent) => {
     const a = (e.target as HTMLElement).closest('a')
@@ -516,32 +510,5 @@ function Faq() {
       showRegistrationTab('kainos')
     }
   }
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 56, minWidth: 0 }}>
-      {faq.groups.map((group, gi) => (
-        <section key={gi} aria-labelledby={`faq-g${gi}`}>
-          <h2 id={`faq-g${gi}`} style={{ fontFamily: display, fontWeight: 900, fontSize: 30, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text)', margin: '0 0 8px' }}>
-            {group.title}
-          </h2>
-          <div style={{ borderTop: '1px solid var(--line)' }}>
-            {group.items.map((item, ii) => {
-              const id = `faq-${gi}-${ii}`
-              const isOpen = open.has(id)
-              return (
-                <div key={id} style={{ borderBottom: '1px solid var(--line)' }}>
-                  <button type="button" className="faq-q" aria-expanded={isOpen} aria-controls={`${id}-a`} id={`${id}-q`} onClick={() => toggle(id)}>
-                    <span>{item.q}</span>
-                    <span className="faq-plus" aria-hidden="true" />
-                  </button>
-                  <div className="faq-a" id={`${id}-a`} role="region" aria-labelledby={`${id}-q`} data-open={isOpen} inert={!isOpen}>
-                    <div><div onClick={onAnswerClick} dangerouslySetInnerHTML={{ __html: item.a }} /></div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </section>
-      ))}
-    </div>
-  )
+  return <Faq groups={faq.groups} idPrefix="faq" onAnswerClick={onAnswerClick} />
 }

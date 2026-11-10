@@ -39,6 +39,8 @@ export type ContentMap = {
     kicker: string; intro: string; infoIntro: string; styleOptions: string[]; sourceOptions: string[]
     formNote: string; consent: string; freeNote: string; steps: string[]; hours: { days: string; hours: string }[]
   }
+  'pricing.notes': { items: { text: string }[] }
+  'pricing.faq': { groups: { title: string; items: { q: string; a: string }[] }[] }
   'registration.faq': { groups: { title: string; items: { q: string; a: string }[] }[] }
   news: { kicker: string; title: string; intro: string; emptyText: string }
   calendar: { kicker: string; title: string; intro: string; emptyUpcoming: string; emptyPast: string }

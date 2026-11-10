@@ -57,7 +57,7 @@ $jsonLd = [];
 $prerender = '';
 $meta = null;
 
-$pagePaths = ['/' => 'home', '/tvarkarastis' => 'tvarkarastis', '/kontaktai' => 'kontaktai', '/registracija' => 'registracija',
+$pagePaths = ['/' => 'home', '/tvarkarastis' => 'tvarkarastis', '/kontaktai' => 'kontaktai', '/kainos' => 'kainos', '/registracija' => 'registracija',
     '/registracija/informacija' => 'registracija', '/registracija/kainos' => 'registracija'];
 
 if (isset($pagePaths[$path])) {

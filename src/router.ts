@@ -8,11 +8,12 @@ import { useSyncExternalStore } from 'react'
 //   /registracija          registration (Informacija and Kainos are in-page tabs)
 //   /naujienos, /naujienos/2 …   news list with pages
 //   /kontaktai             contacts
+//   /kainos                pricing and D.U.K.
 //   /kalendorius           event calendar;  /kalendorius/<slug>  one event
 //   /<slug>                a news post (the same addresses the old WordPress site used)
 //   /adminas               admin sign-in;  /apzvalga/…  admin dashboard
 
-export type Page = 'home' | 'registracija' | 'tvarkarastis' | 'naujienos' | 'kalendorius' | 'kontaktai' | 'event' | 'post' | 'notfound' | 'admin-login' | 'admin'
+export type Page = 'home' | 'registracija' | 'tvarkarastis' | 'naujienos' | 'kalendorius' | 'kontaktai' | 'kainos' | 'event' | 'post' | 'notfound' | 'admin-login' | 'admin'
 export type RegTab = 'registracija' | 'informacija' | 'kainos'
 // tab: which registration tab a navigation asks for; seq changes on every navigation so a
 // page can react even when the path stays the same (e.g. "Registruotis" from the Kainos tab).
@@ -25,6 +26,7 @@ export const PATHS = {
   news: '/naujienos',
   calendar: '/kalendorius',
   contacts: '/kontaktai',
+  pricing: '/kainos',
   adminLogin: '/adminas',
   admin: '/apzvalga',
 } as const
@@ -63,6 +65,7 @@ function parse(rawPath: string): Route {
   if (news && Number(news[1]) >= 1) return { ...base, page: 'naujienos', pageNum: Number(news[1]) }
   if (p === PATHS.calendar) return { ...base, page: 'kalendorius' }
   if (p === PATHS.contacts) return { ...base, page: 'kontaktai' }
+  if (p === PATHS.pricing) return { ...base, page: 'kainos' }
   const event = /^\/kalendorius\/([^/]+)$/.exec(p)
   if (event) return SLUG_RE.test(event[1]) ? { ...base, page: 'event', slug: event[1] } : { ...base, page: 'notfound' }
   if (p === PATHS.adminLogin) return { ...base, page: 'admin-login' }

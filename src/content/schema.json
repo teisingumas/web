@@ -2,7 +2,7 @@
   "$comment": "Nuotraukos laukas: alt = required (numatyta) | optional | none (fono nuotrauka be alt). Turinio schema: kiekvienas redaguojamas laukas. Iš jos admin piešia formas, o serveris (server/lib/schema.php) tikrina duomenis. Keičiant laukus, atnaujinkite ir src/content/types.ts bei defaults.ts.",
   "version": 1,
   "reservedSlugs": [
-    "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "kalendorius", "kontaktai", "api", "lib", "media", "assets", "img",
+    "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "kalendorius", "kontaktai", "kainos", "api", "lib", "media", "assets", "img",
     "index", "sitemap", "robots", "favicon", "wp-admin", "wp-login", "wp-content", "wp-json", "feed"
   ],
   "seoFields": [
@@ -65,6 +65,15 @@
         "title": "Kontaktai — Me Gusta",
         "description": "Me Gusta šokių studijos kontaktai: adresas Savanorių pr. 271, Kaunas, telefonas, el. paštas ir darbo laikas.",
         "keywords": "Me Gusta kontaktai, šokių studija Kaune, Savanorių pr. 271"
+      }
+    },
+    {
+      "key": "kainos", "label": "Kainos", "path": "/kainos", "admin": "kainos",
+      "sections": ["pricing.notes", "pricing.faq"],
+      "seo": {
+        "title": "Kainos — Me Gusta",
+        "description": "Me Gusta šokių studijos kainos: Standart ir Intensive narystės, nuolaidos ir dažniausiai užduodami klausimai apie apmokėjimą.",
+        "keywords": "šokių pamokų kainos Kaune, Me Gusta kainos, šokių studijos narystė"
       }
     }
   ],
@@ -277,6 +286,37 @@
           "fields": [
             { "key": "days", "type": "text", "label": "Dienos", "required": true, "max": 15, "placeholder": "I–IV" },
             { "key": "hours", "type": "text", "label": "Valandos", "required": true, "max": 30, "placeholder": "16:00–20:30" }
+          ]
+        }
+      ]
+    },
+    "pricing.notes": {
+      "title": "Pastabos po kainomis (*)",
+      "description": "Rodomos puslapyje „Kainos“ po kainų kortelėmis; kiekviena eilutė prasideda žvaigždute.",
+      "fields": [
+        {
+          "key": "items", "type": "list", "label": "Pastabos", "itemName": "pastabą", "itemTitle": "text", "max": 10,
+          "fields": [
+            { "key": "text", "type": "textarea", "label": "Tekstas", "required": true, "max": 400, "rows": 2 }
+          ]
+        }
+      ]
+    },
+    "pricing.faq": {
+      "title": "D.U.K. (puslapis „Kainos“)",
+      "description": "Klausimų grupės ir atsakymai puslapio „Kainos“ apačioje.",
+      "fields": [
+        {
+          "key": "groups", "type": "list", "label": "Grupės", "itemName": "grupę", "itemTitle": "title", "min": 1, "max": 12,
+          "fields": [
+            { "key": "title", "type": "text", "label": "Grupės pavadinimas", "required": true, "max": 60 },
+            {
+              "key": "items", "type": "list", "label": "Klausimai", "itemName": "klausimą", "itemTitle": "q", "min": 1, "max": 40,
+              "fields": [
+                { "key": "q", "type": "text", "label": "Klausimas", "required": true, "max": 200 },
+                { "key": "a", "type": "richtext", "label": "Atsakymas", "required": true, "max": 2000 }
+              ]
+            }
           ]
         }
       ]

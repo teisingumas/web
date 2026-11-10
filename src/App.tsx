@@ -7,6 +7,7 @@ import Odometer from './Odometer'
 import { heroImages, inlineData, phoneHref, section } from './content'
 import Registration from './Registration'
 import Pricing from './Pricing'
+import Kainos from './Kainos'
 import StyleVideo from './StyleVideo'
 import Reviews from './Reviews'
 import Timetable from './Timetable'
@@ -59,9 +60,9 @@ function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
 }
 
 // Header menu (desktop row and the hamburger panel). Tvarkaraštis, Naujienos and Kalendorius have
-// their pages; Kainos gets an href once it has one.
+// their pages.
 const MENU_ITEMS: { label: string; href?: string }[] = [
-  { label: 'Kainos' },
+  { label: 'Kainos', href: PATHS.pricing },
   { label: 'Tvarkaraštis', href: PATHS.timetable },
   { label: 'Kalendorius', href: PATHS.calendar },
   { label: 'Naujienos', href: PATHS.news },
@@ -128,7 +129,7 @@ export default function App() {
   return <Site page={route.page} />
 }
 
-const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius', 'kontaktai'])
+const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius', 'kontaktai', 'kainos'])
 
 function Site({ page }: { page: Page }) {
   const route = useRoute()
@@ -288,6 +289,7 @@ function Site({ page }: { page: Page }) {
         : page === 'naujienos' ? <News pageNum={route.pageNum} />
         : page === 'kalendorius' ? <Calendar />
         : page === 'kontaktai' ? <ContactsPage />
+        : page === 'kainos' ? <Kainos />
         : page === 'event' ? <EventPage slug={route.slug} />
         : page === 'post' ? <PostPage slug={route.slug} />
         : page === 'notfound' ? <NotFound />
@@ -351,7 +353,7 @@ function Site({ page }: { page: Page }) {
               <div className="ng-levels">{current.levels.map((l, i) => <span key={i}>{l}</span>)}</div>
             </div>
             <div className="ng-card__foot">
-              <a href="#kainos" className="ng-btn ng-btn--dark">{styles.button}</a>
+              <a href={PATHS.pricing} className="ng-btn ng-btn--dark">{styles.button}</a>
               <a href={PATHS.registration} aria-label="Registruotis" className="ng-round">{arrow}</a>
             </div>
           </div>
@@ -446,7 +448,7 @@ function Site({ page }: { page: Page }) {
             {[
               { label: 'Treneriai', href: '/#treneriai' },
               { label: 'Tvarkaraštis', href: PATHS.timetable },
-              { label: 'Kainos', href: '/#kainos' },
+              { label: 'Kainos', href: PATHS.pricing },
               { label: 'Naujienos', href: PATHS.news },
               { label: 'Kalendorius', href: PATHS.calendar },
               { label: 'Kontaktai', href: PATHS.contacts },

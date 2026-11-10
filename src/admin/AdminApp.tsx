@@ -213,6 +213,7 @@ const NAV = [
       { path: '/pagrindinis', label: 'Pagrindinis', icon: Icons.page },
       { path: '/tvarkarastis', label: 'Tvarkaraštis', icon: Icons.clock },
       { path: '/registracija', label: 'Registracija', icon: Icons.form },
+      { path: '/kainos', label: 'Kainos', icon: Icons.page },
     ],
   },
   {
@@ -311,6 +312,7 @@ function AdminPage({ sub }: { sub: string }) {
   if (sub === '/pagrindinis') return <PageEditor key="home" pageKey="home" />
   if (sub === '/tvarkarastis') return <PageEditor key="tvarkarastis" pageKey="tvarkarastis" />
   if (sub === '/registracija') return <PageEditor key="registracija" pageKey="registracija" />
+  if (sub === '/kainos') return <PageEditor key="kainos" pageKey="kainos" />
   if (sub === '/bendri') return <Settings />
   if (sub === '/nuotraukos') return <MediaLibraryPage />
   if (sub === '/naujienos') return <NewsAdmin />

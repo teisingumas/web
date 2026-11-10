@@ -11,6 +11,7 @@ const PAGE_INTROS: Record<string, string> = {
   home: 'Pirmasis ekranas, stiliai, savaitės tvarkaraštis, kainos, treneriai ir kvietimas registruotis.',
   tvarkarastis: 'Salių tvarkaraščiai: kiekviena salė yra atskiras skirtukas su dienomis ir laikais.',
   registracija: 'Registracijos puslapio tekstai, formos pasirinkimai ir D.U.K.',
+  kainos: 'Pastabos po kainomis (*) ir D.U.K. Planai ir kainos redaguojami puslapyje Pagrindinis → Kainos.',
 }
 
 export function PageEditor({ pageKey }: { pageKey: string }) {
@@ -25,6 +26,9 @@ export function PageEditor({ pageKey }: { pageKey: string }) {
       <Tabs label="Puslapio skiltys" value={tab} onChange={setTab} tabs={[{ id: 'content', label: 'Turinys' }, { id: 'seo', label: 'SEO' }]} />
       {/* both stay mounted so switching tabs keeps unsaved edits */}
       <div className="adm-stack" hidden={tab !== 'content'}>
+        {pageKey === 'kainos' && (
+          <p className="adm-note">Planai ir kainos redaguojami puslapyje <a className="adm-link" href={`${ADMIN}/pagrindinis`}>Pagrindinis → Kainos</a>.</p>
+        )}
         {pageKey === 'registracija' && (
           <p className="adm-note">Skirtuko „Kainos“ planai ir kainos redaguojami puslapyje <a className="adm-link" href={`${ADMIN}/pagrindinis`}>Pagrindinis → Kainos</a>.</p>
         )}
@@ -94,7 +98,7 @@ export function Dashboard() {
             )}
           <a href={`${ADMIN}/renginiai`} className="adm-tile__more">Visi renginiai →</a>
         </div>
-        {(['home', 'tvarkarastis', 'registracija'] as const).map(key => {
+        {(['home', 'tvarkarastis', 'registracija', 'kainos'] as const).map(key => {
           const page = pageDef(key)
           return (
             <a key={key} href={`${ADMIN}/${page.admin}`} className="adm-tile">

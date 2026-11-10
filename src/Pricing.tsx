@@ -5,15 +5,15 @@ const Check = () => (
 )
 
 // Pricing block: home page section and the "Kainos" tab on the registration page (centered).
-export default function Pricing({ centered = false, heading = true }: { centered?: boolean; heading?: boolean }) {
+export default function Pricing({ centered = false, heading = true, header = true, marks = false }: { centered?: boolean; heading?: boolean; header?: boolean; marks?: boolean }) {
   const pricing = section('pricing')
   const cta = section('home.cta')
   return (
     <>
-    <div className="ng-head" style={{ textAlign: centered ? 'center' : undefined, alignItems: centered ? 'center' : undefined, marginBottom: heading ? 36 : 28 }}>
+    {header && <div className="ng-head" style={{ textAlign: centered ? 'center' : undefined, alignItems: centered ? 'center' : undefined, marginBottom: heading ? 36 : 28 }}>
       <span className="ng-kicker">{pricing.kicker}</span>
       {heading && <h2 className="ng-h2">{pricing.title}</h2>}
-    </div>
+    </div>}
 
     <div className="ng-plans pricing-grid" style={centered ? { maxWidth: 820, margin: '0 auto' } : undefined}>
       {pricing.plans.map((plan, pi) => (
@@ -23,7 +23,7 @@ export default function Pricing({ centered = false, heading = true }: { centered
             <p className="ng-plan__desc">{plan.desc}</p>
             <h3 className="ng-plan__name">{plan.name}</h3>
           </div>
-          <div className="ng-plan__price"><b>€{plan.price}</b><span>{plan.period}</span></div>
+          <div className="ng-plan__price"><b>€{plan.price}</b><span>{plan.period}{marks && ' *'}</span></div>
           <ul>
             {plan.features.map((f, fi) => <li key={fi}><Check />{f}</li>)}
           </ul>
