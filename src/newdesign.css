@@ -46,7 +46,7 @@ a.ng-social:hover { background: #fff; }
 .ng-btn--dark:hover { background: #2a2a2a; }
 .ng-btn--outline { border-color: #111; color: #111; padding: 15px 26px; }
 .ng-btn--outline:hover { background: #111; color: #fff; }
-.ng-btn--ghost { background: transparent; color: #111; padding: 15px 22px; }
+.ng-btn--ghost { background: transparent; color: #111; padding: 17px 26px; }
 .ng-btn--ghost:hover { background: rgba(17, 17, 17, 0.07); transform: none; }
 .ng-btn--ghost svg { animation: ngBob 1.8s ease-in-out infinite; }
 @keyframes ngBob { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
@@ -431,3 +431,22 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .sv__frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #000; }
 .ng-plan--hot .ng-plan__name { padding-right: 150px; }
 @media (max-width: 420px) { .ng-plan--hot .ng-plan__name { padding-right: 0; margin-top: 36px; } }
+
+/* ===== Sliding black pill: tab rows and the header menu =====
+   The black pill is the group's ::before; pillSlider.ts moves it to the hovered, focused or active item. */
+[data-slider] { position: relative; }
+[data-slider]::before {
+  content: ''; position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; border-radius: 999px; background: #111;
+  width: var(--sw, 0); height: var(--sh, 0); transform: translate(var(--sx, 0), var(--sy, 0)); opacity: var(--so, 0);
+}
+[data-slider][data-slider-ready]::before { transition: transform 0.34s cubic-bezier(0.23, 1, 0.32, 1), width 0.34s cubic-bezier(0.23, 1, 0.32, 1), height 0.34s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.2s; }
+[data-slider][data-slider] > * { position: relative; z-index: 1; background: transparent !important; color: #111 !important; transition: color 0.2s !important; }
+[data-slider][data-slider] > [data-hot] { color: #fff !important; }
+[data-slider][data-slider] > :disabled, [data-slider][data-slider] > [aria-disabled="true"] { opacity: 0.35; }
+/* a white track for the calendar filter, like the other tab rows */
+.cal-toolbar > [role="tablist"] { background: #fff; border-radius: 999px; padding: 5px; gap: 2px !important; flex-wrap: nowrap !important; }
+@media (prefers-reduced-motion: reduce) { [data-slider][data-slider-ready]::before { transition: none; } }
+
+/* ===== Hero "Pasirink stilių": always has the soft background; hover = same lift as the Registruokis CTA ===== */
+.ng-btn--ghost { background: rgba(17, 17, 17, 0.07); }
+.ng-btn--ghost:hover { background: rgba(17, 17, 17, 0.14); transform: translateY(-2px); }

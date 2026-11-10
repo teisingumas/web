@@ -19,6 +19,7 @@ import NotFound from './NotFound'
 import { installLinkHandling, isAdminPage, PATHS, useRoute, type Page } from './router'
 import { pageTitle } from './seo'
 import './newdesign.css'
+import { installPillSliders } from './pillSlider'
 
 // The admin (Clerk sign-in, editors) loads only on /adminas and /apzvalga.
 const AdminApp = lazy(() => import('./admin/AdminApp'))
@@ -118,6 +119,7 @@ export default function App() {
   const route = useRoute()
 
   useEffect(() => installLinkHandling(), [])
+  useEffect(() => installPillSliders(), [])
 
   if (isAdminPage(route.page)) {
     return (
