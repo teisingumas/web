@@ -397,14 +397,15 @@ function Site({ page }: { page: Page }) {
         <div className="ng-trainers">
           {trainers.items.map((t, ti) => (
             <article key={ti} className="ng-trainer">
-              <div className="ng-trainer__img">
-                <img src={t.image.src} alt={t.image.alt} loading="lazy" />
-                {t.bio && <p className="ng-trainer__bio">{t.bio}</p>}
-              </div>
+              <span className="ng-trainer__mark" aria-hidden="true" />
+              <img src={t.image.src} alt={t.image.alt} loading="lazy" className="ng-trainer__photo" />
+              <span className="ng-trainer__shade" aria-hidden="true" />
               <div className="ng-trainer__info">
-                <h3>{t.name}</h3>
-                <span>{t.experience ? `${t.specialty} · ${t.experience}` : t.specialty}</span>
+                {t.role && <span className="ng-trainer__role">{t.role}</span>}
+                <h3>{t.name.split(' ')[0]}</h3>
+                {t.specialty && <span className="ng-trainer__style">{t.specialty}</span>}
               </div>
+              {t.bio && <p className="ng-trainer__bio">{t.bio}</p>}
             </article>
           ))}
         </div>

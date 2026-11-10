@@ -206,6 +206,7 @@
           "key": "items", "type": "list", "label": "Treneriai", "itemName": "trenerį", "itemTitle": "name", "min": 1, "max": 16,
           "fields": [
             { "key": "name", "type": "text", "label": "Vardas ir pavardė", "required": true, "max": 40 },
+            { "key": "role", "type": "text", "label": "Pareigos", "max": 30, "placeholder": "Trenerė", "help": "Rodoma virš vardo, pvz. Trenerė, Treneris, Studijos vadovas." },
             { "key": "specialty", "type": "text", "label": "Stilius", "required": true, "max": 30 },
             { "key": "experience", "type": "text", "label": "Patirtis", "max": 30, "placeholder": "10 m. patirtis" },
             { "key": "bio", "type": "textarea", "label": "Apie trenerį", "max": 300, "rows": 3, "help": "Rodoma užvedus pelę ant nuotraukos." },
@@ -341,7 +342,8 @@
       { "value": "Laisvas laikas", "label": "Laisvas laikas" }
     ],
     "accentColors": [
-      { "value": "#FFB3C6", "label": "Rožinė" },
+      { "value": "#F7B1D4", "label": "Rožinė" },
+      { "value": "#FFB3C6", "label": "Rožinė (sena)" },
       { "value": "#FF5C8A", "label": "Ryški rožinė" },
       { "value": "#00CFFF", "label": "Žydra" },
       { "value": "#FF3DFF", "label": "Violetinė" }

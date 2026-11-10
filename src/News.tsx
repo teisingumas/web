@@ -130,7 +130,7 @@ export default function News({ pageNum: routePage }: { pageNum: number }) {
           background: var(--surface); border: 1px solid var(--line);
           transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1), border-color 260ms cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .news-card:not(.news-card--skeleton):hover, .news-card:focus-visible { transform: translateY(-4px); border-color: #FFB3C6; outline: none; }
+        .news-card:not(.news-card--skeleton):hover, .news-card:focus-visible { transform: translateY(-4px); border-color: #F7B1D4; outline: none; }
         .news-card__img { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--surface-2); }
         .news-card__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 500ms ease; }
         .news-card:hover .news-card__img img { transform: scale(1.06); }
@@ -152,11 +152,11 @@ export default function News({ pageNum: routePage }: { pageNum: number }) {
         }
         .news-page[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
         /* the current page looks like the active day tab */
-        .news-page[aria-current="page"] { color: #080808; border-color: #FFB3C6; }
+        .news-page[aria-current="page"] { color: #080808; border-color: #F7B1D4; }
         .news-page[aria-current="page"]::before { transform: scaleX(1); }
         .news-gap { min-width: 32px; text-align: center; color: var(--muted); font-family: ${display}; font-weight: 800; }
         .news-btn {
-          background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; cursor: pointer; padding: 14px 28px;
+          background: #F7B1D4; color: #080808; border: 1px solid #F7B1D4; cursor: pointer; padding: 14px 28px;
           font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
         }
         .news-btn:hover { background: var(--btn-hover); }

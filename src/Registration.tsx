@@ -8,7 +8,7 @@ import Pricing from './Pricing'
 // Until it is set, the form validates and shows the thank-you screen but sends nothing.
 const ENDPOINT = import.meta.env.VITE_REGISTRATION_ENDPOINT as string | undefined
 
-const PINK = '#FFB3C6'
+const PINK = '#F7B1D4'
 // pink for text and small marks: darker in the light theme so it reads on white
 const PINK_TEXT = 'var(--pink-text)'
 const ERROR = '#ff8a8a'

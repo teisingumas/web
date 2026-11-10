@@ -207,7 +207,7 @@ export default function Calendar() {
           background: var(--surface-2); border: 1px solid var(--c-1e1e1e); color: var(--text); cursor: pointer;
           font-family: ${display}; font-weight: 800; font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase; transition: border-color 0.2s;
         }
-        .cal-mf-btn:hover, .cal-mf-btn:focus-visible, .cal-mf-btn.is-open { border-color: #FFB3C6; outline: none; }
+        .cal-mf-btn:hover, .cal-mf-btn:focus-visible, .cal-mf-btn.is-open { border-color: #F7B1D4; outline: none; }
         .cal-mf-btn > svg { transition: transform 260ms ease; color: var(--pink-text); }
         .cal-mf-btn.is-open > svg { transform: rotate(180deg); }
         .cal-mf-panel { position: absolute; right: 0; top: calc(100% + 4px); z-index: 20; min-width: 100%; background: var(--bg); border: 1px solid var(--line-strong); display: flex; flex-direction: column; padding: 4px; }
@@ -215,7 +215,7 @@ export default function Calendar() {
           display: flex; justify-content: space-between; align-items: center; gap: 24px; width: 100%; min-height: 44px; padding: 10px 14px; background: transparent; border: 0;
           color: var(--text-2); cursor: pointer; text-align: left; font-family: ${display}; font-weight: 700; font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap;
         }
-        .cal-mf-opt:hover, .cal-mf-opt:focus-visible { background: #FFB3C6; color: #080808; outline: none; }
+        .cal-mf-opt:hover, .cal-mf-opt:focus-visible { background: #F7B1D4; color: #080808; outline: none; }
         .cal-mf-opt.is-on { color: var(--pink-text); }
         .cal-mf-opt.is-on:hover, .cal-mf-opt.is-on:focus-visible { color: #080808; }
         .cal-mf-opt small { font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 12px; letter-spacing: 0; text-transform: none; opacity: 0.8; }
@@ -233,7 +233,7 @@ export default function Calendar() {
         .cal-ev:hover .cal-thumb img { transform: scale(1.06); }
         .cal-thumb img.is-past { filter: grayscale(1); opacity: 0.7; }
         .ev-tag { display: inline-block; padding: 5px 10px; font-family: ${display}; font-weight: 700; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; line-height: 1; }
-        .ev-tag--renginys { background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; }
+        .ev-tag--renginys { background: #F7B1D4; color: #080808; border: 1px solid #F7B1D4; }
         .ev-tag--varzybos { background: transparent; color: var(--pink-text); border: 1px solid var(--pink-text); }
         .ev-tag--kita { background: transparent; color: var(--text-2); border: 1px solid var(--line-strong); }
         .cal-chip { display: inline-block; padding: 5px 10px; font-family: ${display}; font-weight: 700; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; line-height: 1; color: var(--text); border: 1px dashed var(--pink-text); }
@@ -247,10 +247,10 @@ export default function Calendar() {
           display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 14px 28px; cursor: pointer;
           font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
         }
-        .cal-btn { background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; transition: background-color 0.2s; }
+        .cal-btn { background: #F7B1D4; color: #080808; border: 1px solid #F7B1D4; transition: background-color 0.2s; }
         .cal-btn:hover { background: var(--btn-hover); }
         .cal-ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); transition: border-color 0.2s, color 0.2s; }
-        .cal-ghost:hover { border-color: #FFB3C6; color: var(--pink-text); }
+        .cal-ghost:hover { border-color: #F7B1D4; color: var(--pink-text); }
         .cal-skel { display: block; height: 14px; background: var(--surface-2); animation: calPulse 1.2s ease-in-out infinite alternate; }
         @keyframes calPulse { from { opacity: 1; } to { opacity: 0.45; } }
         @media (max-width: 1024px) { .cal-ev { grid-template-columns: 110px 220px minmax(0, 1fr); gap: 24px; } }

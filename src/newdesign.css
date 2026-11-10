@@ -1,6 +1,6 @@
 /* New light design ("šviesi energija"): cream page, white rounded blocks, pill buttons,
    pastel accent. Home page, header and footer; the inner pages follow through the theme tokens. */
-:root { --ng-accent: #FFD5FF; --ink: #111111; --card: #FFFFFF; --cream: #F4F3EF; }
+:root { --ng-accent: #F7B1D4; --ink: #111111; --card: #FFFFFF; --cream: #F4F3EF; }
 
 .ng { font-family: 'Manrope', system-ui, sans-serif; color: var(--ink); background: var(--cream); }
 .ng a { color: inherit; }
@@ -25,7 +25,7 @@
 .nav-contact { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 600; color: #333; white-space: nowrap; transition: color 0.2s; }
 .nav-contact svg { color: #111; }
 .nav-contact:hover { color: #000; text-decoration: underline; }
-.ng-pills { display: flex; gap: 2px; padding: 5px; background: #fff; border-radius: 999px; }
+.ng-pills { display: flex; gap: 4px; padding: 12px 18px; background: #fff; border-radius: 999px; }
 .ng-pill { padding: 10px 17px; border-radius: 999px; text-decoration: none; font-size: 14px; font-weight: 700; color: #111; white-space: nowrap; transition: background-color 0.2s, color 0.2s; cursor: pointer; }
 a.ng-pill:hover { background: #F0EEE8; }
 .ng-pill[aria-current="page"] { background: #111; color: #fff; }
@@ -41,7 +41,7 @@ a.ng-social:hover { background: #fff; }
 .ng-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: 15px; padding: 17px 28px; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s, background-color 0.2s, color 0.2s; }
 .ng-btn:hover { transform: translateY(-2px); }
 .ng-btn--accent { background: var(--ng-accent); color: #111 !important; padding: 14px 24px; font-size: 14px; }
-.ng-btn--accent:hover { background: #F3B8F3; }
+.ng-btn--accent:hover { background: #EE9DC6; }
 .ng-btn--dark { background: #111; color: #fff !important; }
 .ng-btn--dark:hover { background: #2a2a2a; }
 .ng-btn--outline { border-color: #111; color: #111; padding: 15px 26px; }
@@ -220,15 +220,18 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 
 /* ---------- trainers ---------- */
 .ng-trainers { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
-.ng-trainer { flex: 0 0 calc((100% - 64px) / 5); background: #fff; border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; }
-.ng-trainer__img { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #fff; }
-.ng-trainer__img img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.14); transform-origin: 50% 45%; transition: transform 0.5s ease; }
-.ng-trainer:hover .ng-trainer__img img { transform: scale(1.19); }
-.ng-trainer__bio { position: absolute; inset: 0; margin: 0; padding: 24px; display: flex; align-items: center; background: rgba(255, 255, 255, 0.94); font-size: 14px; line-height: 1.6; opacity: 0; transition: opacity 0.3s; }
+.ng-trainer { position: relative; flex: 0 0 calc((100% - 64px) / 5); aspect-ratio: 1 / 1.08; border-radius: 28px; overflow: hidden; isolation: isolate; background: #1b1b1b; }
+/* graphic behind the person: the studio "N" mark, large and translucent */
+.ng-trainer__mark { position: absolute; z-index: 0; left: 2%; top: 4%; width: 78%; aspect-ratio: 335 / 255; background: url('/img/trainers/n-mark.webp') center / contain no-repeat; opacity: 0.2; }
+.ng-trainer__photo { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; display: block; transition: transform 0.5s ease; }
+.ng-trainer:hover .ng-trainer__photo { transform: scale(1.04); }
+.ng-trainer__shade { position: absolute; z-index: 2; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.72) 100%); pointer-events: none; }
+.ng-trainer__info { position: absolute; z-index: 3; left: 20px; right: 16px; bottom: 18px; display: flex; flex-direction: column; gap: 2px; color: #fff; }
+.ng-trainer__role { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88); }
+.ng-trainer__info h3 { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: clamp(24px, 2.4vw, 34px); line-height: 1.05; letter-spacing: -0.01em; text-transform: uppercase !important; color: #fff; }
+.ng-trainer__style { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); margin-top: 2px; }
+.ng-trainer__bio { position: absolute; z-index: 4; inset: 0; margin: 0; padding: 24px; display: flex; align-items: center; background: rgba(17,17,17,0.9); color: #fff; font-size: 14px; line-height: 1.6; opacity: 0; transition: opacity 0.3s; }
 .ng-trainer:hover .ng-trainer__bio { opacity: 1; }
-.ng-trainer__info { border-top: 1px solid #F1EFEA; padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 6px; }
-.ng-trainer__info h3 { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 19px; letter-spacing: -0.01em; text-transform: none; }
-.ng-trainer__info span { font-size: 14px; color: #3D3D3D; }
 
 /* ---------- CTA banner ---------- */
 .ng-cta { background: var(--ng-accent); border-radius: 40px; padding: clamp(28px, 5vw, 72px); display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: center; }

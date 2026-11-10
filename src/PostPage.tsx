@@ -49,7 +49,7 @@ export default function PostPage({ slug }: { slug: string }) {
       <section style={{ padding: '168px 24px 120px', maxWidth: 1280, margin: '0 auto' }}>
         <div role="alert" style={{ border: '1px solid var(--line)', padding: '32px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
           <p style={{ margin: 0, fontSize: 15, color: 'var(--text-2)' }}>Nepavyko įkelti naujienos. Patikrinkite interneto ryšį ir bandykite dar kartą.</p>
-          <button type="button" className="news-btn" onClick={() => setAttempt(a => a + 1)} style={{ background: '#FFB3C6', color: '#080808', border: 'none', padding: '14px 28px', fontWeight: 800, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', cursor: 'pointer' }}>
+          <button type="button" className="news-btn" onClick={() => setAttempt(a => a + 1)} style={{ background: '#F7B1D4', color: '#080808', border: 'none', padding: '14px 28px', fontWeight: 800, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', cursor: 'pointer' }}>
             Bandyti dar kartą
           </button>
         </div>
@@ -104,21 +104,21 @@ export function PostView({ post, preview = false }: { post: Pick<Post, 'title' |
         .post-back { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-2); text-decoration: none; transition: color 0.2s; }
         .post-back:hover { color: var(--pink-text); }
         .post-cta {
-          background: #FFB3C6; color: #080808; text-decoration: none; padding: 14px 32px;
+          background: #F7B1D4; color: #080808; text-decoration: none; padding: 14px 32px;
           font-weight: 800; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: background-color 0.2s;
         }
         .post-cta:hover { background: var(--btn-hover); }
         .post-nearby { margin-top: 72px; }
         .post-step { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 760px; margin-bottom: 56px; }
         .post-step a { display: flex; flex-direction: column; gap: 8px; padding: 20px 24px; border: 1px solid var(--line); text-decoration: none; color: var(--text); transition: border-color 0.2s; }
-        .post-step a:hover, .post-step a:focus-visible { border-color: #FFB3C6; outline: none; }
+        .post-step a:hover, .post-step a:focus-visible { border-color: #F7B1D4; outline: none; }
         .post-step a:last-child:not(:first-child) { text-align: right; }
         .post-step small { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pink-text); }
         .post-step span { font-family: ${display}; font-weight: 900; font-size: 22px; line-height: 1.1; text-transform: uppercase; }
         .post-more-title { font-family: ${display}; font-weight: 900; font-size: 32px; text-transform: uppercase; color: var(--text); margin: 0 0 24px; }
         .post-more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
         .post-more a { display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--line); transition: border-color 0.2s; }
-        .post-more a:hover, .post-more a:focus-visible { border-color: #FFB3C6; outline: none; }
+        .post-more a:hover, .post-more a:focus-visible { border-color: #F7B1D4; outline: none; }
         .post-more__img { aspect-ratio: 16 / 10; background: var(--surface-2); overflow: hidden; }
         .post-more__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .post-more__body { display: flex; flex-direction: column; gap: 8px; padding: 16px 20px 20px; }
@@ -176,7 +176,7 @@ export function PostBody({ html, preview = false }: { html: string; preview?: bo
         .post-body .gallery img { margin: 0; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: filter 300ms; }
         .post-body .gallery img:hover { filter: brightness(1.08); }
         .post-body img[role="button"] { cursor: zoom-in; }
-        .post-body img[role="button"]:focus-visible { outline: 3px solid #FFB3C6; outline-offset: 2px; }
+        .post-body img[role="button"]:focus-visible { outline: 3px solid #F7B1D4; outline-offset: 2px; }
         .post-body p { margin: 0 0 24px; }
         .post-body h2, .post-body h3 { font-family: ${display}; font-weight: 900; text-transform: uppercase; color: var(--text); line-height: 1; letter-spacing: 0.5px; }
         .post-body h2 { font-size: 40px; margin: 56px 0 20px; }
@@ -189,7 +189,7 @@ export function PostBody({ html, preview = false }: { html: string; preview?: bo
         .post-body li > p { margin: 0; }
         .post-body ul li::marker { color: var(--pink-text); }
         .post-body blockquote {
-          margin: 40px 0; padding: 4px 0 4px 28px; border-left: 4px solid #FFB3C6;
+          margin: 40px 0; padding: 4px 0 4px 28px; border-left: 4px solid #F7B1D4;
           font-family: ${display}; font-weight: 700; font-size: 28px; line-height: 1.2; color: var(--text); text-transform: uppercase;
         }
         .post-body blockquote p { margin: 0; }
@@ -303,7 +303,7 @@ function Lightbox({ images, start, onClose }: { images: LightboxImage[]; start: 
           background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer;
           font-size: 24px; line-height: 1; transition: background-color 0.2s, color 0.2s;
         }
-        .lb__btn:hover, .lb__btn:focus-visible { background: #FFB3C6; color: #080808; outline: none; }
+        .lb__btn:hover, .lb__btn:focus-visible { background: #F7B1D4; color: #080808; outline: none; }
         .lb__close { top: 16px; right: 16px; font-size: 30px; }
         .lb__prev { left: 16px; top: 50%; transform: translateY(-50%); }
         .lb__next { right: 16px; top: 50%; transform: translateY(-50%); }

@@ -28,12 +28,12 @@ export default function NotFound() {
       </div>
       <style>{`
         .nf-btn {
-          background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; padding: 16px 40px; text-decoration: none;
+          background: #F7B1D4; color: #080808; border: 1px solid #F7B1D4; padding: 16px 40px; text-decoration: none;
           font-weight: 800; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; transition: background-color 0.2s, color 0.2s;
         }
         .nf-btn:hover { background: var(--btn-hover); }
         .nf-btn--ghost { background: transparent; color: var(--text); border-color: var(--line-strong); }
-        .nf-btn--ghost:hover { background: transparent; color: var(--pink-text); border-color: #FFB3C6; }
+        .nf-btn--ghost:hover { background: transparent; color: var(--pink-text); border-color: #F7B1D4; }
       `}</style>
     </section>
   )

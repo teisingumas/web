@@ -51,7 +51,7 @@ export default function EventPage({ slug }: { slug: string }) {
       <section style={{ padding: '168px 24px 120px', maxWidth: 1280, margin: '0 auto' }}>
         <div role="alert" style={{ border: '1px solid var(--line)', padding: '32px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
           <p style={{ margin: 0, fontSize: 15, color: 'var(--text-2)' }}>Nepavyko įkelti renginio. Patikrinkite interneto ryšį ir bandykite dar kartą.</p>
-          <button type="button" onClick={() => setAttempt(a => a + 1)} style={{ background: '#FFB3C6', color: '#080808', border: 'none', padding: '14px 28px', fontWeight: 800, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', cursor: 'pointer' }}>
+          <button type="button" onClick={() => setAttempt(a => a + 1)} style={{ background: '#F7B1D4', color: '#080808', border: 'none', padding: '14px 28px', fontWeight: 800, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', cursor: 'pointer' }}>
             Bandyti dar kartą
           </button>
         </div>
@@ -185,7 +185,7 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
       </div>
       <style>{`
         .ev-tag { display: inline-block; padding: 5px 10px; font-family: ${display}; font-weight: 700; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; line-height: 1; }
-        .ev-tag--renginys { background: #FFB3C6; color: #080808; border: 1px solid #FFB3C6; }
+        .ev-tag--renginys { background: #F7B1D4; color: #080808; border: 1px solid #F7B1D4; }
         .ev-tag--varzybos { background: transparent; color: var(--pink-text); border: 1px solid var(--pink-text); }
         .ev-tag--kita { background: transparent; color: var(--text-2); border: 1px solid var(--line-strong); }
         .ev-back { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-2); text-decoration: none; transition: color 0.2s; }
@@ -211,7 +211,7 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
         .ev-nearby__title { font-family: ${display}; font-weight: 900; font-size: 32px; text-transform: uppercase; color: var(--text); margin: 0 0 24px; }
         .ev-more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
         .ev-more a { display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--line); transition: border-color 0.2s; }
-        .ev-more a:hover, .ev-more a:focus-visible { border-color: #FFB3C6; outline: none; }
+        .ev-more a:hover, .ev-more a:focus-visible { border-color: #F7B1D4; outline: none; }
         .ev-more__img { aspect-ratio: 16 / 10; background: var(--surface-2); overflow: hidden; }
         .ev-more__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .ev-more__body { display: flex; flex-direction: column; gap: 8px; padding: 16px 20px 20px; }

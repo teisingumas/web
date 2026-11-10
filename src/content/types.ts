@@ -28,7 +28,7 @@ export type ContentMap = {
   }
   'home.trainers': {
     kicker: string; title: string
-    items: { name: string; specialty: string; experience: string; bio: string; color: string; image: Img }[]
+    items: { name: string; role?: string; specialty: string; experience: string; bio: string; color: string; image: Img }[]
   }
   'home.cta': { kicker: string; line1: string; line2: string; button: string }
   timetable: {

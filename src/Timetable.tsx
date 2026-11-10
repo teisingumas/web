@@ -3,7 +3,7 @@ import type React from 'react'
 import { section } from './content'
 import type { SlotStatus } from './content/types'
 
-const PINK = '#FFB3C6'
+const PINK = '#F7B1D4'
 const display = "'Archivo', sans-serif"
 
 const STATUS_CLASS: Record<SlotStatus, string> = {
