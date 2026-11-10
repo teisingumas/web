@@ -50,6 +50,7 @@ export const DEFAULTS: ContentMap = {
         tagline: 'Born in the streets, perfected on stage',
         description: 'Autentiški gatvės šokiai — nuo popping ir locking iki krump ir freestyle. Ugdome individualų stilių ir išraišką kiekviename judėjime. Treniruotės vyksta dinamiškoje aplinkoje, kurioje kiekvienas randa savo balsą.',
         image: { src: '/img/styles/gatves.webp', alt: 'Gatvės šokiai Me Gusta studijoje' },
+        video: 'https://www.youtube.com/watch?v=D0S42GzNWB4',
         levels: ['4–6 m.', '7–11 m.', '12–15 m.', 'Nuo 16 m.'],
       },
       {
@@ -57,6 +58,7 @@ export const DEFAULTS: ContentMap = {
         tagline: 'Energy meets precision',
         description: 'Komerciniai ir sceniniai šokiai — ryškūs, dinamiški, su chartiška energija. Tobulai tinka scenai, muzikos vaizdo klipams ir konkursams. Šie šokiai jungia stilių ir techniką į vieną sprogstantį mišinį.',
         image: { src: '/img/styles/pop.webp', alt: 'Pop Dance šokėjai' },
+        video: 'https://www.youtube.com/watch?v=ryGd8q1N1OE',
         levels: ['7–11 m.', '12–15 m.', 'Nuo 16 m.'],
       },
       {
@@ -64,6 +66,7 @@ export const DEFAULTS: ContentMap = {
         tagline: 'Power. Grace. Confidence.',
         description: 'Moteriška plastika, heels šokiai ir sexy style. Atskleidžiame vidinę stiprybę ir išreiškiame ją per judėjimą. Lady Class — tai ne tik šokiai, tai savęs atradimas ir pasitikėjimo savimi ugdymas.',
         image: { src: '/img/styles/lady.webp', alt: 'Lady Class šokėja' },
+        video: 'https://www.youtube.com/watch?v=UUOJLybUdTk',
         levels: ['12–15 m.', 'Nuo 16 m.', '4–99 m.'],
       },
       {
@@ -71,6 +74,7 @@ export const DEFAULTS: ContentMap = {
         tagline: 'Defy gravity. Define limits.',
         description: 'Breakdance — nuo toprocko ir footwork iki freezes ir power moves. Kietumas, disciplina ir neįtikėtinas kūno valdymas. Mūsų treneriai — tarptautiniai čempionai, pasiruošę perduoti visas paslaptis.',
         image: { src: '/img/styles/breikas.webp', alt: 'Breiko šokėjas' },
+        video: 'https://www.youtube.com/watch?v=MdtdldQ1yQQ',
         levels: ['7–11 m.', '12–15 m.', 'Nuo 16 m.'],
       },
     ],
