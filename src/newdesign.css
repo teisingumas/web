@@ -421,3 +421,9 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .kn-notes li { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 8px; font-size: 15px; line-height: 1.6; color: #3D3D3D; }
 .kn-notes li span { font-weight: 800; color: #111; }
 .kn-faq { margin-top: 96px; }
+
+/* inner-page CTA links: one fixed shape and colour, hover only darkens and lifts (never loses the pill) */
+.ng-cta-pill { display: inline-flex; align-items: center; border-radius: 999px; background: var(--ng-accent); color: #111 !important; text-decoration: none; font-weight: 800; font-size: 15px; padding: 15px 30px; transition: background-color 0.2s, transform 0.2s; }
+.ng-cta-pill:hover { background: #EE9DC6; transform: translateY(-2px); }
+/* header menu: the active item stays black with white text on hover */
+.ng-pill[aria-current="page"], a.ng-pill[aria-current="page"]:hover { background: #111; color: #fff; }

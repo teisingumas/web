@@ -53,13 +53,12 @@ export default function Timetable() {
             </div>
             <a
               href="/registracija"
+              className="ng-cta-pill"
               style={{
                 backgroundColor: PINK, color: '#080808', textDecoration: 'none',
                 padding: '14px 32px', fontWeight: 800, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase',
                 transition: 'background-color 0.2s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--btn-hover)' }}
-              onMouseLeave={e => { e.currentTarget.style.backgroundColor = PINK }}
             >
               Registracija
             </a>
@@ -129,13 +128,12 @@ export default function Timetable() {
           </p>
           <a
             href="/registracija"
+            className="ng-cta-pill"
             style={{
               backgroundColor: PINK, color: '#080808', textDecoration: 'none',
               padding: '14px 32px', fontWeight: 800, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase',
               transition: 'background-color 0.2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--btn-hover)' }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = PINK }}
           >
             Registruotis →
           </a>
