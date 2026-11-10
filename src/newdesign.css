@@ -370,11 +370,12 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .post-back:hover { background: #111; color: #fff !important; }
 
 /* ===== Registration tabs: same pills as the home page ===== */
-.page-tabs { display: inline-flex !important; flex-wrap: wrap; gap: 2px !important; padding: 5px; background: #fff; border-radius: 999px; border-bottom: 0 !important; align-items: center !important; }
-.page-tab { padding: 12px 22px !important; border-radius: 999px !important; font-family: 'Manrope', sans-serif !important; font-weight: 700 !important; font-size: 14px !important; text-transform: none !important; letter-spacing: 0 !important; line-height: 1.2 !important; color: #111 !important; background: transparent !important; transition: background-color 0.2s, color 0.2s !important; }
+.page-tabs { display: inline-flex !important; flex-wrap: wrap; gap: 6px !important; padding: 10px; background: #fff; border-radius: 999px; border-bottom: 0 !important; align-items: center !important; }
+.page-tab { padding: 22px clamp(28px, 4vw, 56px) !important; border-radius: 999px !important; font-family: 'Manrope', sans-serif !important; font-weight: 800 !important; font-size: clamp(18px, 1.8vw, 24px) !important; text-transform: none !important; letter-spacing: -0.01em !important; line-height: 1.2 !important; color: #111 !important; background: transparent !important; transition: background-color 0.2s, color 0.2s !important; }
 .page-tab::after { display: none !important; }
 .page-tab:hover { background: #F0EEE8 !important; }
-.page-tab[aria-selected="true"] { background: #111 !important; color: #fff !important; font-size: 14px !important; }
+.page-tab[aria-selected="true"] { background: #111 !important; color: #fff !important; font-size: clamp(18px, 1.8vw, 24px) !important; }
+@media (max-width: 700px) { .page-tabs { display: grid !important; grid-template-columns: 1fr; width: 100%; border-radius: 32px; } .page-tab { padding: 18px 20px !important; text-align: center; } }
 
 /* ===== Cal / news / generic tab pills (day-tab buttons) ===== */
 .day-tab { border-radius: 999px !important; border: 0 !important; background: #fff !important; color: #111 !important; text-transform: none !important; letter-spacing: 0 !important; font-family: 'Manrope', sans-serif !important; font-weight: 700 !important; font-size: 14px !important; overflow: visible !important; }
