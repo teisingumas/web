@@ -16,7 +16,20 @@
   border-bottom: 1px solid #E6E3DB;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 24px rgba(17, 17, 17, 0.08);
 }
-.ng-bar { display: flex; align-items: center; justify-content: space-between; height: 88px; gap: 20px; }
+.site-header .wide-container { max-width: 1640px; }
+:root { --hdr: 88px; }
+@media (min-width: 1280px) {
+  :root { --hdr: 116px; }
+  .site-header .wide-container { padding-left: 48px; padding-right: 48px; }
+  .ng-bar { gap: 32px; }
+  .ng-bar__left { gap: 36px; }
+  .nav-logo img { height: 58px; }
+  .nav-contact { font-size: 15px; }
+  .ng-pills { padding: 8px; gap: 6px; }
+  .ng-pill { padding: 14px 24px; font-size: 15px; }
+  .ng-btn--accent.nav-cta { padding: 18px 32px; font-size: 15px; }
+}
+.ng-bar { display: flex; align-items: center; justify-content: space-between; height: var(--hdr); gap: 20px; }
 .ng-bar__left { display: flex; align-items: center; gap: 28px; min-width: 0; }
 .ng-bar__right { display: flex; align-items: center; gap: 12px; }
 .nav-logo { display: flex; align-items: center; text-decoration: none; }
@@ -78,7 +91,7 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 .menu-socials { display: none; gap: 8px; margin-top: 22px; }
 
 /* ---------- hero ---------- */
-.ng-hero { padding-top: 136px; padding-bottom: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 48px; align-items: center; }
+.ng-hero { padding-top: calc(var(--hdr) + 48px); padding-bottom: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 48px; align-items: center; }
 .ng-hero__text { display: flex; flex-direction: column; gap: 28px; align-items: flex-start; }
 .ng-chips { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 5px; background: #fff; border-radius: 999px; font-size: 13px; font-weight: 700; }
 .ng-chips span { padding: 8px 14px; border-radius: 999px; }
@@ -264,7 +277,7 @@ h1[style], h2[style] { font-family: 'Archivo', sans-serif; }
   .menu-panel {
     display: block; position: absolute; top: 100%; left: 0; right: 0;
     background: var(--cream); border-bottom: 1px solid #E6E3DB; box-shadow: 0 24px 40px rgba(17, 17, 17, 0.12);
-    max-height: calc(100vh - 88px); max-height: calc(100dvh - 88px); overflow-y: auto;
+    max-height: calc(100vh - var(--hdr)); max-height: calc(100dvh - var(--hdr)); overflow-y: auto;
     opacity: 0; transform: translateY(-8px); visibility: hidden;
     transition: opacity 0.2s, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), visibility 0s linear 0.25s;
   }
@@ -280,7 +293,7 @@ h1[style], h2[style] { font-family: 'Archivo', sans-serif; }
   .footer-brand, .footer-contacts { grid-column: 1 / -1; }
   .ng-card--info { padding: 32px 28px; }
   .ng-table { padding: 8px 20px; }
-  .ng-hero { padding-top: 120px; gap: 36px; }
+  .ng-hero { padding-top: calc(var(--hdr) + 32px); gap: 36px; }
 }
 @media (max-width: 700px) {
   .ng-trainer { flex-basis: calc((100% - 16px) / 2); }
@@ -316,7 +329,8 @@ h1[style], h2[style] { font-family: 'Archivo', sans-serif; }
   .hero-btns { display: grid; grid-template-columns: 1fr; width: 100%; max-width: 340px; }
 }
 @media (max-width: 420px) {
-  .ng-bar { gap: 10px; height: 80px; }
+  :root { --hdr: 80px; }
+  .ng-bar { gap: 10px; }
   .ng-bar__left { gap: 12px; }
   .nav-logo img { height: 40px; }
   .nav-contact { font-size: 12px; gap: 6px; }
