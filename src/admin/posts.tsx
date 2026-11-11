@@ -7,6 +7,7 @@ import { Modal, useApi, useConfirm, useDirty, useToast } from './context'
 import { Counter, setIn, type PathArr } from './fields'
 import { SectionCard, SeoCard, SerpPreview, stableJson } from './FormCard'
 import ImageInput from './ImageInput'
+import WpImport from './wpImport'
 import { ADMIN } from './pages'
 import RichEditor from './RichEditor'
 import { htmlText, SCHEMA, type Errors, type ImageField } from './schema'
@@ -48,24 +49,27 @@ export function fromVilniusLocal(local: string): Date | null {
 
 export function NewsAdmin() {
   const [tab, setTab] = useState<'posts' | 'page' | 'seo'>('posts')
+  const [importing, setImporting] = useState(false)
+  const [importSeq, setImportSeq] = useState(0)
   return (
     <>
       <PageHeader
         kicker="Naujienos" title="Naujienos"
         lead={<>Publikuotos naujienos rodomos puslapyje <a className="adm-link" href="/naujienos" target="_blank" rel="noreferrer">/naujienos</a> (po 6 viename puslapyje), kiekviena turi savo adresą, pvz. <span className="adm-code">/vasaros-stovykla</span>.</>}
-        actions={<a href={`${ADMIN}/naujienos/naujas`} className="adm-btn">+ Nauja naujiena</a>}
+        actions={<><a href={`${ADMIN}/naujienos/naujas`} className="adm-btn">+ Nauja naujiena</a><button type="button" className="adm-btn adm-btn--ghost" onClick={() => setImporting(true)}>Importuoti iš WordPress</button></>}
       />
+      {importing && <WpImport onClose={() => setImporting(false)} onDone={() => setImportSeq(n => n + 1)} />}
       <Tabs label="Naujienų skiltys" value={tab} onChange={setTab} tabs={[
         { id: 'posts', label: 'Įrašai' }, { id: 'page', label: 'Puslapio tekstai' }, { id: 'seo', label: 'SEO' },
       ]} />
-      <div hidden={tab !== 'posts'}><PostsList /></div>
+      <div hidden={tab !== 'posts'}><PostsList reload={importSeq} /></div>
       <div hidden={tab !== 'page'}><SectionCard sectionKey="news" defaultOpen viewHref="/naujienos" /></div>
       <div hidden={tab !== 'seo'}><SeoCard pageKey="naujienos" path="/naujienos" /></div>
     </>
   )
 }
 
-function PostsList() {
+function PostsList({ reload = 0 }: { reload?: number }) {
   const api = useApi()
   const [status, setStatus] = useState<'' | 'published' | 'draft'>('')
   const [query, setQuery] = useState('')
@@ -75,6 +79,7 @@ function PostsList() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [attempt, setAttempt] = useState(0)
+  useEffect(() => { if (reload) setAttempt(a => a + 1) }, [reload])
 
   useEffect(() => {
     const t = window.setTimeout(() => { setQ(query); setPage(1) }, 300)

@@ -220,6 +220,8 @@ export function createApi(getToken: TokenGetter) {
       if (!res.ok) await parse(res)
       return res.blob()
     },
+    importWordpress: (url: string, publish: boolean) =>
+      request<{ status: 'created' | 'exists'; id: number; title: string; notes: string[] }>('POST', '/admin/import/wordpress', { url, publish }),
     posts: (params: { status?: string; q?: string; page?: number }) =>
       request<PostList>('GET', `/admin/posts?${new URLSearchParams({ status: params.status ?? '', q: params.q ?? '', page: String(params.page ?? 1) })}`),
     post: (id: number) => request<AdminPost>('GET', `/admin/posts/${id}`),

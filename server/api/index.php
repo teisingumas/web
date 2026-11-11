@@ -29,6 +29,7 @@ $routes = [
     ['DELETE', '#^/admin/registrations/demo$#', 'route_delete_demo_registrations', 'nodb'],
     ['PATCH', '#^/admin/registrations/(\\d+)$#', 'route_update_registration', 'nodb'],
     ['DELETE', '#^/admin/registrations/(\\d+)$#', 'route_delete_registration', 'nodb'],
+    ['POST', '#^/admin/import/wordpress$#', 'route_import_wordpress', true],
     ['GET', '#^/admin/me$#', 'route_me', true],
     ['GET', '#^/admin/content$#', 'route_content', true],
     ['PUT', '#^/admin/content/([a-z.]{1,64})$#', 'route_save_content', true],
@@ -183,6 +184,12 @@ function route_delete_registration(string $id): array
 function route_delete_demo_registrations(): array
 {
     return reg_delete_demo();
+}
+
+function route_import_wordpress(): array
+{
+    $b = json_body(10_000);
+    return wp_import_post(db(), (string) ($b['url'] ?? ''), !empty($b['publish']));
 }
 
 function route_me(): array

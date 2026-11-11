@@ -96,17 +96,23 @@ function store_upload(PDO $pdo, array $file, string $alt): array
     if ($size > MEDIA_MAX_BYTES) {
         throw new ApiError(413, 'too_large', 'Nuotrauka per didelė (' . format_mb($size) . '). Didžiausias leidžiamas dydis — 2 MB.');
     }
-    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']) ?: '';
+    return store_local_image($pdo, $file['tmp_name'], (string) ($file['name'] ?? 'nuotrauka'), $alt);
+}
+
+/** Validates, re-encodes and stores an image file that is already on the server (an upload or an import). */
+function store_local_image(PDO $pdo, string $path, string $originalName, string $alt): array
+{
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($path) ?: '';
     if (!isset(MEDIA_TYPES[$mime])) {
         throw new ApiError(415, 'bad_type', 'Šis failas nėra tinkama nuotrauka. Galima įkelti JPG, PNG arba WebP.');
     }
-    $info = @getimagesize($file['tmp_name']);
+    $info = @getimagesize($path);
     if (!$info || $info[0] < 1 || $info[1] < 1) throw new ApiError(415, 'bad_type', 'Nepavyko perskaityti nuotraukos. Galbūt failas sugadintas.');
     if ($info[0] * $info[1] > MEDIA_MAX_PIXELS) throw new ApiError(413, 'too_large', 'Nuotraukos raiška per didelė. Sumažinkite iki 6000 px pločio.');
 
     $alt = clean_line($alt, false);
     if (mb_strlen($alt) > 160) $alt = mb_substr($alt, 0, 160);
-    [$bytes, $ext, $width, $height] = reencode_image($file['tmp_name'], $mime);
+    [$bytes, $ext, $width, $height] = reencode_image($path, $mime);
 
     $name = substr(sha1($bytes), 0, 20) . '.' . $ext;
     $existing = $pdo->prepare('SELECT * FROM media WHERE file_name = ?');
@@ -117,7 +123,7 @@ function store_upload(PDO $pdo, array $file, string $alt): array
         log_error('Cannot write to ' . media_dir());
         throw new ApiError(500, 'storage', 'Nepavyko išsaugoti nuotraukos serveryje. Patikrinkite aplanko megusta-data teises.');
     }
-    $original = mb_substr(clean_line(basename((string) ($file['name'] ?? 'nuotrauka')), false), 0, 255);
+    $original = mb_substr(clean_line(basename($originalName), false), 0, 255);
     $pdo->prepare('INSERT INTO media (file_name, original_name, mime, width, height, size_bytes, alt) VALUES (?, ?, ?, ?, ?, ?, ?)')
         ->execute([$name, $original, 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext), $width, $height, strlen($bytes), $alt]);
     return media_public($pdo->query('SELECT * FROM media WHERE id = ' . (int) $pdo->lastInsertId())->fetch());
