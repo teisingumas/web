@@ -546,3 +546,18 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .ng-hero__photo .ng-float--top[data-show="true"] { opacity: 1; transform: rotate(7deg) scale(1); }
 .ng-hero__photo .ng-float--bottom[data-show="true"] { opacity: 1; transform: rotate(-4deg) scale(1); transition-delay: 0.15s; }
 @media (prefers-reduced-motion: reduce) { .hv-wipe { display: none; } .ng-hero__photo .ng-float { transition: none; } }
+
+/* ===== Phones: no video, no "Kaune nuo 2006" chip, text pulled up onto the collage ===== */
+@media (max-width: 700px) {
+  .ng-hero__photo { display: none !important; }
+  .ng-hero__text .ng-chips { display: none; }
+  .ng-hero__text {
+    padding-top: calc(var(--hdr) + 66vw);
+    background:
+      linear-gradient(180deg, rgba(22, 22, 22, 0) calc(var(--hdr) + 40vw), rgba(22, 22, 22, 0.8) calc(var(--hdr) + 64vw), #161616 calc(var(--hdr) + 82vw)),
+      url('/img/hero-mobile.webp') center var(--hdr) / 100% auto no-repeat,
+      #161616;
+  }
+  /* stats 2 x 2, centred */
+  .ng-stat { align-items: center; justify-content: center; text-align: center; gap: 6px; }
+}
