@@ -118,7 +118,11 @@ function wp_parse_post(string $html, string $url): array
         foreach ($content->childNodes as $child) $body .= $doc->saveHTML($child);
     }
 
+    // videos the page has (to warn when the cleaned body kept fewer of them)
+    preg_match_all('#youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{11})#', $html, $vids);
+
     return [
+        'videos' => count(array_unique($vids[1])),
         'title' => $title, 'slug' => $slug, 'publishedAt' => $published, 'excerpt' => $description,
         'seoTitle' => $seoTitle, 'seoDescription' => $description, 'cover' => $cover, 'bodyHtml' => $body,
     ];
@@ -260,6 +264,8 @@ function wp_import_post(PDO $pdo, string $url, bool $publish): array
 
     $notes = [];
     $post = wp_import_images($pdo, $post, $notes);
+    $kept = substr_count($post['bodyHtml'], 'data-youtube');
+    if (($post['videos'] ?? 0) > $kept) $notes[] = 'Puslapyje yra ' . $post['videos'] . ' vaizdo įrašai, perkelta ' . $kept . '. Tai sudėtingo išdėstymo puslapis: patikrinkite, ar tekstas ir vaizdo įrašai perkelti pilnai.';
     $excerpt = mb_substr(clean_line($post['excerpt'] !== '' ? $post['excerpt'] : html_text($post['bodyHtml']), false), 0, 300);
     $status = $publish ? 'published' : 'draft';
     if ($publish && $post['cover']['src'] === '') { $status = 'draft'; $notes[] = 'Viršelio nuotrauka neperkelta, todėl įrašas paliktas juodraščiu.'; }
