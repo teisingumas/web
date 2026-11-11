@@ -60,11 +60,13 @@ function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
   )
 }
 
-// Header menu (desktop row and the hamburger panel). Tvarkaraštis, Naujienos and Kalendorius have
-// their pages.
+// Header menu (desktop row and the hamburger panel). Items without an href get one when their page exists.
 const MENU_ITEMS: { label: string; href?: string }[] = [
   { label: 'Kainos', href: PATHS.pricing },
-  { label: 'Tvarkaraštis', href: PATHS.timetable },
+  { label: 'Tvarkaraščiai', href: PATHS.timetable },
+  { label: 'Apie studiją' },
+  { label: 'Šokių pamokos' },
+  { label: 'Stovyklos' },
   { label: 'Kalendorius', href: PATHS.calendar },
   { label: 'Naujienos', href: PATHS.news },
   { label: 'Kontaktai', href: PATHS.contacts },

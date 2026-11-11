@@ -502,3 +502,13 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
   .site-header .nav-contact svg { color: var(--ng-accent); }
   .site-header .menu-btn { background: var(--ng-accent); color: #111; }
 }
+
+/* 8 menu items: tighter pills on desktop; e-mail/phone step aside below 1480px (they stay in the hamburger menu sizes) */
+@media (min-width: 1280px) and (max-width: 1679px) {
+  .ng-pills { padding: 8px 10px; gap: 2px; }
+  .ng-pill { padding: 10px 13px; font-size: 14px; }
+}
+@media (min-width: 1280px) and (max-width: 1479px) {
+  .nav-contacts { display: none !important; }
+}
+.ng-bar__left, .ng-bar__right { flex-shrink: 0; }
