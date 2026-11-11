@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 // Desktop hero: the video inside a brush-stroke shape. The shape is painted in with four strokes
 // (alternating left / right), the video starts once it is fully revealed, and the two badges pop in
-// when the video is half way through. Reduced motion: everything is shown at once.
+// 1.5 s after that. Reduced motion: everything is shown at once.
 export default function HeroVideo({ badge, address }: { badge: string; address: string }) {
   const video = useRef<HTMLVideoElement>(null)
   const [revealed, setRevealed] = useState(false)
@@ -18,15 +18,9 @@ export default function HeroVideo({ badge, address }: { badge: string; address: 
   useEffect(() => {
     const v = video.current
     if (!v || !revealed) return
-    v.play().catch(() => setBadges(true))
-    const onTime = () => {
-      if (v.duration && v.currentTime >= v.duration / 2) {
-        setBadges(true)
-        v.removeEventListener('timeupdate', onTime)
-      }
-    }
-    v.addEventListener('timeupdate', onTime)
-    return () => v.removeEventListener('timeupdate', onTime)
+    v.play().catch(() => {})
+    const t = window.setTimeout(() => setBadges(true), 1500)
+    return () => window.clearTimeout(t)
   }, [revealed])
 
   return (
