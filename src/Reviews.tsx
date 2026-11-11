@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-// Sample reviews until the Google reviews are connected.
+// Sample reviews (and stock portraits) until the Google reviews are connected.
 const RATING = '4,9'
 const COUNT = 127
 const REVIEWS = [
-  { tag: 'Tėvai · Gatvės šokiai', text: 'Dukra šoka jau trečius metus ir namo grįžta spindėdama. Treneriai moka rasti kiekvieno vaiko stipriąsias puses, o atmosfera salėje tikrai šeimyniška.', author: 'Rūta K.' },
-  { tag: 'Mokinė · Lady Class', text: 'Atėjau į pirmą treniruotę be jokios patirties ir išėjau su šypsena. Po pusmečio jau šoku scenoje per studijos renginį. Labai rekomenduoju!', author: 'Gintarė M.' },
-  { tag: 'Mokinys · Breikas', text: 'Čia išmokau daugiau nei tikėjausi: technika, disciplina ir komandos jausmas. Varžybos su studija tapo geriausiu mano metų prisiminimu.', author: 'Lukas P.' },
-  { tag: 'Tėvai · Pop Dance', text: 'Sūnus anksčiau vengė būrelių, o čia pats primena, kada treniruotė. Draugiška, bet reikli komanda, aiškus tvarkaraštis ir geras bendravimas su tėvais.', author: 'Andrius V.' },
+  { photo: 'https://images.unsplash.com/photo-1586211070543-61ae1ad4a665?w=160&h=160&fit=crop&crop=faces&auto=format', tag: 'Tėvai · Gatvės šokiai', text: 'Dukra šoka jau trečius metus ir namo grįžta spindėdama. Treneriai moka rasti kiekvieno vaiko stipriąsias puses, o atmosfera salėje tikrai šeimyniška.', author: 'Rūta K.' },
+  { photo: 'https://images.unsplash.com/photo-1769535348343-d01ebd9ed8e4?w=160&h=160&fit=crop&crop=faces&auto=format', tag: 'Mokinė · Lady Class', text: 'Atėjau į pirmą treniruotę be jokios patirties ir išėjau su šypsena. Po pusmečio jau šoku scenoje per studijos renginį. Labai rekomenduoju!', author: 'Gintarė M.' },
+  { photo: 'https://images.unsplash.com/photo-1504293476958-6d6d0257d014?w=160&h=160&fit=crop&crop=faces&auto=format', tag: 'Mokinys · Breikas', text: 'Čia išmokau daugiau nei tikėjausi: technika, disciplina ir komandos jausmas. Varžybos su studija tapo geriausiu mano metų prisiminimu.', author: 'Lukas P.' },
+  { photo: 'https://images.unsplash.com/photo-1605450984717-5b2386930f7c?w=160&h=160&fit=crop&crop=faces&auto=format', tag: 'Tėvai · Pop Dance', text: 'Sūnus anksčiau vengė būrelių, o čia pats primena, kada treniruotė. Draugiška, bet reikli komanda, aiškus tvarkaraštis ir geras bendravimas su tėvais.', author: 'Andrius V.' },
 ]
 
 const Star = () => (
@@ -41,7 +41,13 @@ export default function Reviews() {
           <div className="ng-stack">
             <span className="ng-tag">{r.tag}</span>
             <blockquote className="rv__quote" aria-live="polite">„{r.text}“</blockquote>
-            <span className="rv__author">{r.author}</span>
+            <span className="rv__who">
+              <span className="rv__avatar" aria-hidden="true">
+                <span>{r.author.split(' ').map(w => w[0]).join('').slice(0, 2)}</span>
+                <img key={r.photo} src={r.photo} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} />
+              </span>
+              <span className="rv__author">{r.author}</span>
+            </span>
           </div>
           <div className="rv__nav">
             <span className="rv__pos">{pad(i + 1)} / {pad(n)}</span>

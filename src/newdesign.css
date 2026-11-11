@@ -450,3 +450,46 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 /* ===== Hero "Pasirink stilių": always has the soft background; hover = same lift as the Registruokis CTA ===== */
 .ng-btn--ghost { background: rgba(17, 17, 17, 0.07); }
 .ng-btn--ghost:hover { background: rgba(17, 17, 17, 0.14); transform: translateY(-2px); }
+
+/* ===== review author with a portrait ===== */
+.rv__who { display: flex; align-items: center; gap: 14px; }
+.rv__avatar { position: relative; width: 52px; height: 52px; border-radius: 999px; overflow: hidden; flex-shrink: 0; background: var(--ng-accent); display: flex; align-items: center; justify-content: center; font: 800 16px 'Archivo', sans-serif; color: #111; box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--ng-accent); }
+.rv__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* ===== mobile menu: socials centred ===== */
+.menu-socials { justify-content: center; }
+
+/* ===== phones ===== */
+@media (max-width: 700px) {
+  /* hero: no side photo; the text sits on a collage of the trainers */
+  .ng-hero { display: block; max-width: none; padding: 0 !important; }
+  .ng-hero__photo { display: none; }
+  .ng-hero__text {
+    padding: calc(var(--hdr) + 76vw) 20px 44px; gap: 22px;
+    background:
+      linear-gradient(180deg, rgba(22, 22, 22, 0) calc(var(--hdr) + 58vw), #161616 calc(var(--hdr) + 96vw)),
+      url('/img/hero-mobile.webp') center var(--hdr) / 100% auto no-repeat,
+      #161616;
+    color: #fff;
+  }
+  .ng-hero__text .ng-h1 { color: #fff; font-size: clamp(52px, 15vw, 72px); }
+  .ng-hero__text .ng-mark { color: #111; }
+  .ng-hero__text .ng-chips { background: rgba(255, 255, 255, 0.14); color: #fff; backdrop-filter: blur(6px); }
+  .ng-hero__text .ng-lead { color: rgba(255, 255, 255, 0.82); font-size: 17px; }
+  .ng-hero__text .ng-btn--dark { background: var(--ng-accent); color: #111 !important; }
+  .ng-hero__text .ng-btn--dark:hover { background: #EE9DC6; }
+  .ng-hero__text .ng-btn--ghost { background: rgba(255, 255, 255, 0.14); color: #fff; }
+  .ng-hero__text .ng-btn--ghost:hover { background: rgba(255, 255, 255, 0.24); }
+  .ng-stats { padding-top: 20px; }
+  /* stats 2 x 2 */
+  .ng-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .ng-stat { min-height: 116px; padding: 18px; border-radius: 22px; }
+  .ng-stat__num { font-size: 42px; }
+  .ng-stat__label { font-size: 14px; }
+  /* trainers one under another */
+  .ng-trainer { flex-basis: 100% !important; aspect-ratio: 1.15 / 1; }
+  .ng-trainer__photo { object-position: 50% 28%; }
+}
+
+:root { --hdr: 88px; }
+@media (max-width: 420px) { :root { --hdr: 80px; } }
