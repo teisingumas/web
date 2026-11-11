@@ -12,7 +12,9 @@
 /* ---------- header ---------- */
 .site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: transparent; border-bottom: 1px solid transparent;
+  background: rgba(244, 243, 239, 0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid #E6E3DB;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 24px rgba(17, 17, 17, 0.08);
 }
 .ng-bar { display: flex; align-items: center; justify-content: space-between; height: 88px; gap: 20px; }
 .ng-bar__left { display: flex; align-items: center; gap: 28px; min-width: 0; }
@@ -23,7 +25,7 @@
 .nav-contact { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 600; color: #333; white-space: nowrap; transition: color 0.2s; }
 .nav-contact svg { color: #111; }
 .nav-contact:hover { color: #000; text-decoration: underline; }
-.ng-pills { display: flex; gap: 4px; padding: 12px 18px; background: #fff; border-radius: 999px; }
+.ng-pills { display: flex; gap: 4px; padding: 12px 18px; background: transparent; border-radius: 999px; }
 .ng-pill { padding: 10px 17px; border-radius: 999px; text-decoration: none; font-size: 14px; font-weight: 700; color: #111; white-space: nowrap; transition: background-color 0.2s, color 0.2s; cursor: pointer; }
 a.ng-pill:hover { background: #F0EEE8; }
 .ng-pill[aria-current="page"] { background: #111; color: #fff; }
