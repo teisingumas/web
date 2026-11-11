@@ -12,9 +12,7 @@
 /* ---------- header ---------- */
 .site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: rgba(244, 243, 239, 0.92); backdrop-filter: blur(16px);
-  border-bottom: 1px solid #E6E3DB;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 24px rgba(17, 17, 17, 0.08);
+  background: transparent; border-bottom: 1px solid transparent;
 }
 .ng-bar { display: flex; align-items: center; justify-content: space-between; height: 88px; gap: 20px; }
 .ng-bar__left { display: flex; align-items: center; gap: 28px; min-width: 0; }
