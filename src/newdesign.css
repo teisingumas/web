@@ -522,3 +522,27 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .ng-hero__photo { display: flex; align-items: center; min-height: 0; }
 .ng-hero__photo .ng-float--top { top: -4%; right: 2%; }
 .ng-hero__photo .ng-float--bottom { bottom: -2%; left: 4%; }
+
+/* ===== Hero video: bigger brush, painted in with four strokes, badges pop in later ===== */
+@media (min-width: 701px) {
+  .ng-hero { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); }
+  .ng-hero__text { position: relative; z-index: 2; }
+  .ng-hero__brush { width: 104%; aspect-ratio: 1.75 / 1; }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .ng-hero { grid-template-columns: 1fr; }
+  .ng-hero__brush { width: 100%; margin: 0; }
+}
+.hv-wipes { position: absolute; inset: -30% -15%; transform: rotate(-9deg); pointer-events: none; }
+.hv-wipe { position: absolute; left: 0; right: 0; height: 27%; background: var(--cream); animation: hvWipe 0.55s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+.hv-wipe--0 { top: 22%; transform-origin: right center; animation-delay: 0.35s; }
+.hv-wipe--1 { top: 36%; transform-origin: left center; animation-delay: 0.75s; }
+.hv-wipe--2 { top: 50%; transform-origin: right center; animation-delay: 1.15s; }
+.hv-wipe--3 { top: 64%; transform-origin: left center; animation-delay: 1.55s; height: 32%; }
+@keyframes hvWipe { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.ng-hero__photo .ng-float { opacity: 0; transition: opacity 0.4s, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.ng-hero__photo .ng-float--top { transform: rotate(7deg) scale(0.6); }
+.ng-hero__photo .ng-float--bottom { transform: rotate(-4deg) scale(0.6); }
+.ng-hero__photo .ng-float--top[data-show="true"] { opacity: 1; transform: rotate(7deg) scale(1); }
+.ng-hero__photo .ng-float--bottom[data-show="true"] { opacity: 1; transform: rotate(-4deg) scale(1); transition-delay: 0.15s; }
+@media (prefers-reduced-motion: reduce) { .hv-wipe { display: none; } .ng-hero__photo .ng-float { transition: none; } }

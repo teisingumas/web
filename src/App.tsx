@@ -9,6 +9,7 @@ import Pricing from './Pricing'
 import Kainos from './Kainos'
 import StyleVideo from './StyleVideo'
 import Reviews from './Reviews'
+import HeroVideo from './HeroVideo'
 import Timetable from './Timetable'
 import News from './News'
 import Calendar from './Calendar'
@@ -308,16 +309,7 @@ function Site({ page }: { page: Page }) {
             <a href="#stiliai" className="ng-btn ng-btn--ghost hero-btn">{hero.primaryCta.replace(/\s*→\s*$/, '')}{arrowDown}</a>
           </div>
         </div>
-        <div className="ng-hero__photo">
-          <div className="ng-hero__brush">
-            <video className="ng-hero__video" autoPlay muted loop playsInline preload="metadata" poster="/video/hero-poster.webp" aria-label="Me Gusta šokėjai treniruotėje">
-              <source src="/video/hero.webm" type="video/webm" />
-              <source src="/video/hero.mp4" type="video/mp4" />
-            </video>
-          </div>
-          <span className="ng-float ng-float--top">{cta.kicker}</span>
-          <span className="ng-float ng-float--bottom"><i />{contacts.address}</span>
-        </div>
+        <HeroVideo badge={cta.kicker} address={contacts.address} />
       </section>
 
       {/* STATS */}
