@@ -512,3 +512,13 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
   .nav-contacts { display: none !important; }
 }
 .ng-bar__left, .ng-bar__right { flex-shrink: 0; }
+
+/* ===== Hero (desktop/tablet): the video inside a brush-stroke shape ===== */
+.ng-hero__brush {
+  position: relative; width: 100%; aspect-ratio: 1.8 / 1;
+  -webkit-mask: url('/img/brush-mask.png') center / 100% 100% no-repeat; mask: url('/img/brush-mask.png') center / 100% 100% no-repeat;
+}
+.ng-hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: #111; }
+.ng-hero__photo { display: flex; align-items: center; min-height: 0; }
+.ng-hero__photo .ng-float--top { top: -4%; right: 2%; }
+.ng-hero__photo .ng-float--bottom { bottom: -2%; left: 4%; }

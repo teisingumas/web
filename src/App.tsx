@@ -1,10 +1,9 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import type React from 'react'
 import logo from './assets/logo-megusta.webp'
-import { HERO_PHOTO, heroPhotoStyle } from './heroPhoto'
 import LayoutEditor from './editor/LayoutEditor'
 import Odometer from './Odometer'
-import { heroImages, inlineData, phoneHref, section } from './content'
+import { inlineData, phoneHref, section } from './content'
 import Registration from './Registration'
 import Pricing from './Pricing'
 import Kainos from './Kainos'
@@ -142,10 +141,6 @@ function Site({ page }: { page: Page }) {
   const socials = SOCIAL_ICONS   // all four always show; one without a link yet is not clickable
   const footer = section('global.footer')
   const hero = section('home.hero')
-  const heroImg = heroImages(hero)
-  const heroFocus = { zoom: HERO_PHOTO.zoom, x: hero.image.x ?? HERO_PHOTO.x, y: hero.image.y ?? HERO_PHOTO.y }
-  // phones keep the dancers in frame: the default photo uses its own framing, a new one its focus point
-  const heroMobilePos = hero.image.src === '/img/hero.webp' ? '75% 50%' : `${heroFocus.x}% ${heroFocus.y}%`
   const stats = section('home.stats')
   const styles = section('home.styles')
   const schedule = section('home.schedule')
@@ -314,8 +309,11 @@ function Site({ page }: { page: Page }) {
           </div>
         </div>
         <div className="ng-hero__photo">
-          <div data-edit-photo className="ng-hero__img">
-            <img src={heroImg.light.src} alt={heroImg.light.alt} fetchPriority="high" style={{ objectPosition: heroMobilePos }} />
+          <div className="ng-hero__brush">
+            <video className="ng-hero__video" autoPlay muted loop playsInline preload="metadata" poster="/video/hero-poster.webp" aria-label="Me Gusta šokėjai treniruotėje">
+              <source src="/video/hero.webm" type="video/webm" />
+              <source src="/video/hero.mp4" type="video/mp4" />
+            </video>
           </div>
           <span className="ng-float ng-float--top">{cta.kicker}</span>
           <span className="ng-float ng-float--bottom"><i />{contacts.address}</span>
