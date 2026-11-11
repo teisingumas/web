@@ -604,3 +604,9 @@ a.adm-tile:hover { border-color: var(--pink); transform: translateY(-3px); }
 @media (max-width: 560px) { .crm__filters .an-range { width: 100%; } .crm__filters .an-range button { padding: 8px 11px; } .crm__select { flex: 1 1 100%; } }
 @media (max-width: 600px) { .an-table { display: block; overflow-x: auto; white-space: nowrap; } .an-section { font-size: 24px; } }
 .an-grid > * { min-width: 0; }
+
+.an-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 24px; }
+.an-tabs button { border: 0; background: #fff; color: #111; padding: 16px 28px; border-radius: 999px; font: 800 17px 'Manrope', sans-serif; cursor: pointer; transition: background-color 160ms, color 160ms; }
+.an-tabs button:hover { background: #F7B1D4; }
+.an-tabs button[aria-selected="true"] { background: #111; color: #fff; }
+@media (max-width: 600px) { .an-tabs { gap: 8px; } .an-tabs button { padding: 12px 18px; font-size: 15px; } }

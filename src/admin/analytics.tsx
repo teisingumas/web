@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { PageHeader } from './ui'
 import { MetaReport, SearchConsole } from './channels'
-import { RegistrationStats, RegistrationsCrm, useRegistrations } from './registrations'
+import { RegistrationStats, useRegistrations } from './registrations'
 
 // Analitika: sample numbers in the shape Google Analytics 4 reports them, until GA4 is connected
 // (Data API: sessions, users, views, engagement, sources, pages, devices, key events).
@@ -76,8 +76,22 @@ const CITIES = [
   { name: 'Kiti', share: 0.12 },
 ]
 
+const TABS = [
+  { id: 'lankomumas', label: 'Lankomumas' },
+  { id: 'paieska', label: 'Google paieška' },
+  { id: 'meta', label: 'Facebook ir Instagram' },
+  { id: 'registracijos', label: 'Registracijos' },
+] as const
+type Tab = (typeof TABS)[number]['id']
+
 export function Analytics() {
   const [range, setRange] = useState<Range>(30)
+  // the open tab lives in the address (#paieska), so a reload or a shared link keeps it
+  const [tab, setTabState] = useState<Tab>(() => TABS.find(t => '#' + t.id === window.location.hash)?.id ?? 'lankomumas')
+  const setTab = (t: Tab) => {
+    setTabState(t)
+    history.replaceState(history.state, '', t === 'lankomumas' ? window.location.pathname : '#' + t)
+  }
   const regStore = useRegistrations()
   const days = useMemo(() => makeDays(range), [range])
   const prev = useMemo(() => makeDays(range * 2).slice(0, range), [range])
@@ -106,12 +120,16 @@ export function Analytics() {
           </div>
         }
       />
-      <p className="adm-note" style={{ marginBottom: 24 }}><strong>Demonstraciniai duomenys.</strong> Lankomumo, Google paieškos ir Meta skaičiai sugeneruoti: tikri atsiras prijungus Google Analytics 4, Search Console ir Meta paskyras. Registracijos žemiau yra tikros (kol kas su 30 pavyzdinių).</p>
-      <nav className="an-jump" aria-label="Skiltys">
-        <a href="#lankomumas">Lankomumas</a><a href="#paieska">Google paieška</a><a href="#meta">Facebook ir Instagram</a><a href="#registracijos-stat">Registracijos</a><a href="#registracijos">Registracijų sąrašas</a>
+      <nav role="tablist" aria-label="Analitikos skiltys" className="an-tabs">
+        {TABS.map(t => (
+          <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}>{t.label}</button>
+        ))}
       </nav>
-      <h2 className="an-section" id="lankomumas">Svetainės lankomumas <small>Google Analytics</small></h2>
+      {tab !== 'registracijos' && (
+        <p className="adm-note" style={{ marginBottom: 24 }}><strong>Demonstraciniai duomenys.</strong> Skaičiai sugeneruoti: tikri atsiras prijungus {tab === 'lankomumas' ? 'Google Analytics 4' : tab === 'paieska' ? 'Google Search Console' : 'Meta (Facebook ir Instagram) paskyrą'}.</p>
+      )}
 
+      {tab === 'lankomumas' && <>
       <div className="an-kpis">
         {kpis.map(k => (
           <div key={k.label} className="an-kpi">
@@ -164,14 +182,14 @@ export function Analytics() {
           ))}
         </div>
       </section>
+      </>}
 
-      <h2 className="an-section">Paieška ir socialiniai tinklai</h2>
-      <SearchConsole range={range} />
-      <MetaReport range={range} />
-
-      <h2 className="an-section" id="registracijos-stat">Registracijos <small>tikri duomenys</small></h2>
-      <RegistrationStats store={regStore} range={range} />
-      <RegistrationsCrm store={regStore} />
+      {tab === 'paieska' && <SearchConsole range={range} />}
+      {tab === 'meta' && <MetaReport range={range} />}
+      {tab === 'registracijos' && <>
+        <RegistrationStats store={regStore} range={range} />
+        <p className="an-sub" style={{ marginTop: 8 }}>Registracijas tvarkykite skiltyje <a href="/apzvalga/registracijos" style={{ color: '#111', fontWeight: 700 }}>Registracijos →</a></p>
+      </>}
     </>
   )
 }
