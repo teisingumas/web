@@ -493,3 +493,12 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 
 :root { --hdr: 88px; }
 @media (max-width: 420px) { :root { --hdr: 80px; } }
+
+/* ===== Phones: black header ===== */
+@media (max-width: 700px) {
+  .site-header { background: rgba(17, 17, 17, 0.96); border-bottom-color: #222; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
+  .site-header .nav-logo img { filter: brightness(0) invert(1); }
+  .site-header .nav-contact { color: #f0f0f0; }
+  .site-header .nav-contact svg { color: var(--ng-accent); }
+  .site-header .menu-btn { background: var(--ng-accent); color: #111; }
+}
