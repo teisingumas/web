@@ -250,7 +250,7 @@ export function RegistrationsCrm({ store }: { store: Store }) {
               <button type="button" role="tab" aria-selected={status === ''} onClick={() => setStatus('')}>Visos <span className="crm__n">{items.length}</span></button>
               {STATUS.map(s => (
                 <button key={s.id} type="button" role="tab" aria-selected={status === s.id} onClick={() => setStatus(s.id)}>
-                  {s.short} <span className="crm__n">{items.filter(r => r.status === s.id).length}</span>
+                  {s.short} {(() => { const n = items.filter(r => r.status === s.id).length; return <span className={'crm__n' + (s.id === 'nesusisiekta' && n > 0 ? ' crm__n--alert' : '')}>{n}</span> })()}
                 </button>
               ))}
             </div>

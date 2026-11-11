@@ -521,8 +521,10 @@ a.adm-tile:hover { border-color: var(--pink); transform: translateY(-3px); }
 .an-pos--top { background: #DDF3E4; color: #1d6b3a; }
 .an-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; color: #3D3D3D; }
 .an-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-right: 6px; vertical-align: -1px; }
-.an-range .crm__n { display: inline-block; min-width: 22px; padding: 1px 6px; margin-left: 4px; border-radius: 999px; background: #F4F3EF; color: #111; font-size: 12px; }
-.an-range button[aria-selected="true"] .crm__n { background: #F7B1D4; }
+.an-range .crm__n { display: inline; padding: 0; margin-left: 6px; background: none; color: #8a877d; font-size: 13px; font-weight: 600; }
+.an-range button[aria-selected="true"] .crm__n { color: #bdbab0; }
+.an-range .crm__n--alert { display: inline-block; min-width: 22px; padding: 1px 7px; border-radius: 999px; background: #F7B1D4; color: #111; font-weight: 800; }
+.an-range button[aria-selected="true"] .crm__n--alert { color: #111; }
 
 /* --- Registracijų CRM ------------------------------------------------------------------------ */
 .crm { scroll-margin-top: 24px; }
