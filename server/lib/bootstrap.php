@@ -18,6 +18,7 @@ require_once __DIR__ . '/posts.php';
 require_once __DIR__ . '/events.php';
 require_once __DIR__ . '/media.php';
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/registrations.php';
 
 /** Path of the config file: MEGUSTA_CONFIG (local testing) or next to public_html. */
 function config_path(): string

@@ -99,11 +99,6 @@ export function Dashboard() {
             )}
           <a href={`${ADMIN}/renginiai`} className="adm-tile__more">Visi renginiai →</a>
         </div>
-        <a href={`${ADMIN}/registracija`} className="adm-tile">
-          <span className="adm-tile__title">Registracija</span>
-          <p className="adm-tile__text">{PAGE_INTROS.registracija}</p>
-          <span className="adm-tile__more">Redaguoti →</span>
-        </a>
         <a href={`${ADMIN}/bendri`} className="adm-tile">
           <span className="adm-tile__title">Bendri nustatymai</span>
           <p className="adm-tile__text">Kontaktai, socialiniai tinklai, apačia ir numatytasis SEO.</p>

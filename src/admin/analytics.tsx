@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import { PageHeader } from './ui'
+import { MetaReport, SearchConsole } from './channels'
+import { RegistrationStats, RegistrationsCrm, useRegistrations } from './registrations'
 
 // Analitika: sample numbers in the shape Google Analytics 4 reports them, until GA4 is connected
 // (Data API: sessions, users, views, engagement, sources, pages, devices, key events).
@@ -7,7 +9,7 @@ import { PageHeader } from './ui'
 type Range = 7 | 30 | 90
 
 // deterministic pseudo-random series, so the sample looks the same on every visit
-function seeded(seed: number) {
+export function seeded(seed: number) {
   let x = seed
   return () => {
     x = (x * 16807) % 2147483647
@@ -41,8 +43,8 @@ export const sampleVisits = () => {
 }
 
 const nf = new Intl.NumberFormat('lt-LT')
-const fmt = (n: number) => nf.format(n)
-const pct = (n: number) => `${n > 0 ? '+' : ''}${n}%`
+export const fmt = (n: number) => nf.format(n)
+export const pct = (n: number) => `${n > 0 ? '+' : ''}${n}%`
 
 const PAGES = [
   { path: '/', title: 'Pagrindinis', share: 0.34 },
@@ -76,6 +78,7 @@ const CITIES = [
 
 export function Analytics() {
   const [range, setRange] = useState<Range>(30)
+  const regStore = useRegistrations()
   const days = useMemo(() => makeDays(range), [range])
   const prev = useMemo(() => makeDays(range * 2).slice(0, range), [range])
   const users = days.reduce((s, d) => s + d.users, 0)
@@ -94,7 +97,7 @@ export function Analytics() {
     <>
       <PageHeader
         kicker="Svetainės lankomumas" title="Analitika"
-        lead="Pavyzdiniai duomenys: taip atrodys ataskaita prijungus Google Analytics. Skaičiai sugeneruoti, ne tikri."
+        lead="Svetainės lankomumas, Google paieška, Facebook ir Instagram bei registracijos vienoje vietoje."
         actions={
           <div role="tablist" aria-label="Laikotarpis" className="an-range">
             {([7, 30, 90] as Range[]).map(r => (
@@ -103,7 +106,11 @@ export function Analytics() {
           </div>
         }
       />
-      <p className="adm-note" style={{ marginBottom: 24 }}><strong>Demonstraciniai duomenys.</strong> Tikri skaičiai atsiras prijungus Google Analytics 4.</p>
+      <p className="adm-note" style={{ marginBottom: 24 }}><strong>Demonstraciniai duomenys.</strong> Lankomumo, Google paieškos ir Meta skaičiai sugeneruoti: tikri atsiras prijungus Google Analytics 4, Search Console ir Meta paskyras. Registracijos žemiau yra tikros (kol kas su 30 pavyzdinių).</p>
+      <nav className="an-jump" aria-label="Skiltys">
+        <a href="#lankomumas">Lankomumas</a><a href="#paieska">Google paieška</a><a href="#meta">Facebook ir Instagram</a><a href="#registracijos-stat">Registracijos</a><a href="#registracijos">Registracijų sąrašas</a>
+      </nav>
+      <h2 className="an-section" id="lankomumas">Svetainės lankomumas <small>Google Analytics</small></h2>
 
       <div className="an-kpis">
         {kpis.map(k => (
@@ -157,11 +164,19 @@ export function Analytics() {
           ))}
         </div>
       </section>
+
+      <h2 className="an-section">Paieška ir socialiniai tinklai</h2>
+      <SearchConsole range={range} />
+      <MetaReport range={range} />
+
+      <h2 className="an-section" id="registracijos-stat">Registracijos <small>tikri duomenys</small></h2>
+      <RegistrationStats store={regStore} range={range} />
+      <RegistrationsCrm store={regStore} />
     </>
   )
 }
 
-function Bars({ rows, percent }: { rows: { name: string; sub?: string; value: number }[]; percent?: boolean }) {
+export function Bars({ rows, percent }: { rows: { name: string; sub?: string; value: number }[]; percent?: boolean }) {
   const max = Math.max(...rows.map(r => r.value))
   const total = rows.reduce((s, r) => s + r.value, 0)
   return (
@@ -177,10 +192,12 @@ function Bars({ rows, percent }: { rows: { name: string; sub?: string; value: nu
   )
 }
 
-function LineChart({ days }: { days: { date: Date; users: number }[] }) {
+export function LineChart({ days, unit = 'lankytojų', label = 'Lankytojai per dieną' }: { days: { date: Date; users: number }[]; unit?: string; label?: string }) {
   const [hover, setHover] = useState<number | null>(null)
   const W = 1000, H = 260, P = { l: 44, r: 12, t: 12, b: 28 }
-  const max = Math.ceil(Math.max(...days.map(d => d.users)) / 50) * 50
+  const top = Math.max(...days.map(d => d.users), 1)
+  const step = top > 500 ? 100 : top > 100 ? 50 : top > 20 ? 10 : 2
+  const max = Math.ceil(top / step) * step
   const x = (i: number) => P.l + (i / Math.max(days.length - 1, 1)) * (W - P.l - P.r)
   const y = (v: number) => H - P.b - (v / max) * (H - P.t - P.b)
   const line = days.map((d, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(d.users).toFixed(1)}`).join('')
@@ -196,7 +213,7 @@ function LineChart({ days }: { days: { date: Date; users: number }[] }) {
   const h = hover !== null ? days[hover] : null
   return (
     <div className="an-line">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Lankytojai per dieną, iš viso ${fmt(days.reduce((s, d) => s + d.users, 0))}`}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${label}, iš viso ${fmt(days.reduce((s, d) => s + d.users, 0))}`}>
         {ticks.map(t => (
           <g key={t}>
             <line x1={P.l} x2={W - P.r} y1={y(t)} y2={y(t)} stroke="#E6E3DB" />
@@ -218,7 +235,7 @@ function LineChart({ days }: { days: { date: Date; users: number }[] }) {
       </svg>
       {h && hover !== null && (
         <div className="an-tip" style={{ left: `${(x(hover) / W) * 100}%` }}>
-          <span>{df.format(h.date)}</span><b>{fmt(h.users)} lankytojų</b>
+          <span>{df.format(h.date)}</span><b>{fmt(h.users)} {unit}</b>
         </div>
       )}
     </div>

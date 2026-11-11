@@ -12,6 +12,7 @@ import { AdminNotFound, Dashboard, PageEditor, Settings } from './pages'
 import { EventEditor, EventsAdmin, LookupAdmin } from './events'
 import { NewsAdmin, PostEditor } from './posts'
 import { Analytics } from './analytics'
+import { RegistrationsPage } from './registrations'
 import { ErrorState, Icons, LoadingCards, Spinner } from './ui'
 import './admin.css'
 
@@ -276,7 +277,7 @@ function SignedInCheck({ api, signOut }: { api: Api; signOut: () => void }) {
 // --- the dashboard shell ------------------------------------------------------------------------
 
 const NAV = [
-  { group: null, items: [{ path: '', label: 'Apžvalga', icon: Icons.home }, { path: '/analitika', label: 'Analitika', icon: Icons.chart }] },
+  { group: null, items: [{ path: '', label: 'Apžvalga', icon: Icons.home }, { path: '/analitika', label: 'Analitika', icon: Icons.chart }, { path: '/registracijos', label: 'Registracijos', icon: Icons.user }] },
   {
     group: 'Puslapiai',
     items: [
@@ -380,6 +381,7 @@ function Shell({ route }: { route: Route }) {
 function AdminPage({ sub }: { sub: string }) {
   if (sub === '') return <Dashboard />
   if (sub === '/analitika') return <Analytics />
+  if (sub === '/registracijos') return <RegistrationsPage />
   if (sub === '/pagrindinis') return <PageEditor key="home" pageKey="home" />
   if (sub === '/tvarkarastis') return <PageEditor key="tvarkarastis" pageKey="tvarkarastis" />
   if (sub === '/registracija') return <PageEditor key="registracija" pageKey="registracija" />

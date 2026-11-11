@@ -5,9 +5,9 @@ import { showRegistrationTab, TAB_EVENT, type RegTab, type Route } from './route
 import Pricing from './Pricing'
 import Faq from './Faq'
 
-// Where submissions are POSTed as JSON (e.g. a Formspree / Web3Forms / own API URL).
-// Until it is set, the form validates and shows the thank-you screen but sends nothing.
-const ENDPOINT = import.meta.env.VITE_REGISTRATION_ENDPOINT as string | undefined
+// Submissions go to the site's own API (shown in the admin under Registracijos). The preview
+// build has no server, so there the form validates and shows the thank-you screen only.
+const ENDPOINT = import.meta.env.VITE_PREVIEW ? undefined : ((import.meta.env.VITE_REGISTRATION_ENDPOINT as string | undefined) || '/api/public/registrations')
 
 const PINK = '#F7B1D4'
 // pink for text and small marks: darker in the light theme so it reads on white

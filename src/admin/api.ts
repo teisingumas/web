@@ -52,6 +52,27 @@ export type PostList = {
   counts: { all: number; draft: number; published: number }
 }
 
+export type RegStatus = 'nesusisiekta' | 'susisiekta' | 'neatvyks'
+export type Registration = {
+  id: number
+  createdAt: string
+  email: string
+  birthDate: string
+  dancer: string
+  styles: string
+  phone: string
+  parentPhone: string
+  district: string
+  experience: string
+  source: string
+  status: RegStatus
+  notes: string
+  statusAt: string | null
+  /** one of the 30 sample rows */
+  demo: boolean
+}
+export type RegBackup = { name: string; size: number; modifiedAt: string }
+
 export type AdminEvent = {
   id: number
   slug: string
@@ -184,6 +205,21 @@ export function createApi(getToken: TokenGetter) {
     saveSection: (key: SectionKey, data: unknown) => request<SavedSection>('PUT', `/admin/content/${key}`, { data }),
     seo: () => request<{ pages: Record<string, SeoRecord> }>('GET', '/admin/seo'),
     saveSeo: (page: string, seo: PageSeo) => request<SeoRecord>('PUT', `/admin/seo/${page}`, seo),
+    registrations: () => request<{ items: Registration[] }>('GET', '/admin/registrations'),
+    updateRegistration: (id: number, patch: { status?: RegStatus; notes?: string }) => request<Registration>('PATCH', `/admin/registrations/${id}`, patch),
+    deleteRegistration: (id: number) => request<{ ok: true }>('DELETE', `/admin/registrations/${id}`),
+    deleteDemoRegistrations: () => request<{ ok: true; deleted: number }>('DELETE', '/admin/registrations/demo'),
+    registrationBackups: () => request<{ items: RegBackup[] }>('GET', '/admin/registrations/backups'),
+    registrationBackup: async (name: string) => {
+      let res: Response
+      try {
+        res = await fetch(`/api/admin/registrations/backups/${encodeURIComponent(name)}`, { headers: await headers() })
+      } catch {
+        throw new ApiError(0, 'network', NETWORK_MESSAGE)
+      }
+      if (!res.ok) await parse(res)
+      return res.blob()
+    },
     posts: (params: { status?: string; q?: string; page?: number }) =>
       request<PostList>('GET', `/admin/posts?${new URLSearchParams({ status: params.status ?? '', q: params.q ?? '', page: String(params.page ?? 1) })}`),
     post: (id: number) => request<AdminPost>('GET', `/admin/posts/${id}`),

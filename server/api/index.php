@@ -21,6 +21,14 @@ $routes = [
     ['GET', '#^/public/events$#', 'route_public_events', false],
     ['GET', '#^/public/events/([a-z0-9-]{1,120})$#', 'route_public_event', false],
     ['POST', '#^/admin/login$#', 'route_login', false],
+    ['POST', '#^/public/registrations$#', 'route_create_registration', false],
+    // registrations live in a file, so these work before the database is connected
+    ['GET', '#^/admin/registrations$#', 'route_registrations', 'nodb'],
+    ['GET', '#^/admin/registrations/backups$#', 'route_registration_backups', 'nodb'],
+    ['GET', '#^/admin/registrations/backups/(registracijos-\\d{4}-\\d{2}-\\d{2}\\.csv)$#', 'route_registration_backup', 'nodb'],
+    ['DELETE', '#^/admin/registrations/demo$#', 'route_delete_demo_registrations', 'nodb'],
+    ['PATCH', '#^/admin/registrations/(\\d+)$#', 'route_update_registration', 'nodb'],
+    ['DELETE', '#^/admin/registrations/(\\d+)$#', 'route_delete_registration', 'nodb'],
     ['GET', '#^/admin/me$#', 'route_me', true],
     ['GET', '#^/admin/content$#', 'route_content', true],
     ['PUT', '#^/admin/content/([a-z.]{1,64})$#', 'route_save_content', true],
@@ -54,7 +62,9 @@ try {
         if (!preg_match($pattern, $path, $m)) continue;
         $matchedPath = true;
         if ($routeMethod !== $method) continue;
-        if ($auth) {
+        if ($auth === 'nodb') {
+            require_admin();
+        } elseif ($auth) {
             if (!db_configured()) throw new ApiError(503, 'not_configured', 'Svetainės duomenų bazė dar neprijungta (megusta-config.php).');
             require_admin();
         }
@@ -137,6 +147,42 @@ function route_login(): array
 {
     $body = json_decode((string) file_get_contents('php://input'), true);
     return demo_login(is_array($body) ? $body : []);
+}
+
+function route_create_registration(): array
+{
+    return reg_create(json_body(50_000));
+}
+
+function route_registrations(): array
+{
+    return reg_list();
+}
+
+function route_registration_backups(): array
+{
+    return reg_backups();
+}
+
+function route_registration_backup(string $name): array
+{
+    reg_backup_download($name);
+    return [];
+}
+
+function route_update_registration(string $id): array
+{
+    return reg_update((int) $id, json_body(50_000));
+}
+
+function route_delete_registration(string $id): array
+{
+    return reg_delete((int) $id);
+}
+
+function route_delete_demo_registrations(): array
+{
+    return reg_delete_demo();
 }
 
 function route_me(): array
