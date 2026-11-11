@@ -140,11 +140,53 @@ function verify_session_token(string $jwt): array
     return $claims;
 }
 
-/** The signed-in admin's Clerk user ID; throws 401/403 otherwise. */
+// --- Demo sign-in (presentation phase): user "admin", password "admin" -------------------------
+// Turn off with 'demo_login' => false in megusta-config.php once real sign-in is wanted again.
+// The token is "demo.<expiry>.<hmac>" so it fits the same Bearer format as a Clerk token.
+
+function demo_login_enabled(): bool
+{
+    return (bool) config_value('demo_login', true);
+}
+
+function demo_secret(): string
+{
+    $s = (string) config_value('demo_login_secret', '');
+    return $s !== '' ? $s : hash('sha256', __DIR__ . '|' . (string) config_value('db_password', '') . '|megusta-demo');
+}
+
+function demo_token_issue(): string
+{
+    $exp = time() + 12 * 3600;
+    return 'demo.' . $exp . '.' . hash_hmac('sha256', "demo.$exp", demo_secret());
+}
+
+function demo_token_valid(string $token): bool
+{
+    if (!preg_match('/^demo\.(\d{9,11})\.([a-f0-9]{64})$/', $token, $m)) return false;
+    if ((int) $m[1] < time()) return false;
+    return hash_equals(hash_hmac('sha256', "demo.{$m[1]}", demo_secret()), $m[2]);
+}
+
+/** POST /api/admin/login {user, password} → {token}. */
+function demo_login(array $body): array
+{
+    if (!demo_login_enabled()) throw new ApiError(403, 'disabled', 'Šis prisijungimo būdas išjungtas.');
+    if (($body['user'] ?? '') !== 'admin' || ($body['password'] ?? '') !== 'admin') {
+        throw new ApiError(401, 'bad_login', 'Neteisingas vartotojo vardas arba slaptažodis.');
+    }
+    return ['token' => demo_token_issue()];
+}
+
+/** The signed-in admin's ID; throws 401/403 otherwise. */
 function require_admin(): string
 {
     $token = bearer_token();
     if (!$token) throw new ApiError(401, 'unauthorized', 'Prisijunkite.');
+    if (str_starts_with($token, 'demo.')) {
+        if (demo_login_enabled() && demo_token_valid($token)) return 'admin';
+        throw new ApiError(401, 'unauthorized', 'Sesija baigėsi. Prisijunkite iš naujo.');
+    }
     $claims = verify_session_token($token);
     $allowed = array_map('strval', (array) config_value('admin_user_ids', []));
     if (!in_array($claims['sub'], $allowed, true)) {

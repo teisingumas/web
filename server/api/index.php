@@ -20,6 +20,7 @@ $routes = [
     ['GET', '#^/public/posts/([a-z0-9-]{1,120})$#', 'route_public_post', false],
     ['GET', '#^/public/events$#', 'route_public_events', false],
     ['GET', '#^/public/events/([a-z0-9-]{1,120})$#', 'route_public_event', false],
+    ['POST', '#^/admin/login$#', 'route_login', false],
     ['GET', '#^/admin/me$#', 'route_me', true],
     ['GET', '#^/admin/content$#', 'route_content', true],
     ['PUT', '#^/admin/content/([a-z.]{1,64})$#', 'route_save_content', true],
@@ -91,8 +92,8 @@ function route_status(): array
         'php' => version_compare(PHP_VERSION, '8.1.0', '>='),
         'config' => $configFound,
         'database' => $db,
-        'clerk' => clerk_frontend_api() !== null,
-        'admins' => count((array) config_value('admin_user_ids', [])) > 0,
+        'clerk' => demo_login_enabled() || clerk_frontend_api() !== null,
+        'admins' => demo_login_enabled() || count((array) config_value('admin_user_ids', [])) > 0,
         'storage' => $dataDir,
         'images' => function_exists('imagecreatefromstring') && class_exists('finfo'),
     ];
@@ -131,6 +132,12 @@ function route_public_event(string $slug): array
 }
 
 // --- admin ----------------------------------------------------------------------------------
+
+function route_login(): array
+{
+    $body = json_decode((string) file_get_contents('php://input'), true);
+    return demo_login(is_array($body) ? $body : []);
+}
 
 function route_me(): array
 {

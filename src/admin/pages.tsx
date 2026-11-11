@@ -4,6 +4,7 @@ import { useApi } from './context'
 import { SectionCard, SeoCard } from './FormCard'
 import { pageDef, SCHEMA } from './schema'
 import { ErrorState, formatDateTime, PageHeader, Skeleton, Tabs } from './ui'
+import { AnalyticsTile } from './analytics'
 
 export const ADMIN = '/apzvalga'
 
@@ -98,26 +99,17 @@ export function Dashboard() {
             )}
           <a href={`${ADMIN}/renginiai`} className="adm-tile__more">Visi renginiai →</a>
         </div>
-        {(['home', 'tvarkarastis', 'registracija', 'kainos'] as const).map(key => {
-          const page = pageDef(key)
-          return (
-            <a key={key} href={`${ADMIN}/${page.admin}`} className="adm-tile">
-              <span className="adm-tile__title">{page.label}</span>
-              <p className="adm-tile__text">{PAGE_INTROS[key]}</p>
-              <span className="adm-tile__more">Redaguoti →</span>
-            </a>
-          )
-        })}
-        <a href={`${ADMIN}/nuotraukos`} className="adm-tile">
-          <span className="adm-tile__title">Nuotraukos</span>
-          <p className="adm-tile__text">Visų įkeltų nuotraukų biblioteka ir jų alt tekstai.</p>
-          <span className="adm-tile__more">Atidaryti →</span>
+        <a href={`${ADMIN}/registracija`} className="adm-tile">
+          <span className="adm-tile__title">Registracija</span>
+          <p className="adm-tile__text">{PAGE_INTROS.registracija}</p>
+          <span className="adm-tile__more">Redaguoti →</span>
         </a>
         <a href={`${ADMIN}/bendri`} className="adm-tile">
           <span className="adm-tile__title">Bendri nustatymai</span>
           <p className="adm-tile__text">Kontaktai, socialiniai tinklai, apačia ir numatytasis SEO.</p>
           <span className="adm-tile__more">Redaguoti →</span>
         </a>
+        <AnalyticsTile />
       </div>
 
       {posts && posts.items.length > 0 && (

@@ -11,6 +11,7 @@ import MediaLibraryPage from './MediaLibrary'
 import { AdminNotFound, Dashboard, PageEditor, Settings } from './pages'
 import { EventEditor, EventsAdmin, LookupAdmin } from './events'
 import { NewsAdmin, PostEditor } from './posts'
+import { Analytics } from './analytics'
 import { ErrorState, Icons, LoadingCards, Spinner } from './ui'
 import './admin.css'
 
@@ -33,6 +34,8 @@ export default function AdminApp({ route }: { route: Route }) {
   if (devToken) {
     return <Admin route={route} signedIn getToken={async () => devToken} userLabel="Kūrėjo režimas" signOut={() => navigate(PATHS.home)} />
   }
+  // Presentation phase: a plain "admin / admin" sign-in instead of Clerk (see server/lib/auth.php).
+  if (DEMO_LOGIN) return <DemoAdmin route={route} />
   if (!publishableKey) return <LoginScreen><SetupCheck forceShow /></LoginScreen>
   return (
     <ClerkProvider
@@ -41,6 +44,73 @@ export default function AdminApp({ route }: { route: Route }) {
     >
       <ClerkAdmin route={route} />
     </ClerkProvider>
+  )
+}
+
+const DEMO_LOGIN = true
+const DEMO_KEY = 'megusta-admin-token'
+
+function readDemoToken() {
+  try {
+    const t = localStorage.getItem(DEMO_KEY)
+    const exp = t ? Number(t.split('.')[1]) : 0
+    return t && exp * 1000 > Date.now() ? t : null
+  } catch {
+    return null
+  }
+}
+
+function DemoAdmin({ route }: { route: Route }) {
+  const [token, setToken] = useState<string | null>(readDemoToken)
+  const signOut = () => {
+    try { localStorage.removeItem(DEMO_KEY) } catch { /* storage blocked */ }
+    setToken(null)
+    navigate(PATHS.adminLogin)
+  }
+  const onToken = (t: string) => {
+    try { localStorage.setItem(DEMO_KEY, t) } catch { /* storage blocked: this tab only */ }
+    setToken(t)
+    navigate(PATHS.admin, true)
+  }
+  return (
+    <Admin
+      route={route} signedIn={!!token} getToken={async () => token} userLabel="admin" signOut={signOut}
+      loginForm={<DemoLoginForm onToken={onToken} />}
+    />
+  )
+}
+
+function DemoLoginForm({ onToken }: { onToken: (t: string) => void }) {
+  const [user, setUser] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setBusy(true)
+    setError('')
+    try {
+      const res = await fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ user, password }) })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.token) onToken(data.token)
+      else setError(data.error?.message || data.message || (res.status === 404 ? 'Serverio dalis nerasta (/api).' : 'Neteisingas vartotojo vardas arba slaptažodis.'))
+    } catch {
+      setError('Nepavyko susisiekti su serveriu. Patikrinkite interneto ryšį.')
+    } finally {
+      setBusy(false)
+    }
+  }
+  return (
+    <form className="adm-card" style={{ padding: 28, display: 'flex', flexDirection: 'column', gap: 18 }} onSubmit={submit}>
+      <label className="adm-field"><span className="adm-label">Vartotojas</span>
+        <input className="adm-input" autoComplete="username" autoFocus value={user} onChange={e => setUser(e.target.value)} />
+      </label>
+      <label className="adm-field"><span className="adm-label">Slaptažodis</span>
+        <input className="adm-input" type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} />
+      </label>
+      {error && <p className="adm-error" role="alert">{error}</p>}
+      <button type="submit" className="adm-btn adm-btn--block" disabled={busy}>{busy ? 'Jungiamasi…' : 'Prisijungti'}</button>
+    </form>
   )
 }
 
@@ -58,7 +128,7 @@ function ClerkAdmin({ route }: { route: Route }) {
   )
 }
 
-function Admin({ route, signedIn, getToken, userLabel, signOut }: { route: Route; signedIn: boolean; getToken: TokenGetter; userLabel: string; signOut: () => void }) {
+function Admin({ route, signedIn, getToken, userLabel, signOut, loginForm }: { route: Route; signedIn: boolean; getToken: TokenGetter; userLabel: string; signOut: () => void; loginForm?: React.ReactNode }) {
   // getToken from Clerk changes identity between renders; the API object must not.
   const [tokenGetter] = useState(() => ({ current: getToken }))
   tokenGetter.current = getToken
@@ -75,7 +145,7 @@ function Admin({ route, signedIn, getToken, userLabel, signOut }: { route: Route
         {signedIn ? <SignedInCheck api={api} signOut={signOut} /> : (
           <>
             <SetupCheck />
-            {!devToken && <SignIn routing="hash" forceRedirectUrl={PATHS.admin} />}
+            {loginForm ?? (!devToken && <SignIn routing="hash" forceRedirectUrl={PATHS.admin} />)}
           </>
         )}
       </LoginScreen>
@@ -206,7 +276,7 @@ function SignedInCheck({ api, signOut }: { api: Api; signOut: () => void }) {
 // --- the dashboard shell ------------------------------------------------------------------------
 
 const NAV = [
-  { group: null, items: [{ path: '', label: 'Apžvalga', icon: Icons.home }] },
+  { group: null, items: [{ path: '', label: 'Apžvalga', icon: Icons.home }, { path: '/analitika', label: 'Analitika', icon: Icons.chart }] },
   {
     group: 'Puslapiai',
     items: [
@@ -309,6 +379,7 @@ function Shell({ route }: { route: Route }) {
 
 function AdminPage({ sub }: { sub: string }) {
   if (sub === '') return <Dashboard />
+  if (sub === '/analitika') return <Analytics />
   if (sub === '/pagrindinis') return <PageEditor key="home" pageKey="home" />
   if (sub === '/tvarkarastis') return <PageEditor key="tvarkarastis" pageKey="tvarkarastis" />
   if (sub === '/registracija') return <PageEditor key="registracija" pageKey="registracija" />

@@ -68,7 +68,7 @@ function parse(rawPath: string): Route {
   if (p === PATHS.pricing) return { ...base, page: 'kainos' }
   const event = /^\/kalendorius\/([^/]+)$/.exec(p)
   if (event) return SLUG_RE.test(event[1]) ? { ...base, page: 'event', slug: event[1] } : { ...base, page: 'notfound' }
-  if (p === PATHS.adminLogin) return { ...base, page: 'admin-login' }
+  if (p === PATHS.adminLogin || p === '/admin') return { ...base, page: 'admin-login' }
   if (p === PATHS.admin || p.startsWith(PATHS.admin + '/')) return { ...base, page: 'admin', adminPath: p.slice(PATHS.admin.length) || '/' }
   const slug = p.slice(1)
   if (SLUG_RE.test(slug)) return { ...base, page: 'post', slug }

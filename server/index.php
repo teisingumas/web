@@ -102,7 +102,7 @@ if (isset($pagePaths[$path])) {
         $meta = not_found_meta();
         $inline['view'] = ['type' => 'notfound', 'path' => $path];
     }
-} elseif ($path === '/adminas' || $path === '/apzvalga' || str_starts_with($path, '/apzvalga/')) {
+} elseif ($path === '/admin' || $path === '/adminas' || $path === '/apzvalga' || str_starts_with($path, '/apzvalga/')) {
     $meta = ['title' => 'Turinio valdymas — ' . $siteName, 'description' => '', 'keywords' => '', 'image' => '', 'imageAlt' => '',
         'canonical' => '', 'noindex' => true, 'type' => 'website'];
     $inline = ['clerkPublishableKey' => (string) config_value('clerk_publishable_key', '')];

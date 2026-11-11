@@ -2,6 +2,8 @@
 // or keyboard focus and returns to the active item when the pointer leaves. The pill is the group's
 // ::before, positioned by CSS variables set here; items only get a data-hot attribute for the white text.
 const GROUPS = '[role="tablist"], .ng-pills, .news-pages'
+// the admin keeps its own tab look
+const skip = (g: Element) => !!g.closest('.adm, .adm-login')
 
 type Group = HTMLElement & { __hover?: HTMLElement | null; __ready?: boolean }
 
@@ -29,6 +31,7 @@ function refresh(g: Group) {
 
 function refreshAll() {
   document.querySelectorAll<Group>(GROUPS).forEach(g => {
+    if (skip(g)) return
     if (!g.hasAttribute('data-slider')) g.setAttribute('data-slider', '')
     refresh(g)
   })
@@ -37,7 +40,7 @@ function refreshAll() {
 function itemUnder(target: EventTarget | null): { group: Group; item: HTMLElement } | null {
   if (!(target instanceof Element)) return null
   const group = target.closest<Group>(GROUPS)
-  if (!group) return null
+  if (!group || skip(group)) return null
   let el: Element | null = target
   while (el && el.parentElement !== group) el = el.parentElement
   return el instanceof HTMLElement && el.matches('a, button') ? { group, item: el } : null
