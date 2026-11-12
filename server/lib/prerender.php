@@ -214,6 +214,23 @@ function contacts_prerender(array $c): string
     return pr_wrap($out . pr_footer($c));
 }
 
+/** /gatves-sokiai: the page text lives in src/StreetDance.tsx; this is a short plain copy for crawlers. */
+function street_dance_prerender(array $c): string
+{
+    $out = '<p>Šokių pamokos</p><h1>Gatvės šokiai</h1>'
+        . '<p>Treniruočių metu pažindinamės su gatvės šokių istorija, gilinamės į įvairius stilius, tokius kaip Hip Hop, Locking, Popping, House, mokomės muzikalumo, šokame įvairias šokių choreografijas, improvizuojame, laviname fizinį pasiruošimą ir lankstumą. Ruošiamės įvairiems konkursams bei pasirodymams, taip pat ugdome bendravimą komandoje.</p>'
+        . '<ul><li>Treniruotės trukmė: 45–60 min.</li><li>Sudeginama ~300 kcal</li><li>Amžiaus grupė: 4–99 m.</li><li>Pamokos: nuo 2 kartų per savaitę</li></ul>'
+        . '<section><h2>Pradedančiųjų laikai</h2><ul>'
+        . '<li>4–5 m.: I ir III, 17:30 (45 min.), treneris Paulina</li>'
+        . '<li>6–7 m.: I ir III, 18:30 (45 min.), treneris Paulina</li>'
+        . '<li>8–11 m.: I ir III, 18:00, treneris Rytis</li>'
+        . '<li>12–15 m.: I ir III, 17:00, treneris Rytis</li>'
+        . '<li>Nuo 18 m.: II ir IV, 19:00, trenerė Greta</li></ul></section>'
+        . '<section><h2>Gatvės šokių stiliai</h2><ul><li>Hip-Hop</li><li>Locking</li><li>Popping</li><li>House</li></ul></section>'
+        . '<p><a href="/registracija">Registruotis</a> · <a href="/tvarkarastis">Tvarkaraštis</a> · <a href="/kainos">Kainos</a></p>';
+    return pr_wrap($out . pr_footer($c));
+}
+
 /** The site menu and footer text, so every page links to the others. */
 function pr_footer(array $c): string
 {

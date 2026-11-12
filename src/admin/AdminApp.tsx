@@ -386,6 +386,7 @@ function AdminPage({ sub }: { sub: string }) {
   if (sub === '/tvarkarastis') return <PageEditor key="tvarkarastis" pageKey="tvarkarastis" />
   if (sub === '/registracija') return <PageEditor key="registracija" pageKey="registracija" />
   if (sub === '/kainos') return <PageEditor key="kainos" pageKey="kainos" />
+  if (sub === '/gatves-sokiai') return <PageEditor key="gatves-sokiai" pageKey="gatves-sokiai" />
   if (sub === '/bendri') return <Settings />
   if (sub === '/nuotraukos') return <MediaLibraryPage />
   if (sub === '/naujienos') return <NewsAdmin />

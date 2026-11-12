@@ -12,6 +12,7 @@ const PAGE_INTROS: Record<string, string> = {
   home: 'Pirmasis ekranas, stiliai, savaitės tvarkaraštis, kainos, treneriai ir kvietimas registruotis.',
   tvarkarastis: 'Salių tvarkaraščiai: kiekviena salė yra atskiras skirtukas su dienomis ir laikais.',
   registracija: 'Registracijos puslapio tekstai, formos pasirinkimai ir D.U.K.',
+  'gatves-sokiai': 'Šio puslapio tekstai yra kode; čia keičiami tik SEO duomenys (pavadinimas, aprašymas, paieškos paveikslėlis).',
   kainos: 'Pastabos po kainomis (*) ir D.U.K. Planai ir kainos redaguojami puslapyje Pagrindinis → Kainos.',
 }
 

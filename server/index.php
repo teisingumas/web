@@ -58,7 +58,7 @@ $jsonLd = [];
 $prerender = '';
 $meta = null;
 
-$pagePaths = ['/' => 'home', '/tvarkarastis' => 'tvarkarastis', '/kontaktai' => 'kontaktai', '/kainos' => 'kainos', '/registracija' => 'registracija',
+$pagePaths = ['/' => 'home', '/tvarkarastis' => 'tvarkarastis', '/kontaktai' => 'kontaktai', '/kainos' => 'kainos', '/gatves-sokiai' => 'gatves-sokiai', '/registracija' => 'registracija',
     '/registracija/informacija' => 'registracija', '/registracija/kainos' => 'registracija'];
 
 if (isset($pagePaths[$path])) {
@@ -75,6 +75,7 @@ if (isset($pagePaths[$path])) {
         '/registracija/informacija' => registration_prerender($content, 'informacija'),
         '/registracija/kainos' => registration_prerender($content, 'kainos'),
         '/kainos' => pricing_prerender($content),
+        '/gatves-sokiai' => street_dance_prerender($content),
         '/tvarkarastis' => timetable_prerender($content),
         '/kontaktai' => contacts_prerender($content),
         default => '',

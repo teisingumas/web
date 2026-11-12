@@ -7,6 +7,7 @@ import { inlineData, phoneHref, section } from './content'
 import Registration from './Registration'
 import Pricing from './Pricing'
 import Kainos from './Kainos'
+import StreetDance from './StreetDance'
 import StyleVideo from './StyleVideo'
 import Reviews from './Reviews'
 import HeroVideo from './HeroVideo'
@@ -65,7 +66,7 @@ const MENU_ITEMS: { label: string; href?: string }[] = [
   { label: 'Kainos', href: PATHS.pricing },
   { label: 'Tvarkaraščiai', href: PATHS.timetable },
   { label: 'Apie studiją' },
-  { label: 'Šokių pamokos' },
+  { label: 'Šokių pamokos', href: PATHS.streetDance },
   { label: 'Stovyklos' },
   { label: 'Kalendorius', href: PATHS.calendar },
   { label: 'Naujienos', href: PATHS.news },
@@ -133,7 +134,7 @@ export default function App() {
   return <Site page={route.page} />
 }
 
-const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius', 'kontaktai', 'kainos'])
+const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius', 'kontaktai', 'kainos', 'gatves-sokiai'])
 
 function Site({ page }: { page: Page }) {
   const route = useRoute()
@@ -290,6 +291,7 @@ function Site({ page }: { page: Page }) {
         : page === 'kalendorius' ? <Calendar />
         : page === 'kontaktai' ? <ContactsPage />
         : page === 'kainos' ? <Kainos />
+        : page === 'gatves-sokiai' ? <StreetDance />
         : page === 'event' ? <EventPage slug={route.slug} />
         : page === 'post' ? <PostPage slug={route.slug} />
         : page === 'notfound' ? <NotFound />
@@ -441,6 +443,7 @@ function Site({ page }: { page: Page }) {
             {[
               { label: 'Treneriai', href: '/#treneriai' },
               { label: 'Tvarkaraštis', href: PATHS.timetable },
+              { label: 'Gatvės šokiai', href: PATHS.streetDance },
               { label: 'Kainos', href: PATHS.pricing },
               { label: 'Naujienos', href: PATHS.news },
               { label: 'Kalendorius', href: PATHS.calendar },
