@@ -90,7 +90,7 @@ const STYLES: DanceStyle[] = [
     moves: ['Fresno', 'Waving', 'Tutting', 'Slow Motion', 'Gliding', 'Isolations (izoliacijos)', 'Boogaloo Rolls', 'Robotting', 'Animations'],
     more: 'Daugiau Popping istorijos',
     moreHref: 'https://megusta.lt/apie-popping-sokiu-stiliu/',
-    video: 'BIt7lbBiVDE',
+    video: 'XKJgAaQV4Jg',
   },
   {
     name: 'House',
