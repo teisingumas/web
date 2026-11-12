@@ -393,7 +393,6 @@ function Site({ page }: { page: Page }) {
         <div className="ng-trainers">
           {trainers.items.map((t, ti) => (
             <article key={ti} className="ng-trainer">
-              <span className="ng-trainer__mark" aria-hidden="true" />
               <img src={t.image.src} alt={t.image.alt} loading="lazy" className="ng-trainer__photo" />
               <span className="ng-trainer__shade" aria-hidden="true" />
               <div className="ng-trainer__info">
