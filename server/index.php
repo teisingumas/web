@@ -1,8 +1,9 @@
 <?php
 // Every page request lands here (public/.htaccess). It takes the built index.html and adds:
-//  - the page's SEO tags (title, description, keywords, canonical, Open Graph, JSON-LD),
+//  - the page's SEO tags (title, description, canonical, Open Graph, JSON-LD),
 //  - the saved content as window.__MEGUSTA__, so edits show on the next load without a rebuild,
-//  - for news pages, a plain copy of the article / list for crawlers that do not run JavaScript,
+//  - a plain HTML copy of the page's text for crawlers that do not run JavaScript (main pages,
+//    news and events; see lib/prerender.php),
 //  - a real 404 status for addresses that do not exist.
 // If the database is unreachable the site still renders with its built-in content.
 
@@ -11,7 +12,7 @@ declare(strict_types=1);
 require __DIR__ . '/lib/bootstrap.php';
 
 // Fallbacks for the two sections the server needs (the full defaults live in src/content/defaults.ts).
-const SITE_DEFAULTS = ['siteName' => 'Me Gusta', 'ogImage' => ['src' => '/img/og-default.jpg', 'alt' => 'Me Gusta šokių studija Kaune']];
+const SITE_DEFAULTS = ['siteName' => 'Me Gusta', 'alternateNames' => ['Me Gusta šokių studija'], 'ogImage' => ['src' => '/img/og-default.jpg', 'alt' => 'Me Gusta šokių studija Kaune']];
 const CONTACT_DEFAULTS = ['email' => 'labas@megusta.lt', 'phone' => '+370 606 44888', 'address' => 'Savanorių pr. 271, Kaunas'];
 const PRERENDER_STYLE = 'max-width:760px;margin:0 auto;padding:168px 24px 80px;font-family:Outfit,sans-serif;color:var(--text,#f0f0f0);line-height:1.7';
 
@@ -63,7 +64,21 @@ $pagePaths = ['/' => 'home', '/tvarkarastis' => 'tvarkarastis', '/kontaktai' => 
 if (isset($pagePaths[$path])) {
     $key = $pagePaths[$path];
     $meta = page_meta($seoPages[$key], page_def($key)['path']);
-    if ($key === 'home') $jsonLd[] = local_business_ld($siteName, $contacts, $sections['global.socials'] ?? [], $meta['image']);
+    if ($key === 'home') {
+        $jsonLd[] = website_ld($siteName, $site['alternateNames'] ?? []);
+        $jsonLd[] = local_business_ld($siteName, $contacts, $sections['global.socials'] ?? [], $meta['image']);
+    }
+    $content = merged_sections($sections);
+    $prerender = match ($path) {
+        '/' => home_prerender($content),
+        '/registracija' => registration_prerender($content, ''),
+        '/registracija/informacija' => registration_prerender($content, 'informacija'),
+        '/registracija/kainos' => registration_prerender($content, 'kainos'),
+        '/kainos' => pricing_prerender($content),
+        '/tvarkarastis' => timetable_prerender($content),
+        '/kontaktai' => contacts_prerender($content),
+        default => '',
+    };
 } elseif ($path === '/naujienos') {
     $n = 1;
     $meta = page_meta($seoPages['naujienos'], '/naujienos');
@@ -234,7 +249,6 @@ function render_head(array $meta, string $siteName, array $jsonLd, array $inline
     $t = [];
     $t[] = '<title>' . e($meta['title']) . '</title>';
     if ($meta['description'] !== '') $t[] = '<meta name="description" content="' . e($meta['description']) . '" />';
-    if ($meta['keywords'] !== '') $t[] = '<meta name="keywords" content="' . e($meta['keywords']) . '" />';
     if ($meta['noindex']) $t[] = '<meta name="robots" content="noindex, nofollow" />';
     if ($meta['canonical'] !== '') {
         $url = absolute_url($meta['canonical']);
@@ -256,6 +270,15 @@ function render_head(array $meta, string $siteName, array $jsonLd, array $inline
     foreach ($jsonLd as $ld) $t[] = '<script type="application/ld+json">' . json_script($ld) . '</script>';
     $t[] = '<script>window.__MEGUSTA__=' . json_script($inline) . '</script>';
     return '    ' . implode("\n    ", $t);
+}
+
+/** schema.org WebSite on the home page: Google's preferred source for the site name shown above results. */
+function website_ld(string $siteName, $alternateNames): array
+{
+    $ld = ['@context' => 'https://schema.org', '@type' => 'WebSite', 'name' => $siteName, 'url' => site_url() . '/', 'inLanguage' => 'lt'];
+    $alt = array_values(array_filter(array_map(fn($n) => trim((string) $n), is_array($alternateNames) ? $alternateNames : []), fn($n) => $n !== '' && $n !== $siteName));
+    if ($alt) $ld['alternateName'] = count($alt) === 1 ? $alt[0] : $alt;
+    return $ld;
 }
 
 function local_business_ld(string $siteName, array $contacts, array $socials, string $image): array
