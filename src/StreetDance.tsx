@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { section } from './content'
 import { PATHS } from './router'
@@ -118,28 +118,61 @@ const STYLES: DanceStyle[] = [
 
 const arrow = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
 
+const embedSrc = (id: string) => `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1&hl=lt`
+
+// YouTube picks the stream quality from the player's size in pixels: a ~430px wide player gets
+// 360p and will not go higher until fullscreen. So the small clips (next to each style and the
+// row at the bottom) open in a large player over the page; only the full-width clip plays in place.
+function VideoModal({ id, title, onClose }: { id: string; title: string; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    const prev = document.activeElement as HTMLElement | null
+    closeRef.current?.focus()
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    const overflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = overflow
+      prev?.focus()
+    }
+  }, [onClose])
+  return (
+    <div className="sd-modal" role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
+      <div className="sd-modal__box" onClick={e => e.stopPropagation()}>
+        <button ref={closeRef} type="button" className="sd-modal__close" aria-label="Uždaryti" onClick={onClose}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+        <div className="sd-modal__player">
+          <iframe className="sd-video__frame" title={title} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen src={embedSrc(id)} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // Click-to-play YouTube clip. The poster is the largest thumbnail YouTube has (maxres, 1280x720);
 // the small hqdefault one (480x360) only stands in when a video has no larger one.
-function Video({ id, title }: { id: string; title: string }) {
+// inline: plays in place (the full-width clip); otherwise it opens the large player.
+function Video({ id, title, inline = false }: { id: string; title: string; inline?: boolean }) {
   const [playing, setPlaying] = useState(false)
   const [small, setSmall] = useState(false)
-  if (playing) {
-    return (
-      <iframe
-        className="sd-video__frame" title={title}
-        allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen
-        src={`https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1&hl=lt`}
-      />
-    )
+  const close = useCallback(() => setPlaying(false), [])
+  if (playing && inline) {
+    return <iframe className="sd-video__frame" title={title} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen src={embedSrc(id)} />
   }
   return (
-    <button type="button" className="sd-video__poster" aria-label={`Paleisti vaizdo įrašą: ${title}`} onClick={() => setPlaying(true)}>
-      <img src={`https://i.ytimg.com/vi/${id}/${small ? 'hqdefault' : 'maxresdefault'}.jpg`} alt="" loading="lazy" onError={() => setSmall(true)} />
-      <span className="sd-video__shade" aria-hidden="true" />
-      <span className="sd-video__play" aria-hidden="true">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>
-      </span>
-    </button>
+    <>
+      <button type="button" className="sd-video__poster" aria-label={`Paleisti vaizdo įrašą: ${title}`} aria-haspopup={inline ? undefined : 'dialog'} onClick={() => setPlaying(true)}>
+        <img src={`https://i.ytimg.com/vi/${id}/${small ? 'hqdefault' : 'maxresdefault'}.jpg`} alt="" loading="lazy" onError={() => setSmall(true)} />
+        <span className="sd-video__shade" aria-hidden="true" />
+        <span className="sd-video__play" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>
+        </span>
+      </button>
+      {playing && !inline && <VideoModal id={id} title={title} onClose={close} />}
+    </>
   )
 }
 
@@ -225,7 +258,7 @@ export default function StreetDance() {
       {/* video */}
       <section className="ng-wrap ng-sec">
         <div className="sd-video">
-          <Video id={VIDEO_ID} title="Gatvės šokių pamoka — vaizdo įrašas" />
+          <Video id={VIDEO_ID} title="Gatvės šokių pamoka — vaizdo įrašas" inline />
         </div>
       </section>
 
