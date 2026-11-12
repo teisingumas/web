@@ -7,6 +7,7 @@ import { useApi, useConfirm, useDirty, useStore, useToast } from './context'
 import { Fields, setIn, type PathArr } from './fields'
 import { SCHEMA, sectionDef, validateFields, type Errors, type Field } from './schema'
 import { formatSaved, Spinner } from './ui'
+import { FocusPhraseCheck } from './FocusPhraseCheck'
 
 // One editable block with its own Save button: a page section or a page's SEO.
 
@@ -156,7 +157,15 @@ export function SeoCard({ pageKey, path, defaultOpen = true }: { pageKey: string
     <FormCard
       id={`seo:${pageKey}`} title="Paieškos sistemos ir socialiniai tinklai" description="Kaip puslapis atrodo Google paieškoje ir dalinantis nuoroda."
       fields={SCHEMA.seoFields} base={base} savedAt={saved?.updatedAt} defaultOpen={defaultOpen} viewHref={path}
-      extra={data => <SerpPreview title={String(data.title ?? '')} description={String(data.description ?? '')} path={path} />}
+      extra={data => (
+        <>
+          <SerpPreview title={String(data.title ?? '')} description={String(data.description ?? '')} path={path} />
+          <FocusPhraseCheck phrase={String(data.keywords ?? '')} checks={[
+            { label: 'Puslapio pavadinimas (title)', text: String(data.title ?? ''), tip: 'Geriausia frazę dėti pavadinimo pradžioje.' },
+            { label: 'Aprašymas (meta description)', text: String(data.description ?? ''), tip: 'Google paryškina sutampančius žodžius ir rečiau perrašo tokį aprašymą.' },
+          ]} />
+        </>
+      )}
       onSave={async data => {
         const result = await api.saveSeo(pageKey, data as unknown as PageSeo)
         store.setSeo(pageKey, result)

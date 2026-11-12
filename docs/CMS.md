@@ -179,8 +179,10 @@ Kai svetainė persikels iš `testas.vedejasedvardas.lt` į tikrą domeną (pvz. 
   **Vietos** ir **Organizatoriai** kuriami meniu skiltyse po „Renginiai“ (arba tiesiai renginio formoje, mygtuku „+ Nauja vieta“). Naudojamos vietos ar organizatoriaus ištrinti negalima.
   Būsenos kaip naujienose: **juodraštis**, **publikuoti / atnaujinti**, **suplanuoti** (šoninėje juostoje nurodoma publikavimo data: tai ne renginio data, o kada jis atsiras svetainėje), **grąžinti į juodraščius**. Pakeitus publikuoto renginio adresą, senas adresas nukreipia (301) į naują.
   Kalendoriuje renginys lieka tarp „Artėjančių“ iki paskutinės jo dienos pabaigos, tada pereina į „Praėjusių“ (rodoma 15 paskutinių).
-- **SEO**: kiekvieno puslapio skirtuke **SEO** ir prie kiekvienos naujienos: pavadinimas, aprašymas, raktažodžiai, nuotrauka dalinantis.
+- **SEO**: kiekvieno puslapio skirtuke **SEO** ir prie kiekvienos naujienos bei renginio: pavadinimas, aprašymas, pagrindinė paieškos frazė, nuotrauka dalinantis.
   Peržiūra rodo, kaip puslapis atrodys Google paieškoje.
+  **Pagrindinė paieškos frazė** į puslapį nerašoma (Google `meta keywords` nenaudoja). Ji skirta tik patikrai: admin parodo, ar frazė yra pavadinime, aprašyme, o naujienose ir renginiuose dar ir H1, pirmoje pastraipoje bei paantraštėse. Lietuviškos žodžių formos tikrinamos apytiksliai pagal žodžio pradžią.
+  **Kiti svetainės pavadinimai** („Bendri nustatymai“ → „Numatytasis SEO“) patenka į `WebSite` schemą pagrindiniame puslapyje: iš jos Google renkasi svetainės pavadinimą virš paieškos rezultato.
 - Nuotraukos, kuri kur nors naudojama, ištrinti negalima: sistema parodys, kur ji naudojama.
 
 ---
@@ -196,6 +198,7 @@ Kai svetainė persikels iš `testas.vedejasedvardas.lt` į tikrą domeną (pvz. 
 | Viešos naujienos | `src/News.tsx`, `src/PostPage.tsx`, `src/NotFound.tsx` |
 | Viešas kalendorius | `src/Calendar.tsx` (sąrašas), `src/EventPage.tsx` (renginys), `src/eventFormat.ts`; serveris `server/lib/events.php` |
 | PHP: puslapio SEO ir turinio įterpimas | `server/index.php` |
+| PHP: pagrindinių puslapių HTML kopija paieškos robotams | `server/lib/prerender.php` (tekstai iš DB + `lib/defaults.json`, kurį `npm run build` sugeneruoja iš `defaults.ts`) |
 | PHP: API | `server/api/index.php`, logika `server/lib/` |
 | Apache taisyklės | `public/.htaccess` |
 

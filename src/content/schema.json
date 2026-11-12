@@ -8,7 +8,7 @@
   "seoFields": [
     { "key": "title", "type": "text", "label": "Puslapio pavadinimas (title)", "required": true, "max": 70, "recommended": 60, "help": "Rodomas naršyklės skirtuke ir Google rezultatuose. Geriausia iki 60 ženklų." },
     { "key": "description", "type": "textarea", "label": "Aprašymas (meta description)", "required": true, "max": 160, "recommended": 155, "rows": 3, "help": "1–2 sakiniai po pavadinimu Google rezultatuose. Geriausia 120–155 ženklai." },
-    { "key": "keywords", "type": "text", "label": "Raktažodžiai", "max": 255, "help": "Atskirkite kableliais, pvz.: hip hop šokiai Kaune, šokių studija, breikas." },
+    { "key": "keywords", "type": "text", "label": "Pagrindinė paieškos frazė", "max": 255, "help": "Viena frazė, kurios žmonės ieško Google, pvz. „registracija į šokių pamokas“. Google jos nemato: ji naudojama tik patikrai žemiau, ar frazė yra pavadinime ir aprašyme." },
     { "key": "ogImage", "type": "image", "label": "Nuotrauka dalinantis (Facebook ir kt.)", "alt": "optional", "help": "Jei nenurodyta, naudojama numatytoji iš „Bendri nustatymai“. Geriausia 1200 × 630 px." },
     { "key": "noindex", "type": "checkbox", "label": "Slėpti nuo paieškos sistemų (noindex)", "help": "Pažymėkite tik jei puslapis neturi atsirasti Google paieškoje." }
   ],
@@ -19,7 +19,7 @@
       "seo": {
         "title": "Me Gusta — Hip hop šokių studija Kaune",
         "description": "Me Gusta — hip hop šokių studija Kaune. Gatvės šokiai, Pop Dance, Lady Class ir Breikas vaikams, paaugliams ir suaugusiems. Pirmoji treniruotė nemokama.",
-        "keywords": "hip hop šokiai Kaune, šokių studija Kaune, gatvės šokiai, breikas, lady class, pop dance"
+        "keywords": "hip hop šokių studija Kaune"
       }
     },
     {
@@ -28,7 +28,7 @@
       "seo": {
         "title": "Tvarkaraštis — Me Gusta",
         "description": "Me Gusta šokių studijos treniruočių tvarkaraštis: renkamos grupės, salės ir treneriai. Treniruotės vyksta Savanorių pr. 271, Kaune.",
-        "keywords": "šokių tvarkaraštis, šokių treniruotės Kaune, Me Gusta tvarkaraštis"
+        "keywords": "šokių treniruočių tvarkaraštis"
       }
     },
     {
@@ -37,7 +37,7 @@
       "seo": {
         "title": "Registracija — Me Gusta",
         "description": "Užsiregistruokite į Me Gusta šokių studiją Kaune. Pirmoji treniruotė nemokama. Dažniausiai užduodami klausimai ir kainos.",
-        "keywords": "registracija į šokius, šokių pamokos Kaune, pirmoji treniruotė nemokama"
+        "keywords": "registracija į šokių pamokas"
       }
     },
     {
@@ -46,7 +46,7 @@
       "seo": {
         "title": "Naujienos — Me Gusta",
         "description": "Me Gusta šokių studijos naujienos: renginiai, konkursai, pasirodymai ir studijos gyvenimas.",
-        "keywords": "šokių studijos naujienos, Me Gusta renginiai"
+        "keywords": "šokių studijos naujienos"
       }
     },
     {
@@ -55,7 +55,7 @@
       "seo": {
         "title": "Kalendorius — Me Gusta",
         "description": "Me Gusta šokių studijos renginių kalendorius: artėjantys renginiai, varžybos, seminarai ir atvirų durų dienos Kaune.",
-        "keywords": "šokių renginiai Kaune, šokių varžybos, atvirų durų diena, Me Gusta kalendorius"
+        "keywords": "šokių renginiai Kaune"
       }
     },
     {
@@ -64,7 +64,7 @@
       "seo": {
         "title": "Kontaktai — Me Gusta",
         "description": "Me Gusta šokių studijos kontaktai: adresas Savanorių pr. 271, Kaunas, telefonas, el. paštas ir darbo laikas.",
-        "keywords": "Me Gusta kontaktai, šokių studija Kaune, Savanorių pr. 271"
+        "keywords": "šokių studija Kaune"
       }
     },
     {
@@ -73,7 +73,7 @@
       "seo": {
         "title": "Kainos — Me Gusta",
         "description": "Me Gusta šokių studijos kainos: narystės, nuolaidos ir dažniausiai užduodami klausimai apie apmokėjimą.",
-        "keywords": "šokių pamokų kainos Kaune, Me Gusta kainos, šokių studijos narystė"
+        "keywords": "šokių pamokų kainos"
       }
     }
   ],
@@ -110,6 +110,7 @@
       "description": "Naudojama visuose puslapiuose, kurie neturi savo reikšmių.",
       "fields": [
         { "key": "siteName", "type": "text", "label": "Svetainės pavadinimas", "required": true, "max": 40, "help": "Pridedamas prie naujienų pavadinimų, pvz. „Įrašo pavadinimas — Me Gusta“." },
+        { "key": "alternateNames", "type": "tags", "label": "Kiti svetainės pavadinimai", "itemName": "pavadinimą", "max": 60, "maxItems": 4, "placeholder": "Me Gusta šokių studija", "help": "Google rodo svetainės pavadinimą virš paieškos rezultato. Pirmiausia bando „Svetainės pavadinimą“, o jei jo nenaudoja, renkasi iš šių." },
         { "key": "ogImage", "type": "image", "label": "Numatytoji nuotrauka dalinantis", "alt": "optional", "help": "Rodoma, kai nuoroda dalijamasi Facebook, Messenger ir kt. Geriausia 1200 × 630 px." }
       ]
     },
