@@ -6,6 +6,7 @@ import { ApiError, type AdminPost, type PostList, type PostInput } from './api'
 import { Modal, useApi, useConfirm, useDirty, useToast } from './context'
 import { Counter, setIn, type PathArr } from './fields'
 import { SectionCard, SeoCard, SerpPreview, stableJson } from './FormCard'
+import { FocusPhraseCheck, firstParagraph, subheadings } from './FocusPhraseCheck'
 import ImageInput from './ImageInput'
 import WpImport from './wpImport'
 import { ADMIN } from './pages'
@@ -462,9 +463,17 @@ export function PostEditor({ id }: { id: number | 'new' }) {
               {shownErrors.seoDescription && <p className="adm-error">{shownErrors.seoDescription}</p>}
             </div>
             <div className="adm-field">
-              <label htmlFor="post-seo-kw" className="adm-label"><span>Raktažodžiai</span></label>
-              <input id="post-seo-kw" className="adm-input" value={form.seoKeywords} placeholder="pvz. šokių stovykla, vasara" aria-invalid={!!shownErrors.seoKeywords} onChange={e => set(['seoKeywords'], e.target.value)} />
+              <label htmlFor="post-seo-kw" className="adm-label"><span>Pagrindinė paieškos frazė</span></label>
+              <input id="post-seo-kw" className="adm-input" value={form.seoKeywords} placeholder="pvz. vasaros šokių stovykla" aria-invalid={!!shownErrors.seoKeywords} onChange={e => set(['seoKeywords'], e.target.value)} />
+              <p className="adm-help">Viena frazė, kurios žmonės ieško Google. Google jos nemato: ji naudojama tik patikrai žemiau.</p>
             </div>
+            <FocusPhraseCheck phrase={form.seoKeywords} checks={[
+              { label: 'Pavadinimas (H1)', text: form.title, tip: 'Pavadinimas yra svarbiausia antraštė puslapyje.' },
+              { label: 'SEO pavadinimas', text: form.seoTitle || form.title, tip: 'Geriausia frazę dėti pavadinimo pradžioje.' },
+              { label: 'Aprašymas Google', text: form.seoDescription || form.excerpt, tip: 'Google paryškina sutampančius žodžius, todėl daugiau žmonių paspaudžia.' },
+              { label: 'Pirma teksto pastraipa', text: firstParagraph(form.bodyHtml), tip: 'Iš pradžios teksto Google dažnai ima aprašymą.' },
+              { label: 'Paantraštės (H2, H3)', text: subheadings(form.bodyHtml), tip: 'Ilgesniam tekstui pridėkite paantraštę su fraze.' },
+            ]} />
             <SerpPreview title={`${form.seoTitle || form.title || 'Pavadinimas'} — Me Gusta`} description={form.seoDescription || form.excerpt} path={`/${effective.slug}`} />
           </div>
         </aside>
