@@ -128,7 +128,7 @@ function Video({ id, title }: { id: string; title: string }) {
       <iframe
         className="sd-video__frame" title={title}
         allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen
-        src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1&modestbranding=1&hl=lt`}
+        src={`https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1&hl=lt`}
       />
     )
   }
