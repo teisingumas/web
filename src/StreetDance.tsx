@@ -23,6 +23,8 @@ const CLASSES = [
   { age: 'Nuo 18 m.', days: 'II ir IV', time: '19:00', duration: '', trainer: 'Greta' },
 ]
 
+const MORE_VIDEOS = ['JEDBMjsWQYc', 'NcmZ6EOsM-8', 'PhfmoMgc2DE']
+
 const TRAINER_NAMES = ['Rytis', 'Greta', 'Paulina']
 
 type DanceStyle = {
@@ -34,6 +36,7 @@ type DanceStyle = {
   moves: string[]
   more: string
   moreHref: string
+  video: string
 }
 
 const STYLES: DanceStyle[] = [
@@ -56,6 +59,7 @@ const STYLES: DanceStyle[] = [
     moves: ['Bounce', 'Rock', 'Running Man', 'Dougie', 'Prep', 'The Smurf', 'Jerk', 'Criss Cross', 'Bart Simpson', 'Roger Rabbit'],
     more: 'Daugiau Hip Hop istorijos',
     moreHref: 'https://megusta.lt/apie-hip-hop-sokiu-stiliu/',
+    video: 'KTOfqqV7eEQ',
   },
   {
     name: 'Locking',
@@ -73,6 +77,7 @@ const STYLES: DanceStyle[] = [
     moves: ['Lock / Double lock', 'Point', 'Wrist Twril', 'Muscle Man', 'Scoo B Do', 'Funky Guitar', 'Jazz Split', 'Stop and Go', 'Kick', 'The Skeeter Rabbit'],
     more: 'Daugiau Locking istorijos',
     moreHref: 'https://megusta.lt/apie-locking-sokiu-stiliu/',
+    video: 'BIt7lbBiVDE',
   },
   {
     name: 'Popping',
@@ -85,6 +90,7 @@ const STYLES: DanceStyle[] = [
     moves: ['Fresno', 'Waving', 'Tutting', 'Slow Motion', 'Gliding', 'Isolations (izoliacijos)', 'Boogaloo Rolls', 'Robotting', 'Animations'],
     more: 'Daugiau Popping istorijos',
     moreHref: 'https://megusta.lt/apie-popping-sokiu-stiliu/',
+    video: 'BIt7lbBiVDE',
   },
   {
     name: 'House',
@@ -106,25 +112,29 @@ const STYLES: DanceStyle[] = [
     moves: ['Jack', 'The Loose Legs', 'Pad Berou', 'Farmer', 'Salsa Step', 'Shuffle', 'Jack In The Box', 'Tip Tap Toe', 'Heel-Toe', 'The Skate'],
     more: 'Daugiau House istorijos',
     moreHref: 'https://megusta.lt/apie-house-sokiu-stiliu/',
+    video: '6fHiA3Eai-I',
   },
 ]
 
 const arrow = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
 
-function Video() {
+// Click-to-play YouTube clip. The poster is the largest thumbnail YouTube has (maxres, 1280x720);
+// the small hqdefault one (480x360) only stands in when a video has no larger one.
+function Video({ id, title }: { id: string; title: string }) {
   const [playing, setPlaying] = useState(false)
+  const [small, setSmall] = useState(false)
   if (playing) {
     return (
       <iframe
-        className="sd-video__frame" title="Gatvės šokių pamoka — vaizdo įrašas"
+        className="sd-video__frame" title={title}
         allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen
-        src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0&playsinline=1&modestbranding=1`}
+        src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1&modestbranding=1&hl=lt`}
       />
     )
   }
   return (
-    <button type="button" className="sd-video__poster" aria-label="Paleisti vaizdo įrašą" onClick={() => setPlaying(true)}>
-      <img src={`https://i.ytimg.com/vi/${VIDEO_ID}/hqdefault.jpg`} alt="" loading="lazy" />
+    <button type="button" className="sd-video__poster" aria-label={`Paleisti vaizdo įrašą: ${title}`} onClick={() => setPlaying(true)}>
+      <img src={`https://i.ytimg.com/vi/${id}/${small ? 'hqdefault' : 'maxresdefault'}.jpg`} alt="" loading="lazy" onError={() => setSmall(true)} />
       <span className="sd-video__shade" aria-hidden="true" />
       <span className="sd-video__play" aria-hidden="true">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>
@@ -215,7 +225,7 @@ export default function StreetDance() {
       {/* video */}
       <section className="ng-wrap ng-sec">
         <div className="sd-video">
-          <Video />
+          <Video id={VIDEO_ID} title="Gatvės šokių pamoka — vaizdo įrašas" />
         </div>
       </section>
 
@@ -240,10 +250,13 @@ export default function StreetDance() {
                   <h4>Muzikos žanras</h4>
                   {s.music}
                 </div>
-                <aside className="sd-style__moves">
+                <aside className="sd-style__side">
+                  <div className="sd-video"><Video id={s.video} title={`${s.name} — vaizdo įrašas`} /></div>
+                  <div className="sd-style__moves">
                   <h4>{s.movesTitle}</h4>
                   <ul>{s.moves.map(m => <li key={m}>{m}</li>)}</ul>
                   <a href={s.moreHref} target="_blank" rel="noopener noreferrer" className="sd-more">{s.more} {arrow}</a>
+                  </div>
                 </aside>
               </div>
             </article>
@@ -251,10 +264,19 @@ export default function StreetDance() {
         </div>
       </section>
 
+      {/* more videos */}
+      <section className="ng-wrap ng-sec">
+        <div className="sd-videos">
+          {MORE_VIDEOS.map((id, i) => (
+            <div key={id} className="sd-video"><Video id={id} title={`Vaizdo įrašas ${i + 1}`} /></div>
+          ))}
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="ng-wrap ng-sec">
         <div className="sd-cta">
-          <h2 className="ng-h2">Išbandyk pirmą pamoką</h2>
+          <h2 className="ng-h2">Išbandyk pirmą nemokamą pamoką</h2>
           <a href={PATHS.registration} className="ng-btn ng-btn--dark ng-btn--xl">Registruokis {arrow}</a>
         </div>
       </section>

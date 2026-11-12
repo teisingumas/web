@@ -589,6 +589,8 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .sd-video__poster:hover .sd-video__play { transform: scale(1.08); }
 .sd-video__poster:focus-visible { outline: 3px solid var(--ng-accent); outline-offset: -3px; }
 
+.sd-videos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.sd-videos .sd-video { border-radius: 24px; }
 .sd-styles { display: flex; flex-direction: column; gap: 16px; }
 .sd-style { background: #fff; border-radius: 32px; padding: clamp(28px, 3.6vw, 48px); display: flex; flex-direction: column; gap: 28px; }
 .sd-style__head { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
@@ -599,6 +601,8 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .sd-style__text a { text-decoration: underline; text-underline-offset: 3px; }
 .sd-style h4 { margin: 26px 0 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #555; }
 .sd-style__text h4:first-of-type { margin-top: 22px; }
+.sd-style__side { display: flex; flex-direction: column; gap: 16px; }
+.sd-style__side .sd-video { border-radius: 24px; }
 .sd-style__moves { background: var(--cream); border-radius: 24px; padding: 24px; }
 .sd-style__moves h4 { margin: 0 0 16px; }
 .sd-style__moves ul { list-style: none; margin: 0 0 22px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
@@ -612,6 +616,7 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 @media (max-width: 900px) {
   .sd-hero { padding-top: 130px; }
   .sd-style__body { grid-template-columns: 1fr; }
+  .sd-videos { grid-template-columns: 1fr; }
 }
 @media (max-width: 700px) {
   .sd-row { grid-template-columns: 1fr 0.9fr 1fr; gap: 10px; min-width: 0; padding: 16px 0; }
