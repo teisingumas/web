@@ -220,7 +220,7 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 
 /* ---------- trainers ---------- */
 .ng-trainers { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
-.ng-trainer { position: relative; flex: 0 0 calc((100% - 80px) / 5); aspect-ratio: 4 / 5; border-radius: 32px; overflow: hidden; isolation: isolate; background: #1b1b1b; }
+.ng-trainer { position: relative; flex: 0 0 calc((100% - 40px) / 3); aspect-ratio: 1 / 1.1; border-radius: 32px; overflow: hidden; isolation: isolate; background: #1b1b1b; }
 /* graphic behind the person: the studio "N" mark, large and translucent */
 .ng-trainer__mark { position: absolute; z-index: 2; left: -9%; top: -3%; width: 74%; aspect-ratio: 335 / 255; background: url('/img/trainers/n-mark.webp') center / contain no-repeat; opacity: 0.22; }
 .ng-trainer__photo { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block; transition: transform 0.5s ease; }
