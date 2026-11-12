@@ -225,11 +225,11 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 .ng-trainer__photo { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block; transition: transform 0.5s ease; }
 .ng-trainer:hover .ng-trainer__photo { transform: scale(1.04); }
 .ng-trainer__shade { position: absolute; z-index: 2; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.72) 100%); pointer-events: none; }
-.ng-trainer__info { position: absolute; z-index: 3; left: 20px; right: 16px; bottom: 18px; display: flex; flex-direction: column; gap: 2px; color: #fff; }
-.ng-trainer__role { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88); }
-.ng-trainer__info h3 { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: clamp(24px, 2.4vw, 34px); line-height: 1.05; letter-spacing: -0.01em; text-transform: uppercase !important; color: #fff; }
-.ng-trainer__style { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); margin-top: 2px; }
-.ng-trainer__bio { position: absolute; z-index: 4; inset: 0; margin: 0; padding: 24px; display: flex; align-items: center; background: rgba(17,17,17,0.9); color: #fff; font-size: 14px; line-height: 1.6; opacity: 0; transition: opacity 0.3s; }
+.ng-trainer__info { position: absolute; z-index: 3; left: 24px; right: 20px; bottom: 24px; display: flex; flex-direction: column; gap: 4px; color: #fff; }
+.ng-trainer__role { font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.88); }
+.ng-trainer__info h3 { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: clamp(30px, 3.2vw, 44px); line-height: 1.05; letter-spacing: -0.01em; text-transform: uppercase !important; color: #fff; }
+.ng-trainer__style { font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.8); margin-top: 2px; }
+.ng-trainer__bio { position: absolute; z-index: 4; inset: 0; margin: 0; padding: 24px; display: flex; align-items: center; background: rgba(17,17,17,0.9); color: #fff; font-size: 16px; line-height: 1.6; opacity: 0; transition: opacity 0.3s; }
 .ng-trainer:hover .ng-trainer__bio { opacity: 1; }
 
 /* ---------- CTA banner ---------- */
