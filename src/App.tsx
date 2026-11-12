@@ -305,7 +305,7 @@ function Site({ page }: { page: Page }) {
           </h1>
           <p data-edit="Hero: aprašymas" className="ng-lead">{hero.text}</p>
           <div data-edit="Hero: mygtukai" className="ng-actions hero-btns">
-            <a href={PATHS.registration} className="ng-btn ng-btn--dark hero-btn">Registruokis {arrow}</a>
+            <a href={PATHS.registration} className="ng-btn ng-btn--dark hero-btn">{(hero.registerCta || 'Registruokis').replace(/\s*→\s*$/, '')} {arrow}</a>
             <a href="#stiliai" className="ng-btn ng-btn--ghost hero-btn">{hero.primaryCta.replace(/\s*→\s*$/, '')}{arrowDown}</a>
           </div>
         </div>

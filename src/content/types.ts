@@ -11,7 +11,7 @@ export type ContentMap = {
   'global.seo': { siteName: string; alternateNames: string[]; ogImage: Img }
   'home.hero': {
     kicker: string; line1: string; line2: string; line3: string; text: string
-    primaryCta: string; secondaryCta: string; image: Img; imageLight: Img
+    registerCta?: string; primaryCta: string; image: Img; imageLight: Img
   }
   'home.stats': { items: { num: string; label: string }[] }
   'home.styles': {

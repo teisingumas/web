@@ -25,8 +25,8 @@ export const DEFAULTS: ContentMap = {
     line2: 'JUDESIO',
     line3: 'NAMAI',
     text: 'Profesionali hip hop šokių studija Kaune. Čia gatvių ritmai virsta scenos menu — nuo pirmų žingsnių iki čempionų podiumo.',
-    primaryCta: 'Pasirink stilių →',
-    secondaryCta: 'Tvarkaraštis',
+    registerCta: 'Registruokis',
+    primaryCta: 'Pasirink stilių',
     // x / y: the framing set with the layout editor (#redaguoti)
     image: { src: '/img/hero.webp', alt: '', x: 57.8, y: 35.9 },
     imageLight: { src: '/img/hero-light.webp', alt: '' },

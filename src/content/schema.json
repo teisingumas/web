@@ -123,8 +123,8 @@
         { "key": "line2", "type": "text", "label": "Antraštė: 2 eilutė (rožinė, kruta)", "required": true, "max": 20 },
         { "key": "line3", "type": "text", "label": "Antraštė: 3 eilutė", "max": 20 },
         { "key": "text", "type": "textarea", "label": "Aprašymas", "required": true, "max": 300, "rows": 3 },
-        { "key": "primaryCta", "type": "text", "label": "Rožinis mygtukas", "required": true, "max": 30, "help": "Veda į skiltį „Pasirink savo stilių“." },
-        { "key": "secondaryCta", "type": "text", "label": "Antras mygtukas", "required": true, "max": 30, "help": "Veda į tvarkaraštį." },
+        { "key": "registerCta", "type": "text", "label": "Pirmas mygtukas (juodas)", "required": true, "max": 30, "help": "Veda į registracijos puslapį. Rodoma su rodykle." },
+        { "key": "primaryCta", "type": "text", "label": "Antras mygtukas (pilkas)", "required": true, "max": 30, "help": "Veda į skiltį „Pasirink savo stilių“. Rodoma su rodykle žemyn." },
         { "key": "image", "type": "image", "label": "Nuotrauka (tamsi tema)", "required": true, "focus": true, "alt": "none", "help": "Plati nuotrauka, pvz. 2000 × 800 px." },
         { "key": "imageLight", "type": "image", "label": "Nuotrauka (šviesi tema)", "alt": "none", "help": "Jei nenurodyta, šviesioje temoje rodoma tamsios temos nuotrauka." }
       ]
