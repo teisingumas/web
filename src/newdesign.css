@@ -40,7 +40,7 @@ a.ng-social:hover { background: #fff; }
 /* buttons */
 .ng-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: 15px; padding: 17px 28px; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s, background-color 0.2s, color 0.2s; }
 .ng-btn:hover { transform: translateY(-2px); }
-.ng-btn--accent { background: var(--ng-accent); color: #111 !important; padding: 14px 24px; font-size: 14px; }
+.ng-btn--accent { background: var(--ng-accent); color: #111 !important; padding: 11px 18px; font-size: 14px; }
 .ng-btn--accent:hover { background: #EE9DC6; }
 .ng-btn--dark { background: #111; color: #fff !important; }
 .ng-btn--dark:hover { background: #2a2a2a; }
