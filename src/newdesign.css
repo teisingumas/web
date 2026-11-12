@@ -219,8 +219,8 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 .ng-pricenote { margin: 28px 0 0; font-size: 15px; font-weight: 700; }
 
 /* ---------- trainers ---------- */
-.ng-trainers { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
-.ng-trainer { position: relative; flex: 0 0 calc((100% - 64px) / 5); aspect-ratio: 1 / 1.08; border-radius: 28px; overflow: hidden; isolation: isolate; background: #1b1b1b; }
+.ng-trainers { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+.ng-trainer { position: relative; flex: 0 0 calc((100% - 80px) / 5); aspect-ratio: 4 / 5; border-radius: 32px; overflow: hidden; isolation: isolate; background: #1b1b1b; }
 /* graphic behind the person: the studio "N" mark, large and translucent */
 .ng-trainer__mark { position: absolute; z-index: 2; left: -9%; top: -3%; width: 74%; aspect-ratio: 335 / 255; background: url('/img/trainers/n-mark.webp') center / contain no-repeat; opacity: 0.22; }
 .ng-trainer__photo { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block; transition: transform 0.5s ease; }
@@ -275,7 +275,7 @@ h1[style], h2[style] { font-family: 'Archivo', sans-serif; }
   .menu-panel__inner { padding-bottom: 28px; }
   .menu-socials { display: flex; }
 }
-@media (max-width: 1100px) { .ng-trainer { flex-basis: calc((100% - 32px) / 3); } }
+@media (max-width: 1100px) { .ng-trainer { flex-basis: calc((100% - 40px) / 3); } }
 @media (max-width: 900px) {
   .ng-wrap, .wide-container { padding-left: 20px; padding-right: 20px; }
   .ng-sec { padding-top: 88px; }
@@ -286,7 +286,7 @@ h1[style], h2[style] { font-family: 'Archivo', sans-serif; }
   .ng-hero { padding-top: 120px; gap: 36px; }
 }
 @media (max-width: 700px) {
-  .ng-trainer { flex-basis: calc((100% - 16px) / 2); }
+  .ng-trainer { flex-basis: calc((100% - 20px) / 2); }
   .ng-tabs { display: grid; grid-template-columns: 1fr 1fr; width: 100%; border-radius: 28px; }
   .ng-tab { padding: 14px 8px; text-align: center; }
   .ng-h3 { font-size: 34px; }
