@@ -624,3 +624,7 @@ a.adm-tile:hover { border-color: var(--pink); transform: translateY(-3px); }
 .wpi__main b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wpi__main small { font-size: 12px; color: #555; }
 .wpi__note { color: #8a5a00 !important; }
+
+/* dashboard: the site is hidden from search engines (staging) */
+.adm-search-note { margin: 0 0 20px; padding: 14px 18px; border-radius: 16px; background: #FDE7F1; color: #111; font-size: 14px; line-height: 1.55; }
+.adm-search-note strong { margin-right: 4px; }

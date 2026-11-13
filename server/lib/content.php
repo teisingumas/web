@@ -21,6 +21,21 @@ function load_section_rows(PDO $pdo): array
 }
 
 /** Saved sections for the public page: key => data. */
+/**
+ * "Slėpti visą svetainę nuo paieškos sistemų" (Bendri nustatymai → Numatytasis SEO). On until it is
+ * switched off in the admin, and on when the database cannot be read, so a copy never gets indexed.
+ */
+function site_hidden_from_search(?array $sections = null): bool
+{
+    try {
+        if ($sections === null) $sections = db_configured() ? load_sections(db()) : [];
+    } catch (Throwable $e) {
+        return true;
+    }
+    $seo = $sections['global.seo'] ?? [];
+    return !array_key_exists('hideFromSearch', $seo) || !empty($seo['hideFromSearch']);
+}
+
 function load_sections(PDO $pdo): array
 {
     return array_map(fn($row) => $row['data'], load_section_rows($pdo));

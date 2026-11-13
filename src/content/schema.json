@@ -120,7 +120,8 @@
       "fields": [
         { "key": "siteName", "type": "text", "label": "Svetainės pavadinimas", "required": true, "max": 40, "help": "Pridedamas prie naujienų pavadinimų, pvz. „Įrašo pavadinimas — Me Gusta“." },
         { "key": "alternateNames", "type": "tags", "label": "Kiti svetainės pavadinimai", "itemName": "pavadinimą", "max": 60, "maxItems": 4, "placeholder": "Me Gusta šokių studija", "help": "Google rodo svetainės pavadinimą virš paieškos rezultato. Pirmiausia bando „Svetainės pavadinimą“, o jei jo nenaudoja, renkasi iš šių." },
-        { "key": "ogImage", "type": "image", "label": "Numatytoji nuotrauka dalinantis", "alt": "optional", "help": "Rodoma, kai nuoroda dalijamasi Facebook, Messenger ir kt. Geriausia 1200 × 630 px." }
+        { "key": "ogImage", "type": "image", "label": "Numatytoji nuotrauka dalinantis", "alt": "optional", "help": "Rodoma, kai nuoroda dalijamasi Facebook, Messenger ir kt. Geriausia 1200 × 630 px." },
+        { "key": "hideFromSearch", "type": "checkbox", "label": "Slėpti visą svetainę nuo Google ir kitų paieškos sistemų", "help": "Kol svetainė yra bandomajame adrese, palikite pažymėta: visi puslapiai gauna „noindex“, o sitemap.xml lieka tuščias, todėl kopija nekonkuruoja su megusta.lt. Perkėlus svetainę į megusta.lt, nuimkite varnelę." }
       ]
     },
     "home.hero": {

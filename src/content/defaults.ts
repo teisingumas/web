@@ -17,7 +17,7 @@ export const DEFAULTS: ContentMap = {
     text: 'Profesionali hip hop šokių studija Kaune. 20 metų patirtis, 650+ laimėjimų, 4 šokių stiliai.',
     tagline: 'Designed with passion for movement.',
   },
-  'global.seo': { siteName: 'Me Gusta', alternateNames: ['Me Gusta šokių studija'], ogImage: { src: '/img/og-default.jpg', alt: 'Me Gusta šokių studija Kaune' } },
+  'global.seo': { siteName: 'Me Gusta', alternateNames: ['Me Gusta šokių studija'], ogImage: { src: '/img/og-default.jpg', alt: 'Me Gusta šokių studija Kaune' }, hideFromSearch: true },
 
   'home.hero': {
     kicker: 'Kaune nuo 2006',

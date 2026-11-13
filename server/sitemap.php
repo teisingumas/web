@@ -26,6 +26,7 @@ foreach (schema()['pages'] as $page) {
 foreach ($posts as $post) $urls[] = ['loc' => absolute_url('/' . $post['slug']), 'lastmod' => iso_utc($post['updated_at'])];
 foreach ($events as $event) $urls[] = ['loc' => absolute_url('/kalendorius/' . $event['slug']), 'lastmod' => iso_utc($event['updated_at'])];
 
+if (site_hidden_from_search()) $urls = [];   // hidden staging copy: an empty sitemap
 header('Content-Type: application/xml; charset=utf-8');
 header('Cache-Control: no-cache');
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";

@@ -10,5 +10,9 @@ echo "User-agent: *\n";
 echo "Disallow: /adminas\n";
 echo "Disallow: /apzvalga\n";
 echo "Disallow: /api/\n";
-echo "\n";
-echo 'Sitemap: ' . site_url() . "/sitemap.xml\n";
+// While the site is hidden (a staging copy) crawlers may still fetch the pages, so they see the
+// noindex tag; only the sitemap is left out. Blocking them here would hide the noindex instead.
+if (!site_hidden_from_search()) {
+    echo "\n";
+    echo 'Sitemap: ' . site_url() . "/sitemap.xml\n";
+}

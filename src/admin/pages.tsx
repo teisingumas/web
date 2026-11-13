@@ -61,6 +61,13 @@ export function Dashboard() {
   const [error, setError] = useState<string | null>(null)
   const [eventsError, setEventsError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
+  const [hidden, setHidden] = useState(false)
+  useEffect(() => {
+    api.content().then(c => {
+      const seo = c.sections['global.seo']?.data as { hideFromSearch?: boolean } | undefined
+      setHidden(!seo || seo.hideFromSearch !== false)
+    }).catch(() => {})
+  }, [api])
   useEffect(() => {
     setError(null)
     setEventsError(null)
@@ -75,6 +82,12 @@ export function Dashboard() {
         lead="Čia keičiate svetainės tekstus, nuotraukas, tvarkaraštį, naujienas ir renginius. Išsaugoti pakeitimai svetainėje matomi iš karto: tereikia atnaujinti puslapį."
         actions={<><a href={`${ADMIN}/naujienos/naujas`} className="adm-btn">+ Nauja naujiena</a><a href={`${ADMIN}/renginiai/naujas`} className="adm-btn adm-btn--ghost">+ Naujas renginys</a></>}
       />
+      {hidden && (
+        <div className="adm-search-note" role="status">
+          <strong>Svetainė paslėpta nuo Google.</strong> Visi puslapiai turi „noindex“, o sitemap.xml tuščias, kad bandomoji kopija nekonkuruotų su megusta.lt.
+          Perkėlus svetainę į megusta.lt, nuimkite varnelę <a className="adm-link" href={`${ADMIN}/bendri`}>Bendri nustatymai → Numatytasis SEO</a>.
+        </div>
+      )}
       <div className="adm-tiles">
         <div className="adm-tile">
           <span className="adm-tile__title">Naujienos</span>

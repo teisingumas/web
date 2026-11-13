@@ -152,6 +152,10 @@ if ($meta['image'] === '' && !empty($site['ogImage']['src'])) {
     $meta['imageAlt'] = $site['ogImage']['alt'] ?? '';
 }
 
+// Staging copy: the whole site stays out of search results until "hideFromSearch" is switched off.
+$hidden = site_hidden_from_search($pdo ? $sections : null);
+if ($hidden) $meta['noindex'] = true;
+
 $head = render_head($meta, $siteName, $jsonLd, $inline);
 $html = preg_replace('#<title>.*?</title>\s*#s', '', $template, 1);
 $html = preg_replace('#<meta name="description"[^>]*>\s*#', '', $html, 1);
@@ -159,6 +163,7 @@ $html = str_replace('</head>', $head . "\n  </head>", $html);
 if ($prerender !== '') $html = str_replace('<div id="root"></div>', '<div id="root">' . $prerender . '</div>', $html);
 
 http_response_code($status);
+if ($hidden) header('X-Robots-Tag: noindex, nofollow');
 header('Content-Type: text/html; charset=utf-8');
 header('Cache-Control: no-cache');
 header('X-Content-Type-Options: nosniff');

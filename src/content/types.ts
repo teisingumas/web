@@ -8,7 +8,7 @@ export type ContentMap = {
   'global.contacts': { email: string; phone: string; address: string }
   'global.socials': { facebook: string; instagram: string; tiktok: string; youtube: string }
   'global.footer': { text: string; tagline: string }
-  'global.seo': { siteName: string; alternateNames: string[]; ogImage: Img }
+  'global.seo': { siteName: string; alternateNames: string[]; ogImage: Img; hideFromSearch?: boolean }
   'home.hero': {
     kicker: string; line1: string; line2: string; line3: string; text: string
     registerCta?: string; primaryCta: string; image: Img; imageLight: Img
