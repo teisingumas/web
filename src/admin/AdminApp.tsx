@@ -294,6 +294,7 @@ const NAV = [
       { path: '/renginiai', label: 'Renginiai', icon: Icons.calendar },
       { path: '/renginiai/vietos', label: 'Vietos', icon: Icons.pin, sub: true },
       { path: '/renginiai/organizatoriai', label: 'Organizatoriai', icon: Icons.user, sub: true },
+      { path: '/renginiai/tipai', label: 'Tipai', icon: Icons.form, sub: true },
       { path: '/nuotraukos', label: 'Nuotraukos', icon: Icons.image },
       { path: '/bendri', label: 'Bendri nustatymai', icon: Icons.settings },
     ],
@@ -394,6 +395,7 @@ function AdminPage({ sub }: { sub: string }) {
   if (sub === '/renginiai') return <EventsAdmin />
   if (sub === '/renginiai/naujas') return <EventEditor id="new" />
   if (sub === '/renginiai/vietos') return <LookupAdmin key="venues" kind="venues" />
+  if (sub === '/renginiai/tipai') return <LookupAdmin key="types" kind="types" />
   if (sub === '/renginiai/organizatoriai') return <LookupAdmin key="organizers" kind="organizers" />
   const ev = /^\/renginiai\/(\d+)$/.exec(sub)
   if (ev) return <EventEditor id={Number(ev[1])} />

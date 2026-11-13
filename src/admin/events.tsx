@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Img } from '../content/types'
 import { EventView } from '../EventPage'
 import { navigate, SLUG_RE } from '../router'
-import { ApiError, type AdminEvent, type EventInput, type EventList, type LookupInput, type LookupKind, type LookupMap, type Organizer, type Venue } from './api'
+import { ApiError, type AdminEvent, type EventInput, type EventList, type EventType, type LookupInput, type LookupKind, type LookupMap, type Organizer, type Venue } from './api'
 import { Modal, useApi, useConfirm, useDirty, useToast } from './context'
 import { Counter, setIn, type PathArr } from './fields'
 import { SectionCard, SeoCard, SerpPreview, stableJson } from './FormCard'
@@ -11,7 +11,7 @@ import ImageInput from './ImageInput'
 import { ADMIN } from './pages'
 import { fromVilniusLocal, slugify, toVilniusLocal } from './posts'
 import RichEditor from './RichEditor'
-import { SCHEMA, type Errors, type ImageField } from './schema'
+import { type Errors, type ImageField } from './schema'
 import { ErrorState, formatDateTime, PageHeader, Skeleton, Spinner, Tabs } from './ui'
 
 const statusKey = (p: Pick<AdminEvent, 'status' | 'scheduled'>) => (p.scheduled ? 'scheduled' : p.status)
@@ -143,7 +143,7 @@ type Form = {
   publishedAt: string   // Lithuanian time, '' = automatic (now)
 }
 const EMPTY: Form = {
-  title: '', slug: '', excerpt: '', bodyHtml: '', cover: { src: '', alt: '' }, type: SCHEMA.options.eventTypes[0].value,
+  title: '', slug: '', excerpt: '', bodyHtml: '', cover: { src: '', alt: '' }, type: '',
   allDay: false, startDate: '', startTime: '', endDate: '', endTime: '', venueId: '', organizerId: '', showMap: false, price: '',
   seoTitle: '', seoDescription: '', seoKeywords: '', publishedAt: '',
 }
@@ -219,12 +219,14 @@ export function EventEditor({ id }: { id: number | 'new' }) {
   const [slugRemote, setSlugRemote] = useState<string | null>(null)
   const [venues, setVenues] = useState<Venue[]>([])
   const [organizers, setOrganizers] = useState<Organizer[]>([])
+  const [types, setTypes] = useState<EventType[]>([])
   const [adding, setAdding] = useState<LookupKind | null>(null)
 
   // The lists the dropdowns are made of.
   useEffect(() => {
     api.lookups('venues').then(r => setVenues(r.items)).catch(() => {})
     api.lookups('organizers').then(r => setOrganizers(r.items)).catch(() => {})
+    api.lookups('types').then(r => setTypes(r.items)).catch(() => {})
   }, [api])
 
   // Load the event (a freshly created one is already in state).
@@ -358,8 +360,9 @@ export function EventEditor({ id }: { id: number | 'new' }) {
     }
   }
 
-  const added = (kind: LookupKind, item: Venue | Organizer) => {
-    if (kind === 'venues') { setVenues(l => [...l, item as Venue].sort((a, b) => a.name.localeCompare(b.name, 'lt'))); set(['venueId'], String(item.id)) }
+  const added = (kind: LookupKind, item: Venue | Organizer | EventType) => {
+    if (kind === 'types') { setTypes(l => [...l, item as EventType].sort((a, b) => a.name.localeCompare(b.name, 'lt'))); set(['type'], String(item.id)) }
+    else if (kind === 'venues') { setVenues(l => [...l, item as Venue].sort((a, b) => a.name.localeCompare(b.name, 'lt'))); set(['venueId'], String(item.id)) }
     else { setOrganizers(l => [...l, item as Organizer].sort((a, b) => a.name.localeCompare(b.name, 'lt'))); set(['organizerId'], String(item.id)) }
     setAdding(null)
   }
@@ -411,13 +414,17 @@ export function EventEditor({ id }: { id: number | 'new' }) {
             <p className="adm-help">Rodomas kalendoriuje ir renginio puslapio viršuje, taip pat Google paieškoje (jei SEO aprašymas tuščias).</p>
           </div>
 
-          <div className="adm-field" style={{ maxWidth: 280 }}>
-            <label htmlFor="ev-type" className="adm-label"><span>Žyma</span></label>
-            <select id="ev-type" className="adm-input" value={form.type} aria-invalid={!!err.type} onChange={e => set(['type'], e.target.value)}>
-              {SCHEMA.options.eventTypes.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
+          <div className="adm-field">
+            <label htmlFor="ev-type" className="adm-label"><span>Tipas</span></label>
+            <div className="adm-pick" style={{ maxWidth: 520 }}>
+              <select id="ev-type" className="adm-input" value={form.type} aria-invalid={!!err.type} onChange={e => set(['type'], e.target.value)}>
+                <option value="">— Nepasirinktas —</option>
+                {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+              </select>
+              <button type="button" className="adm-btn adm-btn--small adm-btn--ghost" onClick={() => setAdding('types')}>+ Naujas tipas</button>
+            </div>
             {err.type && <p className="adm-error">{err.type}</p>}
-            <p className="adm-help">Rodoma prie renginio kalendoriuje.</p>
+            <p className="adm-help">Rodomas kalendoriuje prie renginio, o lankytojai pagal jį filtruoja renginius. Tipų sąrašas – skiltyje <a className="adm-link" href={`${ADMIN}/renginiai/tipai`} target="_blank" rel="noreferrer">Tipai</a>.</p>
           </div>
 
           <div className="adm-panel">
@@ -597,7 +604,7 @@ export function EventEditor({ id }: { id: number | 'new' }) {
           <div className="adm-preview" style={{ margin: -20 }}>
             <EventView preview event={{
               title: form.title || 'Be pavadinimo', excerpt: form.excerpt, cover: form.cover, bodyHtml: form.bodyHtml,
-              type: form.type, typeLabel: SCHEMA.options.eventTypes.find(o => o.value === form.type)?.label ?? '',
+              type: form.type, typeLabel: types.find(t => String(t.id) === form.type)?.name ?? '',
               allDay: form.allDay, startDate: form.startDate, startTime: form.allDay ? null : form.startTime || null,
               endDate: form.endDate && form.endDate !== form.startDate ? form.endDate : null, endTime: form.allDay ? null : form.endTime || null,
               venue: venue ? { name: venue.name, address: venue.address } : null,
@@ -627,7 +634,15 @@ const LOOKUP = {
     lead: 'Renginių organizatoriai. Pasirenkami kurdami renginį.',
     empty: 'Organizatorių dar nėra. Sukurkite pirmąjį!', nameHelp: 'pvz. Me Gusta',
   },
+  types: {
+    one: 'tipas', title: 'Tipai', newLabel: 'Naujas tipas', editTitle: 'Redaguoti tipą', newTitle: 'Naujas tipas',
+    second: null, secondLabel: '', secondHelp: '', secondMax: 0,
+    lead: 'Renginių tipai. Rodomi kalendoriuje prie renginio, o lankytojai pagal juos filtruoja renginius.',
+    empty: 'Tipų dar nėra. Sukurkite pirmąjį!', nameHelp: 'pvz. Studijos renginys',
+  },
 }
+const DELETE_TITLE: Record<LookupKind, string> = { venues: 'Ištrinti vietą?', organizers: 'Ištrinti organizatorių?', types: 'Ištrinti tipą?' }
+const CREATED: Record<LookupKind, string> = { venues: 'Vieta sukurta.', organizers: 'Organizatorius sukurtas.', types: 'Tipas sukurtas.' }
 
 /** Create or edit a venue / organizer in a dialog (used on the lists and inside the event form). */
 function LookupModal<K extends LookupKind>({ kind, item, onClose, onSaved }: { kind: K; item?: LookupMap[K]; onClose: () => void; onSaved: (item: LookupMap[K]) => void }) {
@@ -635,25 +650,26 @@ function LookupModal<K extends LookupKind>({ kind, item, onClose, onSaved }: { k
   const toast = useToast()
   const def = LOOKUP[kind]
   const [name, setName] = useState(item?.name ?? '')
-  const [second, setSecond] = useState(item ? String((item as unknown as Record<string, unknown>)[def.second] ?? '') : '')
+  const [second, setSecond] = useState(item && def.second ? String((item as unknown as Record<string, unknown>)[def.second] ?? '') : '')
   const [errors, setErrors] = useState<Errors>({})
   const [saving, setSaving] = useState(false)
   const formId = `lookup-form-${kind}`
+  const nameMax = kind === 'types' ? 60 : 120
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     const found: Errors = {}
     if (!name.trim()) found.name = 'Įrašykite pavadinimą.'
-    else if (name.trim().length > 120) found.name = `Ne daugiau kaip 120 ženklų (dabar ${name.trim().length}).`
-    if (second.trim().length > def.secondMax) found[def.second] = `Ne daugiau kaip ${def.secondMax} ženklų (dabar ${second.trim().length}).`
+    else if (name.trim().length > nameMax) found.name = `Ne daugiau kaip ${nameMax} ženklų (dabar ${name.trim().length}).`
+    if (def.second && second.trim().length > def.secondMax) found[def.second] = `Ne daugiau kaip ${def.secondMax} ženklų (dabar ${second.trim().length}).`
     if (kind === 'organizers' && second.trim() && !/^https?:\/\/[^\s"'<>]+\.[^\s"'<>]+$/i.test(second.trim())) found.website = 'Įrašykite pilną nuorodą, prasidedančią https://'
     setErrors(found)
     if (Object.keys(found).length) return
     setSaving(true)
-    const input: LookupInput = { name, [def.second]: second }
+    const input: LookupInput = def.second ? { name, [def.second]: second } : { name }
     try {
       const saved = item ? await api.updateLookup(kind, item.id, input) : await api.createLookup(kind, input)
-      toast.success(item ? 'Pakeitimai išsaugoti.' : kind === 'venues' ? 'Vieta sukurta.' : 'Organizatorius sukurtas.')
+      toast.success(item ? 'Pakeitimai išsaugoti.' : CREATED[kind])
       onSaved(saved)
     } catch (err) {
       if (err instanceof ApiError && Object.keys(err.fields).length) setErrors(err.fields)
@@ -673,17 +689,17 @@ function LookupModal<K extends LookupKind>({ kind, item, onClose, onSaved }: { k
     >
       <form id={formId} className="adm-stack" onSubmit={submit} noValidate>
         <div className="adm-field">
-          <label htmlFor={`${formId}-name`} className="adm-label"><span>Pavadinimas<span className="adm-req"> *</span></span><Counter length={name.trim().length} max={120} /></label>
+          <label htmlFor={`${formId}-name`} className="adm-label"><span>Pavadinimas<span className="adm-req"> *</span></span><Counter length={name.trim().length} max={nameMax} /></label>
           <input id={`${formId}-name`} className="adm-input" value={name} autoFocus placeholder={def.nameHelp} aria-invalid={!!errors.name} onChange={e => setName(e.target.value)} />
           {errors.name && <p className="adm-error">{errors.name}</p>}
         </div>
-        <div className="adm-field">
+        {def.second && <div className="adm-field">
           <label htmlFor={`${formId}-second`} className="adm-label"><span>{def.secondLabel}</span><Counter length={second.trim().length} max={def.secondMax} /></label>
           <input id={`${formId}-second`} className="adm-input" value={second} type={kind === 'organizers' ? 'url' : 'text'} placeholder={kind === 'organizers' ? 'https://' : ''}
             aria-invalid={!!errors[def.second]} onChange={e => setSecond(e.target.value)} />
           {errors[def.second] && <p className="adm-error">{errors[def.second]}</p>}
           <p className="adm-help">{def.secondHelp}</p>
-        </div>
+        </div>}
       </form>
     </Modal>
   )
@@ -695,10 +711,10 @@ export function LookupAdmin({ kind }: { kind: LookupKind }) {
   const toast = useToast()
   const confirm = useConfirm()
   const def = LOOKUP[kind]
-  const [items, setItems] = useState<(Venue | Organizer)[] | null>(null)
+  const [items, setItems] = useState<(Venue | Organizer | EventType)[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
-  const [editing, setEditing] = useState<Venue | Organizer | 'new' | null>(null)
+  const [editing, setEditing] = useState<Venue | Organizer | EventType | 'new' | null>(null)
   const [usage, setUsage] = useState<{ list: string[]; message: string } | null>(null)
 
   useEffect(() => {
@@ -709,7 +725,7 @@ export function LookupAdmin({ kind }: { kind: LookupKind }) {
     return () => { cancelled = true }
   }, [api, kind, attempt])
 
-  const saved = (item: Venue | Organizer) => {
+  const saved = (item: Venue | Organizer | EventType) => {
     setItems(list => {
       const rest = (list ?? []).filter(i => i.id !== item.id)
       return [...rest, item].sort((a, b) => a.name.localeCompare(b.name, 'lt'))
@@ -717,8 +733,8 @@ export function LookupAdmin({ kind }: { kind: LookupKind }) {
     setEditing(null)
   }
 
-  const remove = async (item: Venue | Organizer) => {
-    const ok = await confirm({ title: `Ištrinti ${def.one === 'vieta' ? 'vietą' : 'organizatorių'}?`, text: <>„{item.name}“ bus ištrinta visam laikui.</>, confirm: 'Ištrinti', danger: true })
+  const remove = async (item: Venue | Organizer | EventType) => {
+    const ok = await confirm({ title: DELETE_TITLE[kind], text: <>„{item.name}“ bus ištrinta visam laikui.</>, confirm: 'Ištrinti', danger: true })
     if (!ok) return
     try {
       await api.deleteLookup(kind, item.id)
@@ -746,12 +762,12 @@ export function LookupAdmin({ kind }: { kind: LookupKind }) {
         ) : (
           <div className="adm-lookup">
             {items.map(item => {
-              const second = String((item as unknown as Record<string, unknown>)[def.second] ?? '')
+              const second = def.second ? String((item as unknown as Record<string, unknown>)[def.second] ?? '') : ''
               return (
                 <div key={item.id} className="adm-lookup__row">
                   <div style={{ minWidth: 0 }}>
                     <button type="button" className="adm-table__title adm-lookup__name" onClick={() => setEditing(item)}>{item.name}</button>
-                    <span className="adm-table__slug">{second || (kind === 'venues' ? 'Adresas nenurodytas' : 'Svetainė nenurodyta')}</span>
+                    {def.second && <span className="adm-table__slug">{second || (kind === 'venues' ? 'Adresas nenurodytas' : 'Svetainė nenurodyta')}</span>}
                   </div>
                   <span className="adm-table__date">{item.eventCount > 0 ? `Renginių: ${item.eventCount}` : 'Nenaudojama'}</span>
                   <div className="adm-table__actions">
@@ -766,7 +782,7 @@ export function LookupAdmin({ kind }: { kind: LookupKind }) {
       {editing && (
         <LookupModal
           kind={kind} item={editing === 'new' ? undefined : editing as LookupMap[typeof kind]}
-          onClose={() => setEditing(null)} onSaved={item => saved(item as Venue | Organizer)}
+          onClose={() => setEditing(null)} onSaved={item => saved(item as Venue | Organizer | EventType)}
         />
       )}
       {usage && (

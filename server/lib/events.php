@@ -5,10 +5,12 @@ declare(strict_types=1);
 // events live at /kalendorius/<slug>. Like blog posts, an event is public once it is published and
 // its publishing time has come (a later time = scheduled).
 
-const EVENT_SELECT = "SELECT e.*, v.name AS venue_name, v.address AS venue_address, o.name AS organizer_name, o.website AS organizer_website
+const EVENT_SELECT = "SELECT e.*, v.name AS venue_name, v.address AS venue_address, o.name AS organizer_name, o.website AS organizer_website,
+    et.name AS type_name
     FROM events e
     LEFT JOIN event_venues v ON v.id = e.venue_id
-    LEFT JOIN event_organizers o ON o.id = e.organizer_id";
+    LEFT JOIN event_organizers o ON o.id = e.organizer_id
+    LEFT JOIN event_types et ON et.id = e.type_id";
 const EVENT_PUBLIC = "e.status = 'published' AND e.published_at <= UTC_TIMESTAMP()";
 // the last day an event takes up: it stays "upcoming" until that day is over
 const EVENT_LAST_DAY = 'COALESCE(e.end_date, e.start_date)';
@@ -21,12 +23,6 @@ function today_local(): string
     return date('Y-m-d');
 }
 
-/** Label of an event tag ("varzybos" => "Varžybos"); unknown values count as the first one. */
-function event_type_label(string $type): string
-{
-    foreach (schema()['options']['eventTypes'] as $o) if ($o['value'] === $type) return $o['label'];
-    return schema()['options']['eventTypes'][0]['label'];
-}
 
 function hm(?string $time): ?string
 {
@@ -42,8 +38,9 @@ function event_card(array $row): array
         'title' => $row['title'],
         'excerpt' => $row['excerpt'],
         'cover' => ['src' => $row['cover_image'], 'alt' => $row['cover_alt']],
-        'type' => $row['type'],
-        'typeLabel' => event_type_label($row['type']),
+        // type: the event type's id ('' when none); typeLabel: its name
+        'type' => $row['type_id'] !== null && $row['type_name'] !== null ? (string) $row['type_id'] : '',
+        'typeLabel' => $row['type_id'] !== null ? (string) ($row['type_name'] ?? '') : '',
         'allDay' => (bool) $row['all_day'],
         'startDate' => $row['start_date'],
         'startTime' => hm($row['start_time']),
@@ -96,21 +93,21 @@ function demo_events_seed(PDO $pdo): void
         }
         $events = [
             ['atviroji-hip-hop-pamoka-seimai', 'Atviroji Hip Hop pamoka visai šeimai', 'Ateikite kartu su vaikais: valanda judesio, muzikos ir pirmųjų Hip Hop žingsnių. Patirties nereikia.',
-                '/img/styles/gatves.webp', 'Gatvės šokių pamoka Me Gusta salėje', 'renginys', 0, '2026-11-22', '12:00', null, '13:30', 0.0],
+                '/img/styles/gatves.webp', 'Gatvės šokių pamoka Me Gusta salėje', 'Studijos renginys', 0, '2026-11-22', '12:00', null, '13:30', 0.0],
             ['me-gusta-kaledinis-sou-2026', 'Me Gusta kalėdinis šou 2026', 'Visos studijos grupės scenoje: gatvės šokiai, breikas, pop dance ir lady class. Šventinis vakaras visai šeimai.',
-                '/img/hero.webp', 'Me Gusta šokėjai scenoje', 'renginys', 0, '2026-12-20', '17:00', null, '19:00', 10.0],
+                '/img/hero.webp', 'Me Gusta šokėjai scenoje', 'Studijos renginys', 0, '2026-12-20', '17:00', null, '19:00', 10.0],
             ['kaunas-breaking-jam-2027', 'Kaunas Breaking Jam 2027', 'Dviejų dienų breiko kovos vaikams ir suaugusiems: 1x1, 2x2 ir crew kategorijos, svečiai teisėjai iš Latvijos ir Lenkijos.',
-                '/img/styles/breikas.webp', 'Breiko šokėjas', 'varzybos', 1, '2027-01-23', null, '2027-01-24', null, 15.0],
+                '/img/styles/breikas.webp', 'Breiko šokėjas', 'Varžybos', 1, '2027-01-23', null, '2027-01-24', null, 15.0],
             ['pop-dance-lady-class-intensyvas', 'Pop Dance ir Lady Class intensyvas', 'Keturių valandų intensyvas merginoms nuo 12 metų: technika, choreografija ir filmuojamas pasirodymas pabaigoje.',
-                '/img/styles/pop.webp', 'Pop dance treniruotė', 'kita', 0, '2027-02-14', '11:00', null, '15:00', 30.0],
+                '/img/styles/pop.webp', 'Pop dance treniruotė', 'Studijos renginys', 0, '2027-02-14', '11:00', null, '15:00', 30.0],
         ];
         $exists = $pdo->prepare('SELECT 1 FROM events WHERE slug = ?');
-        $insert = $pdo->prepare('INSERT INTO events (slug, status, title, excerpt, body_html, cover_image, cover_alt, type, all_day, start_date, start_time, end_date, end_time,
+        $insert = $pdo->prepare('INSERT INTO events (slug, status, title, excerpt, body_html, cover_image, cover_alt, type_id, all_day, start_date, start_time, end_date, end_time,
             venue_id, organizer_id, show_map, price, published_at) VALUES (?, \'published\', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, UTC_TIMESTAMP())');
         foreach ($events as [$slug, $title, $excerpt, $cover, $alt, $type, $allDay, $start, $startTime, $end, $endTime, $price]) {
             $exists->execute([$slug]);
             if ($exists->fetchColumn()) continue;
-            $insert->execute([$slug, $title, $excerpt, '<p>' . e($excerpt) . '</p>', $cover, $alt, $type, $allDay, $start, $startTime, $end, $endTime, (int) $venue, (int) $org, $price]);
+            $insert->execute([$slug, $title, $excerpt, '<p>' . e($excerpt) . '</p>', $cover, $alt, event_type_id($pdo, $type), $allDay, $start, $startTime, $end, $endTime, (int) $venue, (int) $org, $price]);
         }
         if (ensure_dir(data_dir())) @file_put_contents($marker, gmdate('c'));
     } catch (Throwable $e) {
@@ -179,7 +176,7 @@ function event_admin(array $row): array
         'excerpt' => $row['excerpt'],
         'bodyHtml' => $row['body_html'],
         'cover' => ['src' => $row['cover_image'], 'alt' => $row['cover_alt']],
-        'type' => $row['type'],
+        'type' => $row['type_id'] === null ? '' : (string) $row['type_id'],
         'allDay' => (bool) $row['all_day'],
         'startDate' => $row['start_date'],
         'startTime' => hm($row['start_time']),
@@ -320,9 +317,7 @@ function admin_save_event(PDO $pdo, ?int $id, array $in): array
 
     $cover = validate_image(['alt' => 'required'], $in['cover'] ?? [], 'cover', $errors);
 
-    $type = clean_line($in['type'] ?? '', false);
-    if ($type === '') $type = option_values('eventTypes')[0];
-    elseif (!in_array($type, option_values('eventTypes'), true)) $errors['type'] = 'Pasirinkite žymą iš sąrašo.';
+    $typeId = chosen_lookup($pdo, 'type', $in['type'] ?? null, 'type', $errors);
 
     // When: dates are Lithuanian calendar dates, times are Lithuanian clock times.
     $allDay = !empty($in['allDay']);
@@ -394,17 +389,17 @@ function admin_save_event(PDO $pdo, ?int $id, array $in): array
     if ($chosenAt !== null && !($publishedAt && substr($publishedAt, 0, 16) === substr($chosenAt, 0, 16))) $publishedAt = $chosenAt;
     if ($publish && !$publishedAt) $publishedAt = now_utc();
 
-    $values = [$slug, $status, $title, $excerpt, $body, $cover['src'], $cover['alt'], $type, $allDay ? 1 : 0, $startDate, $startTime, $endDate, $endTime,
+    $values = [$slug, $status, $title, $excerpt, $body, $cover['src'], $cover['alt'], $typeId, $allDay ? 1 : 0, $startDate, $startTime, $endDate, $endTime,
         $venueId, $organizerId, $showMap ? 1 : 0, $price, $seo['seoTitle'], $seo['seoDescription'], $seo['seoKeywords'], $publishedAt];
     $wasPublic = $existing && $existing['status'] === 'published' && $existing['published_at'] !== null && $existing['published_at'] <= now_utc();
     try {
         if ($existing) {
-            $pdo->prepare('UPDATE events SET slug = ?, status = ?, title = ?, excerpt = ?, body_html = ?, cover_image = ?, cover_alt = ?, type = ?,
+            $pdo->prepare('UPDATE events SET slug = ?, status = ?, title = ?, excerpt = ?, body_html = ?, cover_image = ?, cover_alt = ?, type_id = ?,
                 all_day = ?, start_date = ?, start_time = ?, end_date = ?, end_time = ?, venue_id = ?, organizer_id = ?, show_map = ?, price = ?,
                 seo_title = ?, seo_description = ?, seo_keywords = ?, published_at = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
                 ->execute([...$values, $id]);
         } else {
-            $pdo->prepare('INSERT INTO events (slug, status, title, excerpt, body_html, cover_image, cover_alt, type, all_day, start_date, start_time, end_date, end_time,
+            $pdo->prepare('INSERT INTO events (slug, status, title, excerpt, body_html, cover_image, cover_alt, type_id, all_day, start_date, start_time, end_date, end_time,
                 venue_id, organizer_id, show_map, price, seo_title, seo_description, seo_keywords, published_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')->execute($values);
             $id = (int) $pdo->lastInsertId();
@@ -442,6 +437,15 @@ const EVENT_LOOKUPS = [
             ['key' => 'address', 'type' => 'text', 'max' => 200],
         ],
     ],
+    'type' => [
+        'table' => 'event_types', 'column' => 'type_id', 'column2' => null,
+        'gone' => 'Pasirinktas tipas nebeegzistuoja. Pasirinkite kitą.',
+        'missing' => 'Tipas nerastas. Galbūt jis jau ištrintas.',
+        'inUse' => 'Šis tipas priskirtas renginiams, todėl jo ištrinti negalima. Pirma pakeiskite tipą šiuose renginiuose.',
+        'fields' => [
+            ['key' => 'name', 'type' => 'text', 'required' => true, 'max' => 60],
+        ],
+    ],
     'organizer' => [
         'table' => 'event_organizers', 'column' => 'organizer_id', 'column2' => 'website',
         'gone' => 'Pasirinktas organizatorius nebeegzistuoja. Pasirinkite kitą.',
@@ -463,7 +467,9 @@ function lookup_kind(string $kind): array
 function lookup_public(string $kind, array $row): array
 {
     $second = lookup_kind($kind)['column2'];
-    return ['id' => (int) $row['id'], 'name' => $row['name'], $second => $row[$second], 'eventCount' => (int) ($row['event_count'] ?? 0)];
+    $out = ['id' => (int) $row['id'], 'name' => $row['name'], 'eventCount' => (int) ($row['event_count'] ?? 0)];
+    if ($second !== null) $out[$second] = $row[$second];
+    return $out;
 }
 
 function find_lookup(PDO $pdo, string $kind, int $id): array
@@ -491,7 +497,14 @@ function admin_save_lookup(PDO $pdo, string $kind, ?int $id, array $in): array
     $clean = validate_fields($def['fields'], $in, '', $errors);
     if ($errors) throw validation_error($errors);
     $second = $def['column2'];
-    if ($id) {
+    if ($second === null) {
+        if ($id) {
+            $pdo->prepare("UPDATE {$def['table']} SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$clean['name'], $id]);
+        } else {
+            $pdo->prepare("INSERT INTO {$def['table']} (name) VALUES (?)")->execute([$clean['name']]);
+            $id = (int) $pdo->lastInsertId();
+        }
+    } elseif ($id) {
         $pdo->prepare("UPDATE {$def['table']} SET name = ?, $second = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$clean['name'], $clean[$second], $id]);
     } else {
         $pdo->prepare("INSERT INTO {$def['table']} (name, $second) VALUES (?, ?)")->execute([$clean['name'], $clean[$second]]);

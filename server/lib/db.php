@@ -78,6 +78,14 @@ const MEGUSTA_TABLES = [
         updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
 
+    // Event types ("Studijos renginys", "Varžybos" ...): edited in the admin, used to filter the calendar.
+    "CREATE TABLE IF NOT EXISTS event_types (
+        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(60) NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
     // Events: dates and times are Lithuanian wall-clock values (an event happens where it is held);
     // published_at is UTC like blog_posts and decides when the event appears on the site.
     "CREATE TABLE IF NOT EXISTS events (
@@ -157,5 +165,25 @@ function migrate(PDO $pdo, string $dbId): void
     if (!$pdo->query("SHOW COLUMNS FROM events LIKE 'type'")->fetch()) {
         $pdo->exec("ALTER TABLE events ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'renginys' AFTER cover_alt");
     }
+    // v5: the fixed tags became editable types (event_types); every event starts as "Studijos renginys",
+    // the Breaking Jam demo event as "Varžybos"
+    if (!$pdo->query("SHOW COLUMNS FROM events LIKE 'type_id'")->fetch()) {
+        $pdo->exec("ALTER TABLE events ADD COLUMN type_id INT UNSIGNED NULL AFTER type, ADD KEY idx_event_type (type_id)");
+        $studio = event_type_id($pdo, 'Studijos renginys');
+        $contest = event_type_id($pdo, 'Varžybos');
+        $pdo->prepare('UPDATE events SET type_id = ?')->execute([$studio]);
+        $pdo->prepare("UPDATE events SET type_id = ? WHERE slug = 'kaunas-breaking-jam-2027'")->execute([$contest]);
+    }
     if (ensure_dir(data_dir())) @file_put_contents($marker, now_utc());
+}
+
+/** The id of the event type with this name, created when missing. */
+function event_type_id(PDO $pdo, string $name): int
+{
+    $stmt = $pdo->prepare('SELECT id FROM event_types WHERE name = ? ORDER BY id LIMIT 1');
+    $stmt->execute([$name]);
+    $id = $stmt->fetchColumn();
+    if ($id) return (int) $id;
+    $pdo->prepare('INSERT INTO event_types (name) VALUES (?)')->execute([$name]);
+    return (int) $pdo->lastInsertId();
 }

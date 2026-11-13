@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { inlineData, section } from './content'
 import type { EventCard, EventsData } from './content/types'
-import { dayOf, isMultiDay, isOngoing, isPast, lastDay, monthKey, monthLabel, monthShort, monthsOf, priceText, timeText, todayVilnius, weekdayOf, yearOf } from './eventFormat'
+import { dayOf, isMultiDay, isOngoing, isPast, lastDay, monthKey, monthLabel, monthShort, timeText, todayVilnius, weekdayOf } from './eventFormat'
 import { fetchEvents } from './publicApi'
 import { pageTitle } from './seo'
 
@@ -26,7 +26,7 @@ export default function Calendar() {
     inlineEvents ? { status: 'ready', data: inlineEvents } : { status: 'loading' })
   const [attempt, setAttempt] = useState(0)
   const [view, setView] = useState<View>('up')
-  const [month, setMonth] = useState('all')
+  const [typeFilter, setTypeFilter] = useState('all')
   const [menuOpen, setMenuOpen] = useState(false)
   const filterRef = useRef<HTMLDivElement>(null)
 
@@ -70,38 +70,36 @@ export default function Calendar() {
   const isUp = view === 'up'
   const list = lists ? (isUp ? lists.up : lists.past) : []
 
-  // month filter options: every month an event touches (a several-day event counts in each)
+  // type filter options: the types of the listed events, with counts
   const { options, groups, selected } = useMemo(() => {
     const nowKey = monthKey(today)
-    const counts: Record<string, number> = {}
-    for (const e of list) for (const k of monthsOf(e)) { if (isUp && k < nowKey) continue; counts[k] = (counts[k] ?? 0) + 1 }
-    const keys = Object.keys(counts).sort()
-    if (!isUp) keys.reverse()
-    const sel = month !== 'all' && counts[month] ? month : 'all'
-    const opts = [{ key: 'all', label: 'Visi mėnesiai', count: list.length }, ...keys.map(k => ({ key: k, label: monthLabel(k), count: counts[k] }))]
+    const counts = new Map<string, { label: string; count: number }>()
+    for (const e of list) {
+      if (!e.type) continue
+      const c = counts.get(e.type) ?? { label: e.typeLabel, count: 0 }
+      c.count++
+      counts.set(e.type, c)
+    }
+    const sel = typeFilter !== 'all' && counts.has(typeFilter) ? typeFilter : 'all'
+    const opts = [{ key: 'all', label: 'Visi tipai', count: list.length },
+      ...[...counts.entries()].sort((a, b) => a[1].label.localeCompare(b[1].label, 'lt')).map(([key, c]) => ({ key, label: c.label, count: c.count }))]
 
-    // grouped by month: an event sits under its first month (an ongoing one under this month);
-    // with a month picked, every event touching it is listed under it
+    // grouped by month: an event sits under its first month (an ongoing one under this month)
     const grouped: { key: string; label: string; events: EventCard[] }[] = []
     const byKey: Record<string, (typeof grouped)[number]> = {}
     for (const e of list) {
-      let k: string
-      if (sel === 'all') {
-        k = monthKey(e.startDate)
-        if (isUp && k < nowKey) k = nowKey
-      } else {
-        if (!monthsOf(e).includes(sel)) continue
-        k = sel
-      }
+      if (sel !== 'all' && e.type !== sel) continue
+      let k = monthKey(e.startDate)
+      if (isUp && k < nowKey) k = nowKey
       const g = byKey[k] ?? (byKey[k] = { key: k, label: monthLabel(k), events: [] })
       if (!grouped.includes(g)) grouped.push(g)
       g.events.push(e)
     }
     return { options: opts, groups: grouped, selected: sel }
-  }, [list, isUp, month, today])
+  }, [list, isUp, typeFilter, today])
 
-  const pick = (v: View) => { setView(v); setMonth('all'); setMenuOpen(false) }
-  const selectedLabel = options.find(o => o.key === selected)?.label ?? 'Visi mėnesiai'
+  const pick = (v: View) => { setView(v); setTypeFilter('all'); setMenuOpen(false) }
+  const selectedLabel = options.find(o => o.key === selected)?.label ?? 'Visi tipai'
 
   return (
     <section id="kalendorius" className="cal">
@@ -117,20 +115,20 @@ export default function Calendar() {
             <button type="button" role="tab" aria-selected={isUp} className="cal-tab" onClick={() => pick('up')}>Artėjantys{lists ? <span className="cal-tab__n">{lists.up.length}</span> : null}</button>
             <button type="button" role="tab" aria-selected={!isUp} className="cal-tab" onClick={() => pick('past')}>Praėję{lists ? <span className="cal-tab__n">{lists.past.length}</span> : null}</button>
           </div>
-          {options.length > 1 && (
+          {options.length > 2 && (
             <div className="cal-mf" ref={filterRef}>
               <button type="button" className={`cal-mf-btn${menuOpen ? ' is-open' : ''}`} aria-haspopup="true" aria-expanded={menuOpen} onClick={() => setMenuOpen(o => !o)}>
                 <span className="cal-mf-btn__label">
-                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="16" rx="3" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M6 12h12M10 18h4" /></svg>
                   <span>{selectedLabel}</span>
                 </span>
                 <svg className="cal-mf-btn__chev" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
               </button>
               {menuOpen && (
-                <div className="cal-mf-panel" role="menu" aria-label="Mėnesio filtras">
+                <div className="cal-mf-panel" role="menu" aria-label="Renginio tipas">
                   {options.map(o => (
                     <button key={o.key} type="button" role="menuitemradio" aria-checked={o.key === selected} className={`cal-mf-opt${o.key === selected ? ' is-on' : ''}`}
-                      onClick={() => { setMonth(o.key); setMenuOpen(false) }}>
+                      onClick={() => { setTypeFilter(o.key); setMenuOpen(false) }}>
                       <span>{o.label}</span><small>{plural(o.count)}</small>
                     </button>
                   ))}
@@ -169,10 +167,7 @@ export default function Calendar() {
 
         {groups.map(g => (
           <section key={g.key} className="cal-month" aria-labelledby={`cal-m-${g.key}`}>
-            <h2 className="cal-month__head" id={`cal-m-${g.key}`}>
-              {g.label}
-              <span className="cal-month__count">{plural(g.events.length)}</span>
-            </h2>
+            <h2 className="cal-month__head" id={`cal-m-${g.key}`}>{g.label}</h2>
             <div className="cal-list">
               {g.events.map(e => <EventRow key={e.slug} event={e} today={today} />)}
             </div>
@@ -229,7 +224,6 @@ const CSS = `
 
   .cal-month { margin-top: 56px; }
   .cal-month__head { margin: 0 0 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-family: 'Archivo', sans-serif; font-weight: 900; font-size: clamp(28px, 3vw, 40px); line-height: 1; letter-spacing: -0.02em; color: #111; }
-  .cal-month__count { padding: 6px 12px; border-radius: 999px; background: #fff; font: 700 13px 'Manrope', sans-serif; letter-spacing: 0; color: #555; }
   .cal-list { display: flex; flex-direction: column; gap: 16px; }
   .cal-list--top { margin-top: 32px; }
 
@@ -237,9 +231,9 @@ const CSS = `
   .cal-ev:not(.cal-ev--skeleton):hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(17,17,17,0.08); }
   /* the date is plain type with a hairline after it, no coloured tile */
   .cal-date { display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 8px 0 8px 12px; border-right: 1px solid #ECEAE4; color: #111; }
-  .cal-date__day { font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 64px; line-height: 0.85; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
-  .cal-date__month { font-weight: 800; font-size: 15px; text-transform: capitalize; }
-  .cal-date__sub { font-size: 13px; font-weight: 600; color: #6B6A63; }
+  .cal-date__day { font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 56px; line-height: 0.85; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .cal-date__day small { font-size: 0.42em; letter-spacing: 0; margin-left: 2px; }
+  .cal-date__sub { font-size: 14px; font-weight: 700; color: #6B6A63; }
   .cal-ev.is-past .cal-date { color: #8A877D; }
   /* posters often carry text: the whole picture shows (contain) over a blurred copy of itself */
   .cal-thumb { display: block; position: relative; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden; background: #F0EEE8; align-self: center; isolation: isolate; }
@@ -251,8 +245,6 @@ const CSS = `
   .cal-body { display: flex; flex-direction: column; justify-content: center; gap: 12px; min-width: 0; padding: 8px 0; }
   .cal-tags { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .cal-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: #F0EEE8; color: #111; font: 700 13px/1.2 'Manrope', sans-serif; }
-  .cal-pill--renginys { background: #F7B1D4; }
-  .cal-pill--varzybos { background: #111; color: #fff; }
   .cal-pill--live { background: #111; color: #fff; }
   .cal-pill--live i { width: 7px; height: 7px; border-radius: 999px; background: #F7B1D4; }
   .cal-title { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 900; font-size: clamp(24px, 2.3vw, 32px); line-height: 1.05; letter-spacing: -0.02em; color: #111; overflow-wrap: anywhere; text-wrap: balance; }
@@ -281,7 +273,7 @@ const CSS = `
   .cal-thumb.cal-skel { height: auto; min-height: 200px; border-radius: 20px; }
   @keyframes calPulse { from { opacity: 1; } to { opacity: 0.45; } }
 
-  @media (max-width: 1100px) { .cal-ev { grid-template-columns: 96px minmax(0, 300px) minmax(0, 1fr); gap: 22px; } .cal-date__day { font-size: 52px; } }
+  @media (max-width: 1100px) { .cal-ev { grid-template-columns: 104px minmax(0, 300px) minmax(0, 1fr); gap: 22px; } .cal-date__day { font-size: 46px; } }
   @media (max-width: 760px) {
     .cal { padding-top: 130px; }
     .cal-toolbar { flex-direction: column; align-items: stretch; }
@@ -291,6 +283,7 @@ const CSS = `
     .cal-thumb { grid-row: 1; }
     .cal-date { grid-row: 2; flex-direction: row; justify-content: flex-start; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; padding: 18px 10px 0; border-right: 0; }
     .cal-date__day { font-size: 34px; }
+    .cal-date__sub { font-size: 14px; }
     .cal-body { padding: 10px 10px 8px; }
     .cal-bottom { flex-direction: column; align-items: stretch; }
     .cal-more { justify-content: center; padding: 0 20px; background: #F7B1D4; }
@@ -311,35 +304,33 @@ const ico = { 'aria-hidden': true, width: 15, height: 15, viewBox: '0 0 24 24', 
 function EventRow({ event: e, today }: { event: EventCard; today: string }) {
   const past = isPast(e, today)
   const multi = isMultiDay(e)
+  const sameMonth = multi && monthKey(e.startDate) === monthKey(e.endDate!)
   const href = `/kalendorius/${e.slug}`
   const time = timeText(e)
-  const price = priceText(e.price)
   return (
     <article className={`cal-ev${past ? ' is-past' : ''}`}>
       <div className="cal-date">
-        <span className="cal-date__day">{dayOf(e.startDate)}</span>
-        <span className="cal-date__month">{monthShort(e.startDate)} {yearOf(e.startDate)}</span>
-        <span className="cal-date__sub">{multi ? `iki ${dayOf(e.endDate!)} ${monthShort(e.endDate!)}` : weekdayOf(e.startDate)}</span>
+        <span className="cal-date__day">{dayOf(e.startDate)}<small> d.</small></span>
+        <span className="cal-date__sub">{!multi ? weekdayOf(e.startDate) : sameMonth ? `iki ${dayOf(e.endDate!)} d.` : `iki ${monthShort(e.endDate!).toLowerCase()} ${dayOf(e.endDate!)} d.`}</span>
       </div>
       <div className="cal-thumb" aria-hidden="true">
         {e.cover.src && <span className="cal-thumb__bg" style={{ backgroundImage: `url("${e.cover.src}")` }} />}
         {e.cover.src && <img src={e.cover.src} alt="" loading="lazy" />}
       </div>
       <div className="cal-body">
-        <div className="cal-tags">
-          <span className={`cal-pill cal-pill--${e.type}`}>{e.typeLabel}</span>
+        {(multi || time || past || isOngoing(e, today)) && <div className="cal-tags">
           {multi && <span className="cal-pill">Kelių dienų</span>}
           {time && <span className="cal-pill"><svg {...ico}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>{time}</span>}
           {!past && isOngoing(e, today) && <span className="cal-pill cal-pill--live"><i aria-hidden="true" />Vyksta dabar</span>}
           {past && <span className="cal-pill">Įvyko</span>}
-        </div>
+        </div>}
         <h3 className="cal-title"><a href={href}>{e.title}</a></h3>
         {e.excerpt && <p className="cal-excerpt">{e.excerpt}</p>}
         <div className="cal-bottom">
         <ul className="cal-meta">
           {e.venue && <li><svg {...ico}><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z" /><circle cx="12" cy="9" r="2.5" /></svg><b>{e.venue.name}</b></li>}
           {e.organizer && <li><svg {...ico}><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-6 8-6s8 2 8 6" /></svg>Organizuoja <b>{e.organizer.name}</b></li>}
-          {price && <li><svg {...ico}><path d="M17 6.5A6 6 0 0 0 7 9v6a6 6 0 0 0 10 2.5M4 10.5h9M4 13.5h9" /></svg><b>{price}</b></li>}
+          {e.typeLabel && <li><svg {...ico}><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" /><circle cx="7.5" cy="7.5" r="1.5" /></svg><b>{e.typeLabel}</b></li>}
         </ul>
         <span className="cal-more" aria-hidden="true">
           <span className="cal-more__label">Plačiau</span>

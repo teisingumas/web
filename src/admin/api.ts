@@ -81,7 +81,7 @@ export type AdminEvent = {
   excerpt: string
   bodyHtml: string
   cover: Img
-  /** tag key from schema.json options.eventTypes */
+  /** the event type's id as a string ('' = none), see /admin/types */
   type: string
   allDay: boolean
   /** Lithuanian dates "YYYY-MM-DD" and times "HH:MM" */
@@ -119,8 +119,9 @@ export type EventList = {
 
 export type Venue = { id: number; name: string; address: string; eventCount: number }
 export type Organizer = { id: number; name: string; website: string; eventCount: number }
-export type LookupKind = 'venues' | 'organizers'
-export type LookupMap = { venues: Venue; organizers: Organizer }
+export type EventType = { id: number; name: string; eventCount: number }
+export type LookupKind = 'venues' | 'organizers' | 'types'
+export type LookupMap = { venues: Venue; organizers: Organizer; types: EventType }
 export type LookupInput = { name: string; address?: string; website?: string }
 
 export type MediaItem = {

@@ -47,10 +47,10 @@ $routes = [
     ['GET', '#^/admin/events/(\d+)$#', 'route_event', true],
     ['PUT', '#^/admin/events/(\d+)$#', 'route_update_event', true],
     ['DELETE', '#^/admin/events/(\d+)$#', 'route_delete_event', true],
-    ['GET', '#^/admin/(venues|organizers)$#', 'route_lookups', true],
-    ['POST', '#^/admin/(venues|organizers)$#', 'route_create_lookup', true],
-    ['PUT', '#^/admin/(venues|organizers)/(\d+)$#', 'route_update_lookup', true],
-    ['DELETE', '#^/admin/(venues|organizers)/(\d+)$#', 'route_delete_lookup', true],
+    ['GET', '#^/admin/(venues|organizers|types)$#', 'route_lookups', true],
+    ['POST', '#^/admin/(venues|organizers|types)$#', 'route_create_lookup', true],
+    ['PUT', '#^/admin/(venues|organizers|types)/(\d+)$#', 'route_update_lookup', true],
+    ['DELETE', '#^/admin/(venues|organizers|types)/(\d+)$#', 'route_delete_lookup', true],
     ['GET', '#^/admin/media$#', 'route_media', true],
     ['POST', '#^/admin/media$#', 'route_upload', true],
     ['PATCH', '#^/admin/media/(\d+)$#', 'route_update_media', true],
@@ -286,10 +286,10 @@ function route_event_slug_check(): array
     return ['ok' => $problem === null, 'message' => $problem];
 }
 
-/** /admin/venues and /admin/organizers share one set of handlers. */
+/** /admin/venues, /admin/organizers and /admin/types share one set of handlers. */
 function lookup_kind_of(string $plural): string
 {
-    return $plural === 'venues' ? 'venue' : 'organizer';
+    return ['venues' => 'venue', 'organizers' => 'organizer', 'types' => 'type'][$plural];
 }
 
 function route_lookups(string $plural): array
