@@ -74,8 +74,53 @@ function event_more(PDO $pdo, int $exceptId): array
 }
 
 /** What /kalendorius shows: every upcoming event and the latest past ones. */
+/**
+ * Demo phase: adds four sample events once (Nov 2026 – Feb 2027), so the calendar has more to show.
+ * A marker file in the data folder records that it ran, so events deleted later do not come back;
+ * an event whose address is already taken is skipped. Never stops a page from rendering.
+ */
+function demo_events_seed(PDO $pdo): void
+{
+    $marker = data_dir() . '/demo-events-v1.done';
+    if (is_file($marker)) return;
+    try {
+        $venue = $pdo->query("SELECT id FROM event_venues WHERE name = 'Me Gusta salė' LIMIT 1")->fetchColumn();
+        if (!$venue) {
+            $pdo->prepare('INSERT INTO event_venues (name, address) VALUES (?, ?)')->execute(['Me Gusta salė', 'Savanorių pr. 271, Kaunas']);
+            $venue = $pdo->lastInsertId();
+        }
+        $org = $pdo->query("SELECT id FROM event_organizers WHERE name = 'Me Gusta' LIMIT 1")->fetchColumn();
+        if (!$org) {
+            $pdo->prepare('INSERT INTO event_organizers (name, website) VALUES (?, ?)')->execute(['Me Gusta', 'https://megusta.lt']);
+            $org = $pdo->lastInsertId();
+        }
+        $events = [
+            ['atviroji-hip-hop-pamoka-seimai', 'Atviroji Hip Hop pamoka visai šeimai', 'Ateikite kartu su vaikais: valanda judesio, muzikos ir pirmųjų Hip Hop žingsnių. Patirties nereikia.',
+                '/img/styles/gatves.webp', 'Gatvės šokių pamoka Me Gusta salėje', 'renginys', 0, '2026-11-22', '12:00', null, '13:30', 0.0],
+            ['me-gusta-kaledinis-sou-2026', 'Me Gusta kalėdinis šou 2026', 'Visos studijos grupės scenoje: gatvės šokiai, breikas, pop dance ir lady class. Šventinis vakaras visai šeimai.',
+                '/img/hero.webp', 'Me Gusta šokėjai scenoje', 'renginys', 0, '2026-12-20', '17:00', null, '19:00', 10.0],
+            ['kaunas-breaking-jam-2027', 'Kaunas Breaking Jam 2027', 'Dviejų dienų breiko kovos vaikams ir suaugusiems: 1x1, 2x2 ir crew kategorijos, svečiai teisėjai iš Latvijos ir Lenkijos.',
+                '/img/styles/breikas.webp', 'Breiko šokėjas', 'varzybos', 1, '2027-01-23', null, '2027-01-24', null, 15.0],
+            ['pop-dance-lady-class-intensyvas', 'Pop Dance ir Lady Class intensyvas', 'Keturių valandų intensyvas merginoms nuo 12 metų: technika, choreografija ir filmuojamas pasirodymas pabaigoje.',
+                '/img/styles/pop.webp', 'Pop dance treniruotė', 'kita', 0, '2027-02-14', '11:00', null, '15:00', 30.0],
+        ];
+        $exists = $pdo->prepare('SELECT 1 FROM events WHERE slug = ?');
+        $insert = $pdo->prepare('INSERT INTO events (slug, status, title, excerpt, body_html, cover_image, cover_alt, type, all_day, start_date, start_time, end_date, end_time,
+            venue_id, organizer_id, show_map, price, published_at) VALUES (?, \'published\', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, UTC_TIMESTAMP())');
+        foreach ($events as [$slug, $title, $excerpt, $cover, $alt, $type, $allDay, $start, $startTime, $end, $endTime, $price]) {
+            $exists->execute([$slug]);
+            if ($exists->fetchColumn()) continue;
+            $insert->execute([$slug, $title, $excerpt, '<p>' . e($excerpt) . '</p>', $cover, $alt, $type, $allDay, $start, $startTime, $end, $endTime, (int) $venue, (int) $org, $price]);
+        }
+        if (ensure_dir(data_dir())) @file_put_contents($marker, gmdate('c'));
+    } catch (Throwable $e) {
+        log_error('Demo events seed', $e);
+    }
+}
+
 function public_events(PDO $pdo): array
 {
+    demo_events_seed($pdo);
     $today = today_local();
     $stmt = $pdo->prepare(EVENT_SELECT . ' WHERE ' . EVENT_PUBLIC . ' AND ' . EVENT_LAST_DAY . ' >= ?
         ORDER BY e.start_date ASC, ' . EVENT_LAST_DAY . ' ASC, e.start_time ASC, e.id ASC LIMIT ' . UPCOMING_EVENTS_LIMIT);
@@ -158,6 +203,7 @@ function event_admin(array $row): array
 
 function admin_list_events(PDO $pdo, string $status, string $q, int $page, int $perPage = 20): array
 {
+    demo_events_seed($pdo);
     $where = [];
     $args = [];
     if (in_array($status, ['draft', 'published'], true)) {

@@ -233,18 +233,22 @@ const CSS = `
   .cal-list { display: flex; flex-direction: column; gap: 16px; }
   .cal-list--top { margin-top: 32px; }
 
-  .cal-ev { position: relative; display: grid; grid-template-columns: 128px minmax(0, 300px) minmax(0, 1fr); gap: 28px; align-items: stretch; padding: 16px; padding-right: 28px; border-radius: 32px; background: #fff; transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s; }
+  .cal-ev { position: relative; display: grid; grid-template-columns: 112px minmax(0, 400px) minmax(0, 1fr); gap: 28px; align-items: stretch; padding: 16px 24px 16px 16px; border-radius: 32px; background: #fff; transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s; }
   .cal-ev:not(.cal-ev--skeleton):hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(17,17,17,0.08); }
-  .cal-date { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 16px 8px; border-radius: 24px; background: #F7B1D4; color: #111; text-align: center; }
-  .cal-ev.is-past .cal-date { background: #F0EEE8; color: #555; }
-  .cal-date__day { font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 60px; line-height: 0.9; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
-  .cal-date__month { font-weight: 800; font-size: 15px; }
-  .cal-date__sub { font-size: 13px; font-weight: 600; opacity: 0.7; }
-  .cal-thumb { display: block; position: relative; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden; background: #F0EEE8; align-self: center; }
-  .cal-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; transition: transform 500ms ease; }
-  .cal-ev:hover .cal-thumb img { transform: scale(1.05); }
-  .cal-thumb img.is-past { filter: grayscale(1); opacity: 0.75; }
-  .cal-body { display: flex; flex-direction: column; justify-content: center; gap: 12px; min-width: 0; padding: 8px 52px 8px 0; }
+  /* the date is plain type with a hairline after it, no coloured tile */
+  .cal-date { display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 8px 0 8px 12px; border-right: 1px solid #ECEAE4; color: #111; }
+  .cal-date__day { font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 64px; line-height: 0.85; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+  .cal-date__month { font-weight: 800; font-size: 15px; text-transform: capitalize; }
+  .cal-date__sub { font-size: 13px; font-weight: 600; color: #6B6A63; }
+  .cal-ev.is-past .cal-date { color: #8A877D; }
+  /* posters often carry text: the whole picture shows (contain) over a blurred copy of itself */
+  .cal-thumb { display: block; position: relative; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden; background: #F0EEE8; align-self: center; isolation: isolate; }
+  .cal-thumb__bg { position: absolute; inset: -20px; background-size: cover; background-position: center; filter: blur(18px) saturate(1.1); opacity: 0.55; z-index: -1; }
+  .cal-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; border-radius: 0; transition: transform 500ms ease; }
+  .cal-ev:hover .cal-thumb img { transform: scale(1.03); }
+  .cal-ev.is-past .cal-thumb img, .cal-ev.is-past .cal-thumb__bg { filter: grayscale(1); opacity: 0.75; }
+  .cal-ev.is-past .cal-thumb__bg { filter: blur(18px) grayscale(1); opacity: 0.4; }
+  .cal-body { display: flex; flex-direction: column; justify-content: center; gap: 12px; min-width: 0; padding: 8px 0; }
   .cal-tags { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .cal-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: #F0EEE8; color: #111; font: 700 13px/1.2 'Manrope', sans-serif; }
   .cal-pill--renginys { background: #F7B1D4; }
@@ -255,11 +259,16 @@ const CSS = `
   .cal-title a { color: inherit; text-decoration: none; }
   .cal-title a::after { content: ""; position: absolute; inset: 0; border-radius: 32px; }
   .cal-excerpt { margin: 0; max-width: 620px; font-size: 15px; line-height: 1.6; color: #3D3D3D; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .cal-meta { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 0; padding: 0; list-style: none; font-size: 14px; color: #555; }
+  .cal-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-top: 4px; }
+  .cal-meta { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 0; padding: 0; list-style: none; font-size: 14px; color: #555; min-width: 0; }
   .cal-meta li { display: inline-flex; align-items: center; gap: 7px; }
   .cal-meta b { font-weight: 700; color: #111; }
-  .cal-more { position: absolute; right: 20px; top: 20px; width: 44px; height: 44px; border-radius: 999px; background: #F0EEE8; color: #111; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1); pointer-events: none; }
-  .cal-ev:hover .cal-more { background: #F7B1D4; transform: translateX(3px); }
+  /* round arrow that grows into a "Plačiau →" pill while the card is hovered */
+  .cal-more { flex: none; display: inline-flex; align-items: center; height: 44px; padding: 0 13px; border-radius: 999px; background: #F0EEE8; color: #111; font: 800 14px 'Manrope', sans-serif; white-space: nowrap; pointer-events: none;
+    transition: background-color 0.3s, padding 0.35s cubic-bezier(0.23, 1, 0.32, 1); }
+  .cal-more__label { display: inline-block; max-width: 0; overflow: hidden; opacity: 0; transition: max-width 0.35s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.2s, margin 0.35s cubic-bezier(0.23, 1, 0.32, 1); }
+  .cal-ev:hover .cal-more, .cal-ev:has(.cal-title a:focus-visible) .cal-more { background: #F7B1D4; padding: 0 16px 0 20px; }
+  .cal-ev:hover .cal-more__label, .cal-ev:has(.cal-title a:focus-visible) .cal-more__label { max-width: 90px; opacity: 1; margin-right: 8px; }
   .cal-ev:has(.cal-title a:focus-visible) { outline: 2px solid #111; outline-offset: 3px; }
   .cal-title a:focus-visible { outline: none; }
 
@@ -268,30 +277,30 @@ const CSS = `
   .cal-foot { margin-top: 48px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
   .cal-foot p { margin: 0; font-size: 14px; color: #6B6A63; }
   .cal-skel { display: block; height: 14px; border-radius: 999px; background: #F0EEE8; animation: calPulse 1.2s ease-in-out infinite alternate; }
-  .cal-date.cal-skel, .cal-thumb.cal-skel { height: auto; min-height: 140px; border-radius: 24px; }
+  .cal-date.cal-skel { height: auto; min-height: 140px; border: 0; border-radius: 20px; }
+  .cal-thumb.cal-skel { height: auto; min-height: 200px; border-radius: 20px; }
   @keyframes calPulse { from { opacity: 1; } to { opacity: 0.45; } }
 
-  @media (max-width: 1024px) { .cal-ev { grid-template-columns: 112px minmax(0, 220px) minmax(0, 1fr); gap: 22px; } .cal-date__day { font-size: 50px; } }
+  @media (max-width: 1100px) { .cal-ev { grid-template-columns: 96px minmax(0, 300px) minmax(0, 1fr); gap: 22px; } .cal-date__day { font-size: 52px; } }
   @media (max-width: 760px) {
     .cal { padding-top: 130px; }
     .cal-toolbar { flex-direction: column; align-items: stretch; }
     .cal-tabs { align-self: flex-start; }
     .cal-mf, .cal-mf-btn { width: 100%; }
     .cal-ev { grid-template-columns: 1fr; gap: 0; padding: 12px; border-radius: 28px; }
-    .cal-thumb { grid-row: 1; border-radius: 20px; }
-    .cal-date { grid-row: 1; position: absolute; left: 24px; top: 24px; z-index: 1; padding: 10px 12px; min-width: 76px; border-radius: 18px; }
-    .cal-date__day { font-size: 36px; }
-    .cal-date__month { font-size: 13px; }
-    .cal-date__sub { display: none; }
-    .cal-body { padding: 18px 10px 10px; }
-    .cal-more { top: 24px; right: 24px; z-index: 1; background: #fff; }
-    .cal-body { padding-right: 10px; }
+    .cal-thumb { grid-row: 1; }
+    .cal-date { grid-row: 2; flex-direction: row; justify-content: flex-start; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; padding: 18px 10px 0; border-right: 0; }
+    .cal-date__day { font-size: 34px; }
+    .cal-body { padding: 10px 10px 8px; }
+    .cal-bottom { flex-direction: column; align-items: stretch; }
+    .cal-more { justify-content: center; padding: 0 20px; background: #F7B1D4; }
+    .cal-more__label { max-width: none; opacity: 1; margin-right: 8px; }
     .cal-title a::after { border-radius: 28px; }
     .cal-ev--skeleton .cal-date { display: none; }
     .cal-month { margin-top: 44px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cal-ev, .cal-thumb img, .cal-mf-btn__chev, .cal-more { transition: none; }
+    .cal-ev, .cal-thumb img, .cal-mf-btn__chev, .cal-more, .cal-more__label { transition: none; }
     .cal-ev:not(.cal-ev--skeleton):hover { transform: none; }
     .cal-skel { animation: none; }
   }
@@ -313,7 +322,8 @@ function EventRow({ event: e, today }: { event: EventCard; today: string }) {
         <span className="cal-date__sub">{multi ? `iki ${dayOf(e.endDate!)} ${monthShort(e.endDate!)}` : weekdayOf(e.startDate)}</span>
       </div>
       <div className="cal-thumb" aria-hidden="true">
-        {e.cover.src && <img src={e.cover.src} alt="" className={past ? 'is-past' : undefined} loading="lazy" />}
+        {e.cover.src && <span className="cal-thumb__bg" style={{ backgroundImage: `url("${e.cover.src}")` }} />}
+        {e.cover.src && <img src={e.cover.src} alt="" loading="lazy" />}
       </div>
       <div className="cal-body">
         <div className="cal-tags">
@@ -325,15 +335,18 @@ function EventRow({ event: e, today }: { event: EventCard; today: string }) {
         </div>
         <h3 className="cal-title"><a href={href}>{e.title}</a></h3>
         {e.excerpt && <p className="cal-excerpt">{e.excerpt}</p>}
+        <div className="cal-bottom">
         <ul className="cal-meta">
           {e.venue && <li><svg {...ico}><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z" /><circle cx="12" cy="9" r="2.5" /></svg><b>{e.venue.name}</b></li>}
           {e.organizer && <li><svg {...ico}><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-6 8-6s8 2 8 6" /></svg>Organizuoja <b>{e.organizer.name}</b></li>}
           {price && <li><svg {...ico}><path d="M17 6.5A6 6 0 0 0 7 9v6a6 6 0 0 0 10 2.5M4 10.5h9M4 13.5h9" /></svg><b>{price}</b></li>}
         </ul>
+        <span className="cal-more" aria-hidden="true">
+          <span className="cal-more__label">Plačiau</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </span>
+        </div>
       </div>
-      <span className="cal-more" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-      </span>
     </article>
   )
 }
