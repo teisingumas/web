@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build && node scripts/copy-server.mjs",
+    "build": "node scripts/build-awards.mjs && vite build && node scripts/copy-server.mjs",
+    "awards": "node scripts/build-awards.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "dev:php": "php -S 127.0.0.1:8080 -t dist scripts/php-dev-router.php"

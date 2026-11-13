@@ -2,7 +2,7 @@
   "$comment": "Nuotraukos laukas: alt = required (numatyta) | optional | none (fono nuotrauka be alt). Turinio schema: kiekvienas redaguojamas laukas. Iš jos admin piešia formas, o serveris (server/lib/schema.php) tikrina duomenis. Keičiant laukus, atnaujinkite ir src/content/types.ts bei defaults.ts.",
   "version": 1,
   "reservedSlugs": [
-    "admin", "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "kalendorius", "kontaktai", "kainos", "gatves-sokiai", "api", "lib", "media", "assets", "img",
+    "admin", "adminas", "apzvalga", "naujienos", "tvarkarastis", "registracija", "kalendorius", "kontaktai", "kainos", "gatves-sokiai", "apie-studija", "sokiu-studija", "api", "lib", "media", "assets", "img",
     "index", "sitemap", "robots", "favicon", "wp-admin", "wp-login", "wp-content", "wp-json", "feed"
   ],
   "seoFields": [
@@ -83,6 +83,15 @@
         "title": "Gatvės šokiai Kaune — Hip Hop, Locking, Popping, House — Me Gusta",
         "description": "Gatvės šokių pamokos Kaune vaikams ir suaugusiems nuo 4 metų: Hip Hop, Locking, Popping ir House. Pradedančiųjų grupių laikai, treneriai, 45–60 min. treniruotės.",
         "keywords": "gatvės šokiai Kaune, hip hop Kaune, locking, popping, house, šokiai vaikams"
+      }
+    },
+    {
+      "key": "apdovanojimai", "label": "Apdovanojimai", "path": "/apie-studija/apdovanojimai", "admin": "apdovanojimai",
+      "sections": [],
+      "seo": {
+        "title": "Apdovanojimai — Me Gusta šokių studija",
+        "description": "Me Gusta šokių studijos pasiekimai nuo 2008 m.: vietos Lietuvos, Europos ir pasaulio hip hop, street dance ir pop dance varžybose.",
+        "keywords": "Me Gusta pasiekimai"
       }
     }
   ],

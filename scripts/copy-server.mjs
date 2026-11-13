@@ -1,5 +1,5 @@
 // After `vite build`: copies the PHP backend into dist/ so the hostinger branch gets one ready
-// folder (index.php, api/, lib/ with schema.json and defaults.json, sitemap.php, robots.php).
+// folder (index.php, api/, lib/ with schema.json, apdovanojimai.json and defaults.json, sitemap.php, robots.php).
 import { cpSync, copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -12,6 +12,7 @@ for (const file of ['index.php', 'sitemap.php', 'robots.php']) copyFileSync(join
 for (const dir of ['api', 'lib']) cpSync(join(root, 'server', dir), join(dist, dir), { recursive: true })
 mkdirSync(join(dist, 'lib'), { recursive: true })
 copyFileSync(join(root, 'src/content/schema.json'), join(dist, 'lib/schema.json'))
+copyFileSync(join(root, 'src/content/apdovanojimai.json'), join(dist, 'lib/apdovanojimai.json'))
 
 // The starting texts (src/content/defaults.ts) as JSON, so index.php can write the pages' text into the
 // HTML for crawlers even for sections that were never saved in the admin.

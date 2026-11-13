@@ -72,6 +72,27 @@ a.ng-social:hover { background: #fff; }
 .menu-link { display: flex; align-items: center; min-height: 56px; border-bottom: 1px solid #E6E3DB; color: #111; text-decoration: none; font: 800 18px 'Archivo', sans-serif; transition: color 0.2s; }
 .menu-link--idle { cursor: default; }
 a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; text-decoration-color: var(--ng-accent); }
+.menu-sub { list-style: none; margin: 0; padding: 4px 0 8px 18px; border-bottom: 1px solid #E6E3DB; }
+.menu-list li:has(.menu-sub) > .menu-link { border-bottom: 0; }
+.menu-sublink { display: flex; align-items: center; min-height: 44px; color: #3D3D3D; text-decoration: none; font: 700 16px 'Manrope', sans-serif; }
+.menu-sublink::before { content: ""; width: 7px; height: 7px; margin-right: 12px; border-radius: 999px; background: var(--ng-accent); }
+.menu-sublink[aria-current="page"] { color: #111; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; text-decoration-color: var(--ng-accent); }
+
+/* "Apie studiją" dropdown in the desktop menu: opens on hover or keyboard focus */
+.nav-drop { position: relative; display: flex; }
+.nav-drop__btn { display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; font-family: inherit; }
+.nav-drop__btn svg { transition: transform 0.2s; }
+.nav-drop:hover .nav-drop__btn, .nav-drop:focus-within .nav-drop__btn { background: #F0EEE8; }
+.nav-drop:hover .nav-drop__btn svg, .nav-drop:focus-within .nav-drop__btn svg { transform: rotate(180deg); }
+.nav-drop__btn[data-current] { background: #111; color: #fff; }
+.nav-drop:hover .nav-drop__btn[data-current], .nav-drop:focus-within .nav-drop__btn[data-current] { background: #111; }
+.nav-drop__panel { position: absolute; left: 0; top: 100%; z-index: 120; min-width: 200px; padding: 8px; margin-top: 8px; border-radius: 24px; background: #fff; box-shadow: 0 18px 40px rgba(17, 17, 17, 0.12);
+  display: flex; flex-direction: column; gap: 2px; opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity 0.18s, transform 0.18s, visibility 0s 0.18s; }
+.nav-drop__panel::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
+.nav-drop:hover .nav-drop__panel, .nav-drop:focus-within .nav-drop__panel { opacity: 1; visibility: visible; transform: none; transition: opacity 0.18s, transform 0.18s; }
+.nav-drop__link { display: flex; align-items: center; min-height: 44px; padding: 10px 16px; border-radius: 999px; color: #111; text-decoration: none; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.nav-drop__link:hover { background: #F0EEE8; }
+.nav-drop__link[aria-current="page"] { background: #111; color: #fff; }
 .menu-cta { display: flex; margin-top: 22px; }
 .menu-contacts { display: none; flex-direction: column; gap: 10px; margin-top: 22px; }
 .menu-contact { display: flex; align-items: center; gap: 10px; color: #333; text-decoration: none; font-size: 14px; font-weight: 600; }

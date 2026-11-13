@@ -10,11 +10,13 @@ import { useSyncExternalStore } from 'react'
 //   /kontaktai             contacts
 //   /kainos                pricing and D.U.K.
 //   /gatves-sokiai         street dance classes (styles, beginners' timetable, trainers)
+//   /apie-studija/apdovanojimai   the studio's competition results since 2008 (the old WordPress
+//                          address /sokiu-studija/me-gusta-pasiekimai opens it too)
 //   /kalendorius           event calendar;  /kalendorius/<slug>  one event
 //   /<slug>                a news post (the same addresses the old WordPress site used)
 //   /adminas               admin sign-in;  /apzvalga/…  admin dashboard
 
-export type Page = 'home' | 'registracija' | 'tvarkarastis' | 'naujienos' | 'kalendorius' | 'kontaktai' | 'kainos' | 'gatves-sokiai' | 'event' | 'post' | 'notfound' | 'admin-login' | 'admin'
+export type Page = 'home' | 'registracija' | 'tvarkarastis' | 'naujienos' | 'kalendorius' | 'kontaktai' | 'kainos' | 'gatves-sokiai' | 'apdovanojimai' | 'event' | 'post' | 'notfound' | 'admin-login' | 'admin'
 export type RegTab = 'registracija' | 'informacija' | 'kainos'
 // tab: which registration tab a navigation asks for; seq changes on every navigation so a
 // page can react even when the path stays the same (e.g. "Registruotis" from the Kainos tab).
@@ -29,6 +31,7 @@ export const PATHS = {
   contacts: '/kontaktai',
   pricing: '/kainos',
   streetDance: '/gatves-sokiai',
+  awards: '/apie-studija/apdovanojimai',
   adminLogin: '/adminas',
   admin: '/apzvalga',
 } as const
@@ -51,6 +54,9 @@ const LEGACY_HASHES: Record<string, string> = {
   '#registracija-kainos': '/registracija/kainos',
 }
 
+// The achievements page's address on the old WordPress site.
+const OLD_AWARDS_PATH = '/sokiu-studija/me-gusta-pasiekimai'
+
 let seq = 0
 
 function parse(rawPath: string): Route {
@@ -69,6 +75,7 @@ function parse(rawPath: string): Route {
   if (p === PATHS.contacts) return { ...base, page: 'kontaktai' }
   if (p === PATHS.pricing) return { ...base, page: 'kainos' }
   if (p === PATHS.streetDance) return { ...base, page: 'gatves-sokiai' }
+  if (p === PATHS.awards || p === OLD_AWARDS_PATH) return { ...base, page: 'apdovanojimai' }
   const event = /^\/kalendorius\/([^/]+)$/.exec(p)
   if (event) return SLUG_RE.test(event[1]) ? { ...base, page: 'event', slug: event[1] } : { ...base, page: 'notfound' }
   if (p === PATHS.adminLogin || p === '/admin') return { ...base, page: 'admin-login' }
@@ -82,8 +89,10 @@ export const isAdminPage = (page: Page) => page === 'admin' || page === 'admin-l
 
 // Old tab paths are shown as plain /registracija.
 function normalizeAddress() {
-  if (!OLD_TAB_PATHS[window.location.pathname.replace(/\/+$/, '').toLowerCase()]) return
-  try { window.history.replaceState(null, '', PATHS.registration) } catch { /* preview frames */ }
+  const p = window.location.pathname.replace(/\/+$/, '').toLowerCase()
+  const to = OLD_TAB_PATHS[p] ? PATHS.registration : p === OLD_AWARDS_PATH ? PATHS.awards : ''
+  if (!to) return
+  try { window.history.replaceState(null, '', to + window.location.hash) } catch { /* preview frames */ }
 }
 
 // Inside some embedded previews the URL cannot be changed; then the route lives in memory only.

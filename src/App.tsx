@@ -24,6 +24,8 @@ import { installPillSliders } from './pillSlider'
 
 // The admin (Clerk sign-in, editors) loads only on /adminas and /apzvalga.
 const AdminApp = lazy(() => import('./admin/AdminApp'))
+// The achievements list is long (over a thousand results), so it loads only on its own page.
+const Awards = lazy(() => import('./Awards'))
 
 // Header and footer social links; empty ones are not shown.
 const SOCIAL_ICONS = [
@@ -61,11 +63,13 @@ function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
   )
 }
 
-// Header menu (desktop row and the hamburger panel). Items without an href get one when their page exists.
-const MENU_ITEMS: { label: string; href?: string }[] = [
+// Header menu (desktop row and the hamburger panel). Items without an href get one when their page exists;
+// items with children open a small dropdown (desktop) or list them indented (hamburger panel).
+type MenuItem = { label: string; href?: string; children?: { label: string; href: string }[] }
+const MENU_ITEMS: MenuItem[] = [
   { label: 'Kainos', href: PATHS.pricing },
   { label: 'Tvarkaraščiai', href: PATHS.timetable },
-  { label: 'Apie studiją' },
+  { label: 'Apie studiją', children: [{ label: 'Apdovanojimai', href: PATHS.awards }] },
   { label: 'Šokių pamokos', href: PATHS.streetDance },
   { label: 'Stovyklos' },
   { label: 'Kalendorius', href: PATHS.calendar },
@@ -134,7 +138,7 @@ export default function App() {
   return <Site page={route.page} />
 }
 
-const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius', 'kontaktai', 'kainos', 'gatves-sokiai'])
+const SITE_PAGES = new Set<Page>(['home', 'registracija', 'tvarkarastis', 'naujienos', 'kalendorius', 'kontaktai', 'kainos', 'gatves-sokiai', 'apdovanojimai'])
 
 function Site({ page }: { page: Page }) {
   const route = useRoute()
@@ -235,7 +239,17 @@ function Site({ page }: { page: Page }) {
             </div>
           </div>
           <div className="nav-links ng-pills" data-edit="Meniu">
-            {MENU_ITEMS.map(({ label, href }) => (
+            {MENU_ITEMS.map(({ label, href, children }) => children ? (
+              <div key={label} className="nav-drop">
+                <button type="button" className="ng-pill nav-drop__btn" aria-haspopup="true" data-current={children.some(c => isCurrent(c.href)) || undefined}>
+                  {label}
+                  <svg width="10" height="10" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 5l5 5 5-5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
+                <div className="nav-drop__panel">
+                  {children.map(c => <a key={c.href} href={c.href} aria-current={isCurrent(c.href) ? 'page' : undefined} className="nav-drop__link">{c.label}</a>)}
+                </div>
+              </div>
+            ) : (
               <a key={label} href={href} aria-current={isCurrent(href) ? 'page' : undefined} className="ng-pill">{label}</a>
             ))}
           </div>
@@ -252,11 +266,16 @@ function Site({ page }: { page: Page }) {
         <div id="site-menu" className="menu-panel" data-open={menuOpen} inert={!menuOpen} onClick={e => { if ((e.target as HTMLElement).closest('a')) setMenuOpen(false) }}>
           <div className="wide-container menu-panel__inner">
             <ul className="menu-list">
-              {MENU_ITEMS.map(({ label, href }) => (
+              {MENU_ITEMS.map(({ label, href, children }) => (
                 <li key={label}>
                   {href
                     ? <a href={href} className="menu-link" aria-current={isCurrent(href) ? 'page' : undefined}>{label}</a>
                     : <span className="menu-link menu-link--idle">{label}</span>}
+                  {children && (
+                    <ul className="menu-sub">
+                      {children.map(c => <li key={c.href}><a href={c.href} className="menu-sublink" aria-current={isCurrent(c.href) ? 'page' : undefined}>{c.label}</a></li>)}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
@@ -292,6 +311,7 @@ function Site({ page }: { page: Page }) {
         : page === 'kontaktai' ? <ContactsPage />
         : page === 'kainos' ? <Kainos />
         : page === 'gatves-sokiai' ? <StreetDance />
+        : page === 'apdovanojimai' ? <Suspense fallback={<div style={{ minHeight: '100vh' }} />}><Awards /></Suspense>
         : page === 'event' ? <EventPage slug={route.slug} />
         : page === 'post' ? <PostPage slug={route.slug} />
         : page === 'notfound' ? <NotFound />
@@ -444,6 +464,7 @@ function Site({ page }: { page: Page }) {
               { label: 'Treneriai', href: '/#treneriai' },
               { label: 'Tvarkaraštis', href: PATHS.timetable },
               { label: 'Gatvės šokiai', href: PATHS.streetDance },
+              { label: 'Apdovanojimai', href: PATHS.awards },
               { label: 'Kainos', href: PATHS.pricing },
               { label: 'Naujienos', href: PATHS.news },
               { label: 'Kalendorius', href: PATHS.calendar },

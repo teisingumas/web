@@ -231,11 +231,37 @@ function street_dance_prerender(array $c): string
     return pr_wrap($out . pr_footer($c));
 }
 
+/** /apie-studija/apdovanojimai: the full results list (src/content/apdovanojimai.json) as plain lists for crawlers. */
+function awards_prerender(array $c): string
+{
+    $years = [];
+    foreach ([__DIR__ . '/apdovanojimai.json', dirname(__DIR__, 2) . '/src/content/apdovanojimai.json'] as $file) {
+        if (is_file($file)) { $years = json_decode((string) file_get_contents($file), true) ?: []; break; }
+    }
+    $roman = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+    $out = '<p>Apie studiją</p><h1>Apdovanojimai</h1>'
+        . '<p>Me Gusta šokėjų rezultatai varžybose ir festivaliuose Lietuvoje ir užsienyje nuo 2008 metų.</p>';
+    foreach ($years as $y) {
+        $out .= '<section><h2>' . (int) $y['year'] . '</h2>';
+        foreach ($y['events'] as $ev) {
+            $out .= '<h3>' . e($ev['name']) . ($ev['city'] !== '' ? ' (' . e($ev['city']) . ')' : '') . '</h3><ul>';
+            foreach ($ev['results'] as $r) {
+                $place = is_int($r['r']) ? ($roman[$r['r']] ?? (string) $r['r']) . ' vieta' : ($r['r'] === 'GP' ? 'Grand Prix' : '');
+                $parts = array_filter([$r['t'], $place, $r['w']], fn($s) => $s !== '');
+                $out .= '<li>' . e(implode(' · ', $parts)) . '</li>';
+            }
+            $out .= '</ul>';
+        }
+        $out .= '</section>';
+    }
+    return pr_wrap($out . '<p><a href="/registracija">Registruotis</a></p>' . pr_footer($c));
+}
+
 /** The site menu and footer text, so every page links to the others. */
 function pr_footer(array $c): string
 {
     $links = ['/' => 'Pagrindinis', '/kainos' => 'Kainos', '/tvarkarastis' => 'Tvarkaraštis', '/registracija' => 'Registracija',
-        '/kalendorius' => 'Kalendorius', '/naujienos' => 'Naujienos', '/kontaktai' => 'Kontaktai'];
+        '/kalendorius' => 'Kalendorius', '/naujienos' => 'Naujienos', '/apie-studija/apdovanojimai' => 'Apdovanojimai', '/kontaktai' => 'Kontaktai'];
     $li = '';
     foreach ($links as $href => $label) $li .= '<li><a href="' . $href . '">' . $label . '</a></li>';
     return '<footer><nav aria-label="Svetainės meniu"><ul>' . $li . '</ul></nav>' . pr_p($c['global.footer']['text'] ?? '') . '</footer>';
