@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { inlineData } from './content'
 import type { EventDetail } from './content/types'
-import { dayOf, isPast, isMultiDay, longDate, mapEmbedUrl, mapLinkUrl, monthShort, priceText, timeText, weekdayOf, whenText, yearOf } from './eventFormat'
+import { dayOf, isPast, isMultiDay, longDate, mapEmbedUrl, monthShort, priceText, timeText, weekdayOf, whenText, yearOf } from './eventFormat'
+import AddToCalendar from './AddToCalendar'
 import NotFound from './NotFound'
 import { PostBody } from './PostPage'
 import { fetchEvent, NotFoundError } from './publicApi'
@@ -144,7 +145,7 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
                 </div>
               )}
             </dl>
-            {venue && event.showMap && <a className="ev-maplink" href={mapLinkUrl(venue)} target="_blank" rel="noopener noreferrer">Atidaryti žemėlapyje ↗</a>}
+            {!past && !preview && 'slug' in event && <AddToCalendar event={event as EventDetail} />}
           </aside>
 
           <div className="ev-main">
@@ -202,8 +203,15 @@ export function EventView({ event, preview = false }: { event: Omit<EventDetail,
         .ev-facts dd { margin: 0; font-size: 16px; line-height: 1.5; color: var(--text); font-weight: 500; overflow-wrap: anywhere; }
         .ev-facts dd a { color: var(--pink-text); text-decoration: underline; text-underline-offset: 3px; }
         .ev-facts__sub { display: block; font-weight: 300; color: var(--text-2); font-size: 14px; }
-        .ev-maplink { align-self: flex-start; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--pink-text); text-decoration: none; }
-        .ev-maplink:hover { color: var(--text); }
+        .atc { position: relative; align-self: flex-start; }
+        .atc__btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 12px 22px; border: 0; border-radius: 999px; background: #111; color: #fff !important; cursor: pointer; font: 800 15px 'Manrope', sans-serif; transition: background-color 0.2s, color 0.2s; }
+        .atc__btn:hover, .atc__btn[aria-expanded="true"] { background: #F7B1D4; color: #111 !important; opacity: 1; }
+        .atc__btn:focus-visible { outline: 2px solid #111; outline-offset: 3px; }
+        .atc__menu { position: absolute; left: 0; top: calc(100% + 8px); z-index: 20; min-width: 260px; display: flex; flex-direction: column; gap: 2px; padding: 8px; border-radius: 24px; background: #fff; box-shadow: 0 18px 40px rgba(17,17,17,0.14); }
+        .atc__item { display: flex; flex-direction: column; gap: 2px; padding: 10px 16px; border-radius: 16px; color: #111; text-decoration: none; }
+        .atc__item span { font: 700 15px 'Manrope', sans-serif; }
+        .atc__item small { font-size: 13px; color: #6B6A63; }
+        .atc__item:hover, .atc__item:focus-visible { background: #F0EEE8; outline: none; }
         .ev-lead { margin: 0 0 32px; max-width: 760px; font-size: 21px; line-height: 1.6; font-weight: 300; color: var(--text); }
         .ev-map { margin-top: 64px; aspect-ratio: 16 / 7; min-height: 320px; background: var(--surface-2); border: 1px solid var(--line); }
         .ev-map iframe { display: block; width: 100%; height: 100%; border: 0; }

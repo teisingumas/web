@@ -549,3 +549,55 @@ function admin_delete_lookup(PDO $pdo, string $kind, int $id): void
     if ($usage) throw new ApiError(409, 'in_use', $def['inUse'], ['usage' => $usage]);
     $pdo->prepare("DELETE FROM {$def['table']} WHERE id = ?")->execute([$id]);
 }
+
+/**
+ * One event as iCalendar text. Times are Lithuanian clock times turned into UTC; an event without
+ * a start time is an all-day one (DTEND is the day after the last day, as the format requires);
+ * one with a start time but no end lasts two hours.
+ */
+function event_ics(array $row): string
+{
+    $tz = new DateTimeZone('Europe/Vilnius');
+    $utc = new DateTimeZone('UTC');
+    $esc = fn(string $s) => str_replace(["\\", ';', ',', "\r\n", "\n"], ['\\\\', '\\;', '\\,', '\\n', '\\n'], $s);
+    $lastDay = $row['end_date'] ?: $row['start_date'];
+    if ($row['all_day'] || $row['start_time'] === null) {
+        $start = 'DTSTART;VALUE=DATE:' . str_replace('-', '', $row['start_date']);
+        $end = 'DTEND;VALUE=DATE:' . (new DateTimeImmutable($lastDay))->modify('+1 day')->format('Ymd');
+    } else {
+        $from = new DateTimeImmutable($row['start_date'] . ' ' . substr($row['start_time'], 0, 5), $tz);
+        $to = $row['end_time'] !== null
+            ? new DateTimeImmutable($lastDay . ' ' . substr($row['end_time'], 0, 5), $tz)
+            : $from->modify('+2 hours');
+        if ($to <= $from) $to = $from->modify('+2 hours');
+        $start = 'DTSTART:' . $from->setTimezone($utc)->format('Ymd\THis\Z');
+        $end = 'DTEND:' . $to->setTimezone($utc)->format('Ymd\THis\Z');
+    }
+    $url = absolute_url('/kalendorius/' . $row['slug']);
+    $place = trim(implode(', ', array_filter([(string) ($row['venue_name'] ?? ''), (string) ($row['venue_address'] ?? '')])));
+    $lines = [
+        'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Me Gusta//Renginiai//LT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        'UID:event-' . $row['id'] . '@' . (parse_url(site_url(), PHP_URL_HOST) ?: 'megusta.lt'),
+        'DTSTAMP:' . gmdate('Ymd\THis\Z'),
+        $start, $end,
+        'SUMMARY:' . $esc($row['title']),
+        'DESCRIPTION:' . $esc(trim($row['excerpt'] . "\n\n" . $url)),
+        'URL:' . $url,
+    ];
+    if ($place !== '') $lines[] = 'LOCATION:' . $esc($place);
+    $lines[] = 'END:VEVENT';
+    $lines[] = 'END:VCALENDAR';
+    // lines longer than 75 bytes are folded, as the format requires
+    $out = '';
+    foreach ($lines as $line) {
+        while (strlen($line) > 75) {
+            $cut = 75;
+            while ($cut > 0 && (ord($line[$cut]) & 0xC0) === 0x80) $cut--;   // not inside a UTF-8 character
+            $out .= substr($line, 0, $cut) . "\r\n";
+            $line = ' ' . substr($line, $cut);
+        }
+        $out .= $line . "\r\n";
+    }
+    return $out;
+}

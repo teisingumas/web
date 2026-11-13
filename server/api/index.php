@@ -20,6 +20,7 @@ $routes = [
     ['GET', '#^/public/posts/([a-z0-9-]{1,120})$#', 'route_public_post', false],
     ['GET', '#^/public/events$#', 'route_public_events', false],
     ['GET', '#^/public/events/([a-z0-9-]{1,120})$#', 'route_public_event', false],
+    ['GET', '#^/public/events/([a-z0-9-]{1,120})\\.ics$#', 'route_public_event_ics', false],
     ['POST', '#^/admin/login$#', 'route_login', false],
     ['POST', '#^/public/registrations$#', 'route_create_registration', false],
     // registrations live in a file, so these work before the database is connected
@@ -140,6 +141,18 @@ function route_public_event(string $slug): array
     $row = db_configured() ? (find_published_event(db(), $slug) ?? find_event_redirect_target(db(), $slug)) : null;
     if (!$row) throw not_found('Renginys nerastas.');
     return event_public($row, db());
+}
+
+/** "Pridėti į kalendorių": the event as an .ics file (Apple Calendar, Outlook, Android calendar apps). */
+function route_public_event_ics(string $slug): array
+{
+    $row = db_configured() ? find_published_event(db(), $slug) : null;
+    if (!$row) throw not_found('Renginys nerastas.');
+    header('Content-Type: text/calendar; charset=utf-8');
+    header('Content-Disposition: inline; filename="' . $row['slug'] . '.ics"');
+    header('Cache-Control: no-cache');
+    echo event_ics($row);
+    exit;
 }
 
 // --- admin ----------------------------------------------------------------------------------
