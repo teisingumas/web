@@ -71,53 +71,78 @@ function event_more(PDO $pdo, int $exceptId): array
 }
 
 /** What /kalendorius shows: every upcoming event and the latest past ones. */
+/** Slugs of the four sample events the demo phase added; the import of the real events removes them. */
+const DEMO_EVENT_SLUGS = ['atviroji-hip-hop-pamoka-seimai', 'me-gusta-kaledinis-sou-2026', 'kaunas-breaking-jam-2027', 'pop-dance-lady-class-intensyvas'];
+
 /**
- * Demo phase: adds four sample events once (Nov 2026 – Feb 2027), so the calendar has more to show.
- * A marker file in the data folder records that it ran, so events deleted later do not come back;
- * an event whose address is already taken is skipped. Never stops a page from rendering.
+ * Once: brings in the real events from the old megusta.lt calendar (June 2026 – April 2027, taken
+ * from its The Events Calendar API into lib/megusta-events-2026.json) and removes the sample events.
+ * Covers still point to megusta.lt; events_localize_covers() copies them into the media library.
+ * A marker file records that it ran; an event whose address is already taken is skipped.
  */
-function demo_events_seed(PDO $pdo): void
+function megusta_events_import(PDO $pdo): void
 {
-    $marker = data_dir() . '/demo-events-v1.done';
+    $marker = data_dir() . '/megusta-events-import-v1.done';
     if (is_file($marker)) return;
     try {
-        $venue = $pdo->query("SELECT id FROM event_venues WHERE name = 'Me Gusta salė' LIMIT 1")->fetchColumn();
-        if (!$venue) {
-            $pdo->prepare('INSERT INTO event_venues (name, address) VALUES (?, ?)')->execute(['Me Gusta salė', 'Savanorių pr. 271, Kaunas']);
-            $venue = $pdo->lastInsertId();
-        }
-        $org = $pdo->query("SELECT id FROM event_organizers WHERE name = 'Me Gusta' LIMIT 1")->fetchColumn();
-        if (!$org) {
-            $pdo->prepare('INSERT INTO event_organizers (name, website) VALUES (?, ?)')->execute(['Me Gusta', 'https://megusta.lt']);
-            $org = $pdo->lastInsertId();
-        }
-        $events = [
-            ['atviroji-hip-hop-pamoka-seimai', 'Atviroji Hip Hop pamoka visai šeimai', 'Ateikite kartu su vaikais: valanda judesio, muzikos ir pirmųjų Hip Hop žingsnių. Patirties nereikia.',
-                '/img/styles/gatves.webp', 'Gatvės šokių pamoka Me Gusta salėje', 'Studijos renginys', 0, '2026-11-22', '12:00', null, '13:30', 0.0],
-            ['me-gusta-kaledinis-sou-2026', 'Me Gusta kalėdinis šou 2026', 'Visos studijos grupės scenoje: gatvės šokiai, breikas, pop dance ir lady class. Šventinis vakaras visai šeimai.',
-                '/img/hero.webp', 'Me Gusta šokėjai scenoje', 'Studijos renginys', 0, '2026-12-20', '17:00', null, '19:00', 10.0],
-            ['kaunas-breaking-jam-2027', 'Kaunas Breaking Jam 2027', 'Dviejų dienų breiko kovos vaikams ir suaugusiems: 1x1, 2x2 ir crew kategorijos, svečiai teisėjai iš Latvijos ir Lenkijos.',
-                '/img/styles/breikas.webp', 'Breiko šokėjas', 'Varžybos', 1, '2027-01-23', null, '2027-01-24', null, 15.0],
-            ['pop-dance-lady-class-intensyvas', 'Pop Dance ir Lady Class intensyvas', 'Keturių valandų intensyvas merginoms nuo 12 metų: technika, choreografija ir filmuojamas pasirodymas pabaigoje.',
-                '/img/styles/pop.webp', 'Pop dance treniruotė', 'Studijos renginys', 0, '2027-02-14', '11:00', null, '15:00', 30.0],
-        ];
+        $rows = json_decode((string) @file_get_contents(__DIR__ . '/megusta-events-2026.json'), true);
+        if (!is_array($rows)) return;
+        $in = implode(',', array_fill(0, count(DEMO_EVENT_SLUGS), '?'));
+        $pdo->prepare("DELETE FROM event_redirects WHERE event_id IN (SELECT id FROM events WHERE slug IN ($in))")->execute(DEMO_EVENT_SLUGS);
+        $pdo->prepare("DELETE FROM events WHERE slug IN ($in)")->execute(DEMO_EVENT_SLUGS);
+
+        $find = function (string $table, string $name, string $col2, string $val2) use ($pdo): int {
+            $stmt = $pdo->prepare("SELECT id FROM $table WHERE name = ? ORDER BY id LIMIT 1");
+            $stmt->execute([$name]);
+            if ($id = $stmt->fetchColumn()) return (int) $id;
+            $pdo->prepare("INSERT INTO $table (name, $col2) VALUES (?, ?)")->execute([$name, $val2]);
+            return (int) $pdo->lastInsertId();
+        };
         $exists = $pdo->prepare('SELECT 1 FROM events WHERE slug = ?');
         $insert = $pdo->prepare('INSERT INTO events (slug, status, title, excerpt, body_html, cover_image, cover_alt, type_id, all_day, start_date, start_time, end_date, end_time,
-            venue_id, organizer_id, show_map, price, published_at) VALUES (?, \'published\', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, UTC_TIMESTAMP())');
-        foreach ($events as [$slug, $title, $excerpt, $cover, $alt, $type, $allDay, $start, $startTime, $end, $endTime, $price]) {
-            $exists->execute([$slug]);
+            venue_id, organizer_id, show_map, price, published_at) VALUES (?, \'published\', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())');
+        foreach ($rows as $r) {
+            $exists->execute([$r['slug']]);
             if ($exists->fetchColumn()) continue;
-            $insert->execute([$slug, $title, $excerpt, '<p>' . e($excerpt) . '</p>', $cover, $alt, event_type_id($pdo, $type), $allDay, $start, $startTime, $end, $endTime, (int) $venue, (int) $org, $price]);
+            $venue = $r['venue'] ? $find('event_venues', $r['venue'][0], 'address', $r['venue'][1]) : null;
+            $org = $r['organizer'] ? $find('event_organizers', $r['organizer'], 'website', $r['organizer'] === 'Me Gusta' ? 'https://megusta.lt' : '') : null;
+            $insert->execute([
+                $r['slug'], mb_substr($r['title'], 0, 160), mb_substr($r['excerpt'], 0, 300), sanitize_html($r['bodyHtml'], 'post'),
+                $r['cover'], mb_substr($r['coverAlt'], 0, 160), event_type_id($pdo, $r['type']), $r['allDay'] ? 1 : 0,
+                $r['startDate'], $r['startTime'], $r['endDate'], $r['endTime'], $venue, $org, $r['showMap'] ? 1 : 0, $r['price'],
+            ]);
         }
         if (ensure_dir(data_dir())) @file_put_contents($marker, gmdate('c'));
     } catch (Throwable $e) {
-        log_error('Demo events seed', $e);
+        log_error('megusta.lt events import', $e);
+    }
+}
+
+/**
+ * Copies event covers that still point to megusta.lt into the media library, a few per call (it runs
+ * when the admin opens the events list, never on a public page). Stops at the first failure.
+ */
+function events_localize_covers(PDO $pdo, int $max = 4): void
+{
+    $urls = $pdo->query("SELECT DISTINCT cover_image, cover_alt FROM events WHERE cover_image LIKE 'https://megusta.lt/%' LIMIT $max")->fetchAll();
+    foreach ($urls as $u) {
+        $tmp = tempnam(sys_get_temp_dir(), 'evimg');
+        try {
+            file_put_contents($tmp, wp_fetch($u['cover_image']));
+            $saved = store_local_image($pdo, $tmp, basename((string) parse_url($u['cover_image'], PHP_URL_PATH)), $u['cover_alt']);
+            $pdo->prepare('UPDATE events SET cover_image = ? WHERE cover_image = ?')->execute([$saved['src'], $u['cover_image']]);
+        } catch (Throwable $e) {
+            log_error('Event cover copy ' . $u['cover_image'], $e);
+            return;
+        } finally {
+            @unlink($tmp);
+        }
     }
 }
 
 function public_events(PDO $pdo): array
 {
-    demo_events_seed($pdo);
+    megusta_events_import($pdo);
     $today = today_local();
     $stmt = $pdo->prepare(EVENT_SELECT . ' WHERE ' . EVENT_PUBLIC . ' AND ' . EVENT_LAST_DAY . ' >= ?
         ORDER BY e.start_date ASC, ' . EVENT_LAST_DAY . ' ASC, e.start_time ASC, e.id ASC LIMIT ' . UPCOMING_EVENTS_LIMIT);
@@ -200,7 +225,8 @@ function event_admin(array $row): array
 
 function admin_list_events(PDO $pdo, string $status, string $q, int $page, int $perPage = 20): array
 {
-    demo_events_seed($pdo);
+    megusta_events_import($pdo);
+    events_localize_covers($pdo);
     $where = [];
     $args = [];
     if (in_array($status, ['draft', 'published'], true)) {
