@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { section } from './content'
+import { phoneHref, section } from './content'
 import { PATHS } from './router'
 
 // /gatves-sokiai: what the street dance classes are, the beginners' timetable, the trainers and
@@ -86,7 +86,7 @@ const STYLES: DanceStyle[] = [
       <p>Vienas iš pagrindinių ir svarbiausių Popping šokio elementų – pop arba hit. Tai gebėjimas staigiai įtempti ir atleisti kūno raumenis, taip sukuriant virpesį. Šio stiliaus pasirodymai būna dinamiški, panaudojant daugybę technikų. Kūno bangavimas (waving), atskirų kūno dalių izoliacijos (isolations), judesiai rankomis su griežtomis linijomis (tutting), funk judėjimas (fresno) – tai tik maža dalis to, ką galima išvysti per Popping šokių kovas ar pasirodymus.</p>
     ),
     music: <p>Popping stilius „užaugo“ ant gyvos funk muzikos. Atsiradus Hip Hop muzikai, Popping šokėjai ėmė šokti ir pagal šį muzikinį žanrą.</p>,
-    movesTitle: 'Populiariausi Popping judėjimai',
+    movesTitle: 'Populiariausi Popping judesiai',
     moves: ['Fresno', 'Waving', 'Tutting', 'Slow Motion', 'Gliding', 'Isolations (izoliacijos)', 'Boogaloo Rolls', 'Robotting', 'Animations'],
     more: 'Daugiau Popping istorijos',
     moreHref: 'https://megusta.lt/apie-popping-sokiu-stiliu/',
@@ -177,6 +177,7 @@ function Video({ id, title, inline = false }: { id: string; title: string; inlin
 }
 
 export default function StreetDance() {
+  const contacts = section('global.contacts')
   const trainers = section('home.trainers').items.filter(t => TRAINER_NAMES.includes(t.name.split(' ')[0]))
   trainers.sort((a, b) => TRAINER_NAMES.indexOf(a.name.split(' ')[0]) - TRAINER_NAMES.indexOf(b.name.split(' ')[0]))
 
@@ -308,9 +309,17 @@ export default function StreetDance() {
 
       {/* CTA */}
       <section className="ng-wrap ng-sec">
-        <div className="sd-cta">
-          <h2 className="ng-h2">Išbandyk pirmą nemokamą pamoką</h2>
-          <a href={PATHS.registration} className="ng-btn ng-btn--dark ng-btn--xl">Registruokis {arrow}</a>
+        <div className="ng-cta">
+          <div className="ng-cta__main">
+            <span className="ng-tag ng-tag--dark"><i />Pirmoji treniruotė nemokama</span>
+            <h2 className="ng-h1 ng-h1--cta">Išbandyk pirmą<br />pamoką</h2>
+            <a href={PATHS.registration} className="ng-btn ng-btn--dark ng-btn--xl">Registruokis {arrow}</a>
+          </div>
+          <div className="ng-cta__card">
+            <div><span>Telefonas</span><a href={phoneHref(contacts.phone)}>{contacts.phone}</a></div>
+            <div><span>El. paštas</span><a href={`mailto:${contacts.email}`}>{contacts.email}</a></div>
+            <div><span>Adresas</span><b>{contacts.address}</b></div>
+          </div>
         </div>
       </section>
     </main>

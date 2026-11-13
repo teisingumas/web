@@ -176,10 +176,10 @@ a.menu-link[aria-current="page"] { text-decoration: underline; text-decoration-t
 @media (max-width: 900px) { .rv__main { border-left: 0; padding-left: 0; border-top: 1px solid #ECEAE4; padding-top: 28px; } .rv__quote { min-height: 0; } }
 
 /* ---------- timetable ---------- */
-.ng-table { background: #fff; border-radius: 32px; padding: 16px 36px 8px; }
+.ng-table { background: #fff; border-radius: 32px; padding: 12px 36px 6px; }
 .ng-table__scroll { overflow-x: auto; }
-.ng-row { display: grid; grid-template-columns: 140px minmax(0, 1fr) 110px 130px; gap: 16px; align-items: center; padding: 22px 0; border-top: 1px solid #ECEAE4; min-width: 560px; }
-.ng-row--head { border-top: 0; padding: 16px 0; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #555; }
+.ng-row { display: grid; grid-template-columns: 140px minmax(0, 1fr) 110px 130px; gap: 16px; align-items: center; padding: 18px 0; border-top: 1px solid #ECEAE4; min-width: 560px; }
+.ng-row--head { border-top: 0; padding: 14px 0; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #555; }
 .ng-time { font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 28px; letter-spacing: -0.02em; }
 .ng-style { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 700; }
 .ng-style i { width: 12px; height: 12px; border-radius: 999px; background: var(--ng-accent); box-shadow: inset 0 0 0 2px #111; flex-shrink: 0; }
@@ -610,8 +610,6 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
 .sd-more { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 800; color: #111; text-decoration: none; border-bottom: 2px solid var(--ng-accent); padding-bottom: 2px; }
 .sd-more:hover { border-bottom-color: #111; }
 
-.sd-cta { background: var(--ng-accent); border-radius: 32px; padding: clamp(32px, 5vw, 64px); display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; }
-.sd-cta .ng-h2 { max-width: 640px; }
 
 @media (max-width: 900px) {
   .sd-hero { padding-top: 130px; }
@@ -623,7 +621,7 @@ a[style*="247, 177, 212"]:hover, button[style*="247, 177, 212"]:hover { backgrou
   .sd-row > span:nth-child(4) { grid-column: 1 / -1; }
   .sd-row--head > span:nth-child(4) { display: none; }
   .sd-age, .sd-trainer { font-size: 18px; }
-  .sd-video, .sd-style, .sd-cta { border-radius: 24px; }
+  .sd-video, .sd-style { border-radius: 24px; }
   .sd-video__play { width: 68px; height: 68px; margin: -34px 0 0 -34px; }
 }
 .sd-modal { position: fixed; inset: 0; z-index: 1000; background: rgba(17,17,17,0.86); display: flex; align-items: center; justify-content: center; padding: 24px; animation: sdFade 0.2s ease-out; }
