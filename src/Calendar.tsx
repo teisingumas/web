@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { inlineData, section } from './content'
 import type { EventCard, EventsData } from './content/types'
-import { dayOf, isMultiDay, isOngoing, isPast, lastDay, monthKey, monthLabel, monthShort, timeText, todayVilnius, weekdayOf } from './eventFormat'
+import { dayOf, isMultiDay, isOngoing, isPast, lastDay, monthKey, monthLabel, monthShort, priceText, timeText, todayVilnius, weekdayOf } from './eventFormat'
 import { fetchEvents } from './publicApi'
 import { pageTitle } from './seo'
 
@@ -227,10 +227,10 @@ const CSS = `
   .cal-list { display: flex; flex-direction: column; gap: 16px; }
   .cal-list--top { margin-top: 32px; }
 
-  .cal-ev { position: relative; display: grid; grid-template-columns: 112px minmax(0, 400px) minmax(0, 1fr); gap: 28px; align-items: stretch; padding: 16px 24px 16px 16px; border-radius: 32px; background: #fff; transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s; }
+  .cal-ev { position: relative; display: grid; grid-template-columns: 148px minmax(0, 400px) minmax(0, 1fr); gap: 28px; align-items: stretch; padding: 16px 24px 16px 16px; border-radius: 32px; background: #fff; transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s; }
   .cal-ev:not(.cal-ev--skeleton):hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(17,17,17,0.08); }
   /* the date is plain type with a hairline after it, no coloured tile */
-  .cal-date { display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 8px 0 8px 12px; border-right: 1px solid #ECEAE4; color: #111; }
+  .cal-date { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 8px 24px 8px 16px; border-right: 1px solid #ECEAE4; color: #111; }
   .cal-date__day { font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 56px; line-height: 0.85; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .cal-date__day small { font-size: 0.42em; letter-spacing: 0; margin-left: 2px; }
   .cal-date__sub { font-size: 14px; font-weight: 700; color: #6B6A63; }
@@ -245,6 +245,7 @@ const CSS = `
   .cal-body { display: flex; flex-direction: column; justify-content: center; gap: 12px; min-width: 0; padding: 8px 0; }
   .cal-tags { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .cal-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: #F0EEE8; color: #111; font: 700 13px/1.2 'Manrope', sans-serif; }
+  .cal-pill--type { background: #F7B1D4; }
   .cal-pill--live { background: #111; color: #fff; }
   .cal-pill--live i { width: 7px; height: 7px; border-radius: 999px; background: #F7B1D4; }
   .cal-title { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 900; font-size: clamp(24px, 2.3vw, 32px); line-height: 1.05; letter-spacing: -0.02em; color: #111; overflow-wrap: anywhere; text-wrap: balance; }
@@ -273,7 +274,7 @@ const CSS = `
   .cal-thumb.cal-skel { height: auto; min-height: 200px; border-radius: 20px; }
   @keyframes calPulse { from { opacity: 1; } to { opacity: 0.45; } }
 
-  @media (max-width: 1100px) { .cal-ev { grid-template-columns: 104px minmax(0, 300px) minmax(0, 1fr); gap: 22px; } .cal-date__day { font-size: 46px; } }
+  @media (max-width: 1100px) { .cal-ev { grid-template-columns: 128px minmax(0, 300px) minmax(0, 1fr); gap: 22px; } .cal-date { padding-right: 18px; } .cal-date__day { font-size: 46px; } }
   @media (max-width: 760px) {
     .cal { padding-top: 130px; }
     .cal-toolbar { flex-direction: column; align-items: stretch; }
@@ -305,6 +306,7 @@ function EventRow({ event: e, today }: { event: EventCard; today: string }) {
   const past = isPast(e, today)
   const multi = isMultiDay(e)
   const sameMonth = multi && monthKey(e.startDate) === monthKey(e.endDate!)
+  const price = priceText(e.price)
   const href = `/kalendorius/${e.slug}`
   const time = timeText(e)
   return (
@@ -318,19 +320,20 @@ function EventRow({ event: e, today }: { event: EventCard; today: string }) {
         {e.cover.src && <img src={e.cover.src} alt="" loading="lazy" />}
       </div>
       <div className="cal-body">
-        {(multi || time || past || isOngoing(e, today)) && <div className="cal-tags">
+        <div className="cal-tags">
+          {e.typeLabel && <span className="cal-pill cal-pill--type">{e.typeLabel}</span>}
           {multi && <span className="cal-pill">Kelių dienų</span>}
           {time && <span className="cal-pill"><svg {...ico}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>{time}</span>}
           {!past && isOngoing(e, today) && <span className="cal-pill cal-pill--live"><i aria-hidden="true" />Vyksta dabar</span>}
           {past && <span className="cal-pill">Įvyko</span>}
-        </div>}
+        </div>
         <h3 className="cal-title"><a href={href}>{e.title}</a></h3>
         {e.excerpt && <p className="cal-excerpt">{e.excerpt}</p>}
         <div className="cal-bottom">
         <ul className="cal-meta">
           {e.venue && <li><svg {...ico}><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z" /><circle cx="12" cy="9" r="2.5" /></svg><b>{e.venue.name}</b></li>}
           {e.organizer && <li><svg {...ico}><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-6 8-6s8 2 8 6" /></svg>Organizuoja <b>{e.organizer.name}</b></li>}
-          {e.typeLabel && <li><svg {...ico}><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" /><circle cx="7.5" cy="7.5" r="1.5" /></svg><b>{e.typeLabel}</b></li>}
+          {price && <li><svg {...ico}><path d="M17 6.5A6 6 0 0 0 7 9v6a6 6 0 0 0 10 2.5M4 10.5h9M4 13.5h9" /></svg><b>{price}</b></li>}
         </ul>
         <span className="cal-more" aria-hidden="true">
           <span className="cal-more__label">Plačiau</span>
