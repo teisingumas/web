@@ -239,7 +239,7 @@ function awards_prerender(array $c): string
         if (is_file($file)) { $years = json_decode((string) file_get_contents($file), true) ?: []; break; }
     }
     $roman = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
-    $out = '<p>Apie studiją</p><h1>Apdovanojimai</h1>'
+    $out = '<p>Mūsų laimėjimai</p><h1>Apdovanojimai</h1>'
         . '<p>Me Gusta šokėjų rezultatai varžybose ir festivaliuose Lietuvoje ir užsienyje nuo 2008 metų.</p>';
     foreach ($years as $y) {
         $out .= '<section><h2>' . (int) $y['year'] . '</h2>';
